@@ -1,0 +1,61 @@
+// src/app/servicios/muebles/page.tsx
+// Este es un Componente de Servidor. NO LLEVA 'use client';
+
+import { Metadata } from 'next';
+import MueblesClient from './MueblesClient'; // Importa tu componente de cliente
+
+// Define la interfaz para las props que espera esta página
+interface MueblesPageProps {
+  params: { [key: string]: string | string[] };
+  searchParams: { [key: string]: string | string[] | undefined }; // Tipo CORREGIDO y más genérico
+}
+
+export async function generateMetadata(
+  { params, searchParams }: MueblesPageProps
+): Promise<Metadata> {
+  // Accedemos a 'ciudad' de forma segura
+  const ciudadParam = searchParams.ciudad;
+  const ciudad = Array.isArray(ciudadParam) ? ciudadParam[0] : ciudadParam || 'Bogotá y Medellín';
+  
+  const nombreServicio = 'Muebles';
+  const nombreEmpresa = 'Clean Company'; // Reemplaza si es necesario
+
+  const title = `Lavado de ${nombreServicio} a Domicilio en ${ciudad} | ${nombreEmpresa}`;
+  const description = `Servicio experto de limpieza y desinfección de ${nombreServicio.toLowerCase()} (sofás, sillas, etc.) en ${ciudad}. Dejamos tus muebles como nuevos. ¡Contacta a ${nombreEmpresa}!`;
+
+  return {
+    title: title,
+    description: description,
+    keywords: [
+      `lavado de ${nombreServicio.toLowerCase()} ${ciudad.toLowerCase()}`,
+      `limpieza de sofás ${ciudad.toLowerCase()}`,
+      `limpieza de sillas ${ciudad.toLowerCase()}`,
+      `desinfección de ${nombreServicio.toLowerCase()} ${ciudad.toLowerCase()}`,
+      `${nombreServicio.toLowerCase()} en ${ciudad.toLowerCase()}`,
+      nombreEmpresa.toLowerCase()
+    ],
+    openGraph: {
+      title: title,
+      description: description,
+      // images: [`https://www.tuempresa.com/images/servicio-muebles.jpg`], // URL absoluta a una imagen
+      siteName: nombreEmpresa,
+      locale: 'es_CO',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+      // images: [`https://www.tuempresa.com/images/servicio-muebles-twitter.jpg`], // URL absoluta a una imagen
+    },
+    // alternates: {
+    //   canonical: `https://www.tuempresa.com/servicios/muebles${searchParams.ciudad ? `?ciudad=${Array.isArray(searchParams.ciudad) ? searchParams.ciudad[0] : searchParams.ciudad}` : ''}`,
+    // },
+  };
+}
+
+// El componente de página ahora renderiza el componente de cliente,
+// pasando los searchParams por si el cliente los necesita.
+export default function MueblesPage({ searchParams }: MueblesPageProps) {
+  return <MueblesClient />;
+}
