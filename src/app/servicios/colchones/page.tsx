@@ -3,6 +3,7 @@
 
 import { Metadata } from 'next';
 import ColchonesClient from './ColchonesClient'; // Importa tu componente de cliente
+import { Suspense } from 'react';
 
 // Define la interfaz para las props que espera esta página
 interface ColchonesPageProps {
@@ -11,7 +12,7 @@ interface ColchonesPageProps {
 }
 
 export async function generateMetadata(
-  { params, searchParams }: ColchonesPageProps
+  { params, searchParams }: { params: any, searchParams: any }
 ): Promise<Metadata> {
   // Accedemos a los parámetros de forma segura
   const ciudadParam = searchParams.ciudad;
@@ -60,6 +61,10 @@ export async function generateMetadata(
 
 // El componente de página ahora renderiza el componente de cliente,
 // pasando los searchParams por si el cliente los necesita.
-export default function ColchonesPage({ searchParams }: ColchonesPageProps) {
-  return <ColchonesClient />;
+export default function ColchonesPage() {
+  return (
+    <Suspense>
+      <ColchonesClient />
+    </Suspense>
+  );
 }

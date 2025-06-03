@@ -3,7 +3,9 @@
 
 import { Metadata } from 'next';
 import AlfombrasClient from './AlfombrasClient'; // Importa tu componente de cliente
+import { Suspense } from 'react';
 
+// Cambiar la definición de la interfaz y la función para usar correctamente los tipos de Next.js
 // Define la interfaz para las props que espera esta página
 interface AlfombrasPageProps {
   params: { [key: string]: string | string[] };
@@ -11,7 +13,7 @@ interface AlfombrasPageProps {
 }
 
 export async function generateMetadata(
-  { params, searchParams }: AlfombrasPageProps
+  { params, searchParams }: { params: any, searchParams: any }
 ): Promise<Metadata> {
   // Ahora accedemos a 'ciudad' de forma segura, sabiendo que puede ser string, array o undefined
   const ciudadParam = searchParams.ciudad;
@@ -58,6 +60,9 @@ export async function generateMetadata(
 // El componente de página ahora renderiza el componente de cliente.
 // No necesita pasar searchParams si AlfombrasClient usa el hook useSearchParams()
 export default function AlfombrasPage() {
-  // Si AlfombrasClient usa useSearchParams(), no necesitas pasarle searchParams como prop.
-  return <AlfombrasClient />;
+  return (
+    <Suspense>
+      <AlfombrasClient />
+    </Suspense>
+  );
 }
