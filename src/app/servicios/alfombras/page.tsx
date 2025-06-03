@@ -57,7 +57,7 @@ export async function generateMetadata(
 
 // El componente de página ahora renderiza el componente de cliente.
 // No necesita pasar searchParams si AlfombrasClient usa el hook useSearchParams()
-export default function AlfombrasPage({ searchParams }: AlfombrasPageProps) {
+export default function AlfombrasPage() {
   // Si AlfombrasClient usa useSearchParams(), no necesitas pasarle searchParams como prop.
   return <AlfombrasClient />;
 }

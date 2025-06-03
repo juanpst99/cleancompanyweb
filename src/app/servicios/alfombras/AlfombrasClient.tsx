@@ -5,13 +5,9 @@ import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import Footer from '@/components/sections/Footer'
-import { Check, Sparkles, Shield, Clock, ArrowLeft, Star, Heart, Lock, CreditCard, Users, Leaf, ChevronDown, MessageCircle, AlertCircle } from 'lucide-react'
+import { Check, Sparkles, Shield, Clock, ArrowLeft, Star, Heart, Lock, CreditCard, Users, Leaf, ChevronDown, MessageCircle } from 'lucide-react'
 import Link from 'next/link'
-
-
-  
-
-
+import Image from 'next/image'
 
 export default function AlfombrasClient() {
   const searchParams = useSearchParams()
@@ -62,8 +58,8 @@ export default function AlfombrasClient() {
     const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(mensaje)}`
     
     // Track conversion si tienes GTM
-    if (typeof window !== 'undefined' && (window as any).dataLayer) {
-      (window as any).dataLayer.push({
+    if (typeof window !== 'undefined' && (window as unknown as { dataLayer?: any }).dataLayer) {
+      (window as unknown as { dataLayer?: any }).dataLayer.push({
         'event': 'form_submit',
         'form_type': 'cotizacion_alfombras',
         'utm_campaign': utm_campaign
@@ -402,9 +398,10 @@ export default function AlfombrasClient() {
             </div>
             
             <div className="relative">
-              <img 
+              <Image 
                 src="/images/servicios/lavado-alfombras-bogota.webp" 
                 alt="Proceso profesional de lavado de alfombras Clean Company"
+                width={600} height={400}
                 className="rounded-2xl shadow-xl"
               />
               <div className="absolute -bottom-6 -right-6 bg-yellow-400 text-black p-6 rounded-2xl shadow-xl">
@@ -427,9 +424,10 @@ export default function AlfombrasClient() {
             {testimoniosAlfombras.map((testimonio, index) => (
               <div key={index} className="bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
                 <div className="flex items-center mb-4">
-                  <img 
+                  <Image 
                     src={testimonio.foto} 
                     alt={testimonio.nombre}
+                    width={64} height={64}
                     className="w-16 h-16 rounded-full object-cover mr-4"
                   />
                   <div>
@@ -442,7 +440,7 @@ export default function AlfombrasClient() {
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-700 italic">"{testimonio.texto}"</p>
+                <p className="text-gray-700 italic">&quot;{testimonio.texto}&quot;</p>
                 <p className="text-xs text-gray-500 mt-3">
                   Servicio realizado hace {testimonio.tiempo}
                 </p>
