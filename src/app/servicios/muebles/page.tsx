@@ -56,6 +56,6 @@ export async function generateMetadata(
 
 // El componente de página ahora renderiza el componente de cliente,
 // pasando los searchParams por si el cliente los necesita.
-export default function MueblesPage({ searchParams }: MueblesPageProps) {
+export default function MueblesPage() {
   return <MueblesClient />;
 }
