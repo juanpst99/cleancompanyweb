@@ -550,6 +550,7 @@ export default function MueblesClient() {
             <div className="text-center mt-8">
               <p className="text-gray-600 mb-4">
                 * Precios con descuento del {descuento}%. Cotización exacta según estado del mueble.
+                *El precio puede variar de acuerdo al tamaño
               </p>
               <a 
                 href={`https://wa.me/573128052720?text=Hola,%20quiero%20una%20cotización%20exacta%20para%20lavado%20de%20muebles%20en%20${encodeURIComponent(ciudad)}.%20¿Me%20pueden%20ayudar?`}
