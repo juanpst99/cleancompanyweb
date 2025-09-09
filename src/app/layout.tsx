@@ -5,7 +5,8 @@ import './globals.css'
 import StructuredData from '@/components/SEO/StructuredData'
 import Script from 'next/script'
 // (Opcional recomendado) escucha de pageviews en SPA
-import GTMEvents from '@/components/analytics/GTMEvents'
+import GTMEvents from '@/components/SEO/GTMEvents'
+
 
 const inter = Inter({ subsets: ['latin'] })
 
