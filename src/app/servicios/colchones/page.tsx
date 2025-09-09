@@ -1,35 +1,36 @@
 // src/app/servicios/colchones/page.tsx
-// Este es un Componente de Servidor. NO LLEVA 'use client';
+// Componente de Servidor. NO lleva 'use client';
 
 import { Metadata } from 'next';
-import ColchonesClient from './ColchonesClient'; // Importa tu componente de cliente
+import ColchonesClient from './ColchonesClient';
 import { Suspense } from 'react';
 
-// Define la interfaz para las props que espera esta página
+// (Opcional) Tipado de props si luego lo necesitas
 interface ColchonesPageProps {
   params: { [key: string]: string | string[] };
-  searchParams: { [key: string]: string | string[] | undefined }; // Tipo CORREGIDO y más genérico
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata(
-  { params, searchParams }: { params: any, searchParams: any }
+  { params, searchParams }: { params: any; searchParams: any }
 ): Promise<Metadata> {
-  // Accedemos a los parámetros de forma segura
   const ciudadParam = searchParams.ciudad;
   const ciudad = Array.isArray(ciudadParam) ? ciudadParam[0] : ciudadParam || 'Bogotá y Medellín';
 
   const descParam = searchParams.desc;
-  const descuento = Array.isArray(descParam) ? descParam[0] : descParam || '20'; // Descuento por defecto
-  
-  const nombreServicio = 'Colchones';
-  const nombreEmpresa = 'Clean Company'; // Reemplaza si es necesario
+  const descuento = Array.isArray(descParam) ? descParam[0] : descParam || '20';
 
-  const title = `Lavado de ${nombreServicio} en ${ciudad} | ${descuento}% Descuento - ${nombreEmpresa}`;
-  const description = `Servicio de lavado y desinfección de ${nombreServicio.toLowerCase()} en ${ciudad}. ✓ Eliminamos ácaros ✓ Anti-alérgenos. ¡Cotiza y recibe ${descuento}% de descuento con ${nombreEmpresa}!`;
+  const nombreServicio = 'Colchones';
+  const nombreEmpresa = 'Clean Company';
+
+  const title = `Lavado de Colchones a Domicilio en ${ciudad} | ${descuento}% OFF`;
+  const description =
+    `Expertos en lavado y desinfección de colchones a domicilio en ${ciudad}. ` +
+    `Eliminamos 99.9% de ácaros y manchas. ¡Aprovecha ${descuento}% de descuento hoy!`;
 
   return {
-    title: title,
-    description: description,
+    title,
+    description,
     keywords: [
       `lavado de ${nombreServicio.toLowerCase()} ${ciudad.toLowerCase()}`,
       `limpieza de ${nombreServicio.toLowerCase()} ${ciudad.toLowerCase()}`,
@@ -37,30 +38,33 @@ export async function generateMetadata(
       `eliminar ácaros colchón ${ciudad.toLowerCase()}`,
       `${nombreServicio.toLowerCase()} ${ciudad.toLowerCase()}`,
       nombreEmpresa.toLowerCase(),
-      `oferta lavado de ${nombreServicio.toLowerCase()}`
+      `oferta lavado de ${nombreServicio.toLowerCase()}`,
+      `lavado de colchones precio ${ciudad.toLowerCase()}`,
+      `limpieza profunda de colchones ${ciudad.toLowerCase()}`,
+      `desinfección antialérgica colchones ${ciudad.toLowerCase()}`,
+      `servicio lavado colchones a domicilio ${ciudad.toLowerCase()}`,
+      `eliminar manchas colchón ${ciudad.toLowerCase()}`,
+      `lavado ecológico colchones ${ciudad.toLowerCase()}`,
+      `limpieza de colchones profesional ${ciudad.toLowerCase()}`,
+      `tratamiento antiácaros colchones ${ciudad.toLowerCase()}`,
     ],
     openGraph: {
-      title: title,
-      description: description,
-      // images: [`https://www.tuempresa.com/images/servicio-colchones.jpg`], // URL absoluta a una imagen
+      title,
+      description,
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
+      // images: ['https://www.tu-dominio.com/images/servicio-colchones.jpg'],
     },
     twitter: {
       card: 'summary_large_image',
-      title: title,
-      description: description,
-      // images: [`https://www.tuempresa.com/images/servicio-colchones-twitter.jpg`], // URL absoluta a una imagen
+      title,
+      description,
+      // images: ['https://www.tu-dominio.com/images/servicio-colchones-twitter.jpg'],
     },
-    // alternates: {
-    //   canonical: `https://www.tuempresa.com/servicios/colchones${searchParams.ciudad ? `?ciudad=${Array.isArray(searchParams.ciudad) ? searchParams.ciudad[0] : searchParams.ciudad}` : ''}${searchParams.desc ? `&desc=${Array.isArray(searchParams.desc) ? searchParams.desc[0] : searchParams.desc}` : ''}`,
-    // },
   };
 }
 
-// El componente de página ahora renderiza el componente de cliente,
-// pasando los searchParams por si el cliente los necesita.
 export default function ColchonesPage() {
   return (
     <Suspense>
