@@ -33,41 +33,20 @@ const StructuredData = () => {
       }
     ],
     "geo": [
-      {
-        "@type": "GeoCoordinates",
-        "latitude": 6.25184,
-        "longitude": -75.56359
-      },
-      {
-        "@type": "GeoCoordinates",
-        "latitude": 4.71099,
-        "longitude": -74.07209
-      }
+      { "@type": "GeoCoordinates", "latitude": 6.25184, "longitude": -75.56359 },
+      { "@type": "GeoCoordinates", "latitude": 4.71099, "longitude": -74.07209 }
     ],
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ],
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         "opens": "08:00",
         "closes": "17:00"
       }
     ],
     "areaServed": [
-      {
-        "@type": "City",
-        "name": "Bogotá"
-      },
-      {
-        "@type": "City",
-        "name": "Medellín"
-      }
+      { "@type": "City", "name": "Bogotá" },
+      { "@type": "City", "name": "Medellín" }
     ],
     "serviceType": [
       "Lavado de alfombras",
