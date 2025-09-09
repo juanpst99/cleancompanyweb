@@ -14,55 +14,61 @@ const StructuredData = () => {
     "email": "cleancompanymed@gmail.com",
     "telephone": "+573128052720",
     "priceRange": "$$",
-    "address": [{
-      "@type": "PostalAddress",
-      "streetAddress": "Calle 30 #78-54",
-      "addressLocality": "Medellín",
-      "addressRegion": "Antioquia",
-      "postalCode": "050001",
-      "addressCountry": "CO"
-    },
-    {
-      "@type": "PostalAddress",
-      "streetAddress": "Calle 22J #104-30",
-      "addressLocality": "Bogotá",
-      "addressRegion": "Bogotá D.C.",
-      "postalCode": "110111",
-      "addressCountry": "CO"
-    }],
-    "geo": [{
-      "@type": "GeoCoordinates",
-      "latitude": 6.2518400,
-      "longitude": -75.5635900
-    },
-    {
-      "@type": "GeoCoordinates",
-      "latitude": 4.7109900,
-      "longitude": -74.0720900
-    }],
-    "openingHoursSpecification": [{
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ],
-      "opens": "08:00",
-      "closes": "17:00"
-    }],
-    "areaServed": [{
-      "@type": "City",
-      "name": "Medellín",
-      "sameAs": "https://www.wikidata.org/wiki/Q48278"
-    },
-    {
-      "@type": "City",
-      "name": "Bogotá",
-      "sameAs": "https://www.wikidata.org/wiki/Q2841"
-    }],
+    "address": [
+      {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle 30 #78-54",
+        "addressLocality": "Medellín",
+        "addressRegion": "Antioquia",
+        "postalCode": "050001",
+        "addressCountry": "CO"
+      },
+      {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle 22J #104-30",
+        "addressLocality": "Bogotá",
+        "addressRegion": "Bogotá D.C.",
+        "postalCode": "110111",
+        "addressCountry": "CO"
+      }
+    ],
+    "geo": [
+      {
+        "@type": "GeoCoordinates",
+        "latitude": 6.25184,
+        "longitude": -75.56359
+      },
+      {
+        "@type": "GeoCoordinates",
+        "latitude": 4.71099,
+        "longitude": -74.07209
+      }
+    ],
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday"
+        ],
+        "opens": "08:00",
+        "closes": "17:00"
+      }
+    ],
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Bogotá"
+      },
+      {
+        "@type": "City",
+        "name": "Medellín"
+      }
+    ],
     "serviceType": [
       "Lavado de alfombras",
       "Lavado de colchones",
@@ -88,50 +94,88 @@ const StructuredData = () => {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "Lavado de alfombras",
-            "description": "Servicio profesional de lavado de alfombras a domicilio"
+            "name": "Lavado de Alfombras y Tapetes",
+            "description": "Limpieza profunda y desinfección de alfombras y tapetes con técnicas especializadas"
           }
         },
         {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "Lavado de colchones",
-            "description": "Limpieza profunda y desinfección de colchones"
+            "name": "Lavado de Muebles",
+            "description": "Lavado profesional de muebles y tapicería con productos especializados"
           }
         },
         {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "Lavado de muebles",
-            "description": "Lavado profesional de muebles y tapicería"
+            "name": "Lavado de Colchones",
+            "description": "Desinfección y limpieza profunda de colchones para eliminar ácaros y bacterias"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Limpieza Interior de Vehículos",
+            "description": "Lavado detallado de interiores de vehículos incluyendo tapicería y paneles"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Servicio Empresarial",
+            "description": "Soluciones de limpieza integral para oficinas y espacios comerciales"
           }
         }
       ]
     }
   }
 
-  const localBusinessSchema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Clean Company Medellín",
-    "image": "https://cleancompany.com.co/logo.png",
-    "telephone": "+573128052720",
-    "email": "cleancompanymed@gmail.com",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Calle 30 #78-54",
-      "addressLocality": "Medellín",
-      "addressRegion": "Antioquia",
-      "postalCode": "050001",
-      "addressCountry": "CO"
+  const localBusinessSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Clean Company Medellín",
+      "image": "https://cleancompany.com.co/logo.png",
+      "telephone": "+573128052720",
+      "email": "cleancompanymed@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle 30 #78-54",
+        "addressLocality": "Medellín",
+        "addressRegion": "Antioquia",
+        "postalCode": "050001",
+        "addressCountry": "CO"
+      },
+      "priceRange": "$$",
+      "paymentAccepted": "Cash, Credit Card, Debit Card",
+      "openingHours": "Mo-Sa 08:00-17:00",
+      "url": "https://cleancompany.com.co"
     },
-    "priceRange": "$$",
-    "paymentAccepted": "Cash, Credit Card, Debit Card",
-    "openingHours": "Mo-Sa 08:00-17:00",
-    "url": "https://cleancompany.com.co"
-  }
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Clean Company Bogotá",
+      "image": "https://cleancompany.com.co/logo.png",
+      "telephone": "+573128052720",
+      "email": "cleancompanymed@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle 22J #104-30",
+        "addressLocality": "Bogotá",
+        "addressRegion": "Bogotá D.C.",
+        "postalCode": "110111",
+        "addressCountry": "CO"
+      },
+      "priceRange": "$$",
+      "paymentAccepted": "Cash, Credit Card, Debit Card",
+      "openingHours": "Mo-Sa 08:00-17:00",
+      "url": "https://cleancompany.com.co"
+    }
+  ]
 
   return (
     <>
