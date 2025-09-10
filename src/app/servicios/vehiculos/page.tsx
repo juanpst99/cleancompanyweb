@@ -2,7 +2,6 @@
 // Componente de Servidor. NO lleva 'use client';
 
 import { Metadata } from 'next';
-import { Suspense } from 'react';
 
 // (Opcional) Tipado si luego lo necesitas
 interface VehiculosPageProps {
@@ -61,9 +60,5 @@ export async function generateMetadata(
 }
 
 export default function VehiculosPage() {
-  return (
-    <Suspense>
-      <VehiculosClient />
-    </Suspense>
-  );
+  return <div>Servicio de limpieza interior de vehículos</div>;
 }
