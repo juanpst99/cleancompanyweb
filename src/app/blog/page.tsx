@@ -6,8 +6,8 @@
 
   export const metadata: Metadata = {
     title: 'Blog y Consejos de Limpieza | Clean Company',
-    description: 'Consejos profesionales para el cuidado de alfombras, muebles y colchones. Aprende las mejores técnicas de limpieza y
-  mantenimiento.',
+    description:
+      'Consejos profesionales para el cuidado de alfombras, muebles y colchones. Aprende las mejores técnicas de limpieza y mantenimiento.',
     keywords: ['blog limpieza', 'consejos lavado alfombras', 'cuidado muebles', 'mantenimiento colchones', 'tips limpieza profesional'],
   }
 
