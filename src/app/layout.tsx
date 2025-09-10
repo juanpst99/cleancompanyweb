@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import StructuredData from '@/components/SEO/StructuredData'
 import Script from 'next/script'
+import { Suspense } from 'react'
 // (Opcional recomendado) escucha de pageviews en SPA
 import GTMEvents from '@/components/analytics/GTMEvents'
 
@@ -138,7 +139,9 @@ export default function RootLayout({
           }}
         />
         {/* Pageviews en navegaciones SPA */}
-        <GTMEvents />
+        <Suspense fallback={null}>
+          <GTMEvents />
+        </Suspense>
         {children}
       </body>
     </html>
