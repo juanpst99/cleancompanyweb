@@ -6,6 +6,7 @@ import StructuredData from '@/components/SEO/StructuredData'
 import Script from 'next/script'
 // (Opcional recomendado) escucha de pageviews en SPA
 import GTMEvents from '@/components/analytics/GTMEvents'
+import { Suspense } from 'react'
 
 
 
@@ -96,8 +97,9 @@ export const metadata: Metadata = {
   verification: {
     google: 'tu-codigo-de-verificacion',
   },
-  themeColor: '#3AAA35', // ← añadido
 }
+
+export const viewport = { themeColor: '#3AAA35' }
 
 // TU ID específico de Google Tag Manager
 const GTM_ID = 'GTM-WG2MH57'
@@ -138,7 +140,9 @@ export default function RootLayout({
           }}
         />
         {/* Pageviews en navegaciones SPA */}
-        <GTMEvents />
+        <Suspense fallback={null}>
+          <GTMEvents />
+        </Suspense>
         {children}
       </body>
     </html>
