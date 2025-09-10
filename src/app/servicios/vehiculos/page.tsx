@@ -2,7 +2,6 @@
 // Componente de Servidor. NO lleva 'use client';
 
 import { Metadata } from 'next';
-import VehiculosClient from './VehiculosClient';
 import { Suspense } from 'react';
 
 // (Opcional) Tipado si luego lo necesitas
