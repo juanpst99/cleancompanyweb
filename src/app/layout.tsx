@@ -96,7 +96,10 @@ export const metadata: Metadata = {
   verification: {
     google: 'tu-codigo-de-verificacion',
   },
-  themeColor: '#3AAA35', // ← añadido
+}
+
+export const viewport = {
+  themeColor: '#3AAA35',
 }
 
 // TU ID específico de Google Tag Manager
