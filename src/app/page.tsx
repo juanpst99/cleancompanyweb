@@ -13,6 +13,8 @@ import CTA from '@/components/sections/CTA'
 import Contact from '@/components/sections/Contact'
 import Footer from '@/components/sections/Footer'
 import StructuredData from '@/components/SEO/StructuredData'
+import { Suspense } from 'react'
+
 
 export default function Home() {
   return (
@@ -21,7 +23,11 @@ export default function Home() {
       <Header />
       <WhatsAppButton />
       <main>
-        <Hero />
+        {/* ENVUELVE EL COMPONENTE HERO EN SUSPENSE */}
+        <Suspense fallback={<div>Cargando...</div>}>
+          <Hero />
+        </Suspense>
+        
         <WhyChooseUs />
         <Services />
         <ServiceDetails />
