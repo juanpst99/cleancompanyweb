@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Menu, X, Sparkles } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -17,21 +18,33 @@ const Header = () => {
   }, [])
 
   const menuItems = [
-    { name: 'Inicio', href: '#inicio' },
-    { name: 'Nosotros', href: '#nosotros' },
-    { name: 'Servicios', href: '#servicios' },
-    { name: 'Clientes', href: '#clientes' },
-    { name: 'Blog', href: '#blog' },
-    { name: 'Contacto', href: '#contacto' }
+    { name: 'Inicio', href: '/' },
+    { name: 'Nosotros', href: '/#nosotros' },
+    { name: 'Servicios', href: '/#servicios' },
+    { name: 'Clientes', href: '/#clientes' },
+    { name: 'Blog', href: '/#blog' },
+    { name: 'Contacto', href: '/#contacto' }
   ]
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
-    const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+    // Si es navegación interna a la home o a una sección de la home, usar router push
+    if (href === '/' || href.startsWith('/#')) {
+      e.preventDefault();
+      window.location.href = href;
+      setIsMenuOpen(false);
+      return;
     }
-    setIsMenuOpen(false)
+    // Si es un anchor local en la misma página
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+      setIsMenuOpen(false);
+      return;
+    }
+    // Por defecto, dejar el comportamiento normal
   }
 
   return (
@@ -40,20 +53,16 @@ const Header = () => {
     }`}>
       <nav className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <a 
-            href="#inicio" 
-            onClick={(e) => handleClick(e, '#inicio')}
-            className="flex items-center space-x-2"
-          >
+          <Link href="/" className="flex items-center space-x-2">
              <Image 
     src="/images/logo/clean-company-logo.png"
     alt="Clean Company - Limpieza profesional"
-    width={300}  // Ajusta según tu logo
-    height={80}   // Ajusta según tu logo
-    className="h-12 w-auto" // Mantiene proporción
+    width={300}
+    height={80}
+    className="h-12 w-auto"
     priority
   />
-          </a>
+          </Link>
           
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-8">

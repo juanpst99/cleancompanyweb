@@ -2,30 +2,37 @@
 // Este es un Componente de Servidor. NO LLEVA 'use client';
 
 import { Metadata } from 'next';
-import AlfombrasClient from './AlfombrasClient'; // Importa tu componente de cliente
+import AlfombrasClient from './AlfombrasClient';
+import { Suspense } from 'react';
 
-// Define la interfaz para las props que espera esta página
+// (Opcional) Tipado si luego lo necesitas
 interface AlfombrasPageProps {
   params: { [key: string]: string | string[] };
-  searchParams: { [key: string]: string | string[] | undefined }; // Tipo CORREGIDO y más genérico
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata(
-  { params, searchParams }: AlfombrasPageProps
+  { params, searchParams }: { params: any; searchParams: any }
 ): Promise<Metadata> {
-  // Ahora accedemos a 'ciudad' de forma segura, sabiendo que puede ser string, array o undefined
+  // ciudad desde query (?ciudad=), con fallback
   const ciudadParam = searchParams.ciudad;
   const ciudad = Array.isArray(ciudadParam) ? ciudadParam[0] : ciudadParam || 'Bogotá y Medellín';
-  
-  const nombreServicio = 'Alfombras';
-  const nombreEmpresa = 'Clean Company'; // Reemplaza si es necesario
 
-  const title = `Lavado de ${nombreServicio} a Domicilio en ${ciudad} | ${nombreEmpresa}`;
-  const description = `Servicio profesional de lavado y desinfección de ${nombreServicio.toLowerCase()} en ${ciudad}. Eliminamos manchas, ácaros y olores. ¡Cotiza ahora con ${nombreEmpresa}!`;
+  // descuento desde query (?desc=), con fallback
+  const descParam = searchParams.desc;
+  const descuento = Array.isArray(descParam) ? descParam[0] : descParam || '15';
+
+  const nombreServicio = 'Alfombras';
+  const nombreEmpresa = 'Clean Company';
+
+  const title = `Lavado de Alfombras y Tapetes en ${ciudad} | ${descuento}% Descuento`;
+  const description =
+    `Lavado profesional de alfombras y tapetes a domicilio en ${ciudad}. ` +
+    `Eliminamos manchas difíciles y malos olores. ¡${descuento}% OFF en tu primera limpieza!`;
 
   return {
-    title: title,
-    description: description,
+    title,
+    description,
     keywords: [
       `lavado de ${nombreServicio.toLowerCase()} ${ciudad.toLowerCase()}`,
       `limpieza de ${nombreServicio.toLowerCase()} ${ciudad.toLowerCase()}`,
@@ -33,31 +40,42 @@ export async function generateMetadata(
       `${nombreServicio.toLowerCase()} en ${ciudad.toLowerCase()}`,
       nombreEmpresa.toLowerCase(),
       `lavado de ${nombreServicio.toLowerCase()}`,
-      `limpieza de ${nombreServicio.toLowerCase()}`
+      `limpieza de ${nombreServicio.toLowerCase()}`,
+      `lavado de tapetes ${ciudad.toLowerCase()}`,
+      `limpieza de alfombras persas ${ciudad.toLowerCase()}`,
+      `lavado alfombras a domicilio precio ${ciudad.toLowerCase()}`,
+      `servicio limpieza tapetes ${ciudad.toLowerCase()}`,
+      `lavado alfombras orientales ${ciudad.toLowerCase()}`,
+      `desinfección de alfombras ${ciudad.toLowerCase()}`,
+      `quitar manchas alfombras ${ciudad.toLowerCase()}`,
+      `lavado ecológico alfombras ${ciudad.toLowerCase()}`,
+      `limpieza profunda tapetes ${ciudad.toLowerCase()}`,
     ],
     openGraph: {
-      title: title,
-      description: description,
-      // images: [`https://www.tuempresa.com/images/servicio-alfombras.jpg`], // URL absoluta a una imagen
+      title,
+      description,
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
+      // images: ['https://www.tu-dominio.com/images/servicio-alfombras.jpg'],
     },
     twitter: {
       card: 'summary_large_image',
-      title: title,
-      description: description,
-      // images: [`https://www.tuempresa.com/images/servicio-alfombras-twitter.jpg`], // URL absoluta a una imagen
+      title,
+      description,
+      // images: ['https://www.tu-dominio.com/images/servicio-alfombras-twitter.jpg'],
     },
     // alternates: {
-    //   canonical: `https://www.tuempresa.com/servicios/alfombras${searchParams.ciudad ? `?ciudad=${Array.isArray(searchParams.ciudad) ? searchParams.ciudad[0] : searchParams.ciudad}` : ''}`,
+    //   canonical: `https://cleancompany.com.co/servicios/alfombras${searchParams.ciudad ? `?ciudad=${Array.isArray(searchParams.ciudad) ? searchParams.ciudad[0] : searchParams.ciudad}` : ''}${searchParams.desc ? `${searchParams.ciudad ? '&' : '?'}desc=${Array.isArray(searchParams.desc) ? searchParams.desc[0] : searchParams.desc}` : ''}`,
     // },
   };
 }
 
-// El componente de página ahora renderiza el componente de cliente.
-// No necesita pasar searchParams si AlfombrasClient usa el hook useSearchParams()
-export default function AlfombrasPage({ searchParams }: AlfombrasPageProps) {
-  // Si AlfombrasClient usa useSearchParams(), no necesitas pasarle searchParams como prop.
-  return <AlfombrasClient />;
+// Render del cliente
+export default function AlfombrasPage() {
+  return (
+    <Suspense>
+      <AlfombrasClient />
+    </Suspense>
+  );
 }

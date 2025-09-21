@@ -1,6 +1,5 @@
 'use client'
 
-import { Metadata } from 'next'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -646,7 +645,9 @@ export default function ColchonesClient() {
             
             <div className="text-center mt-8">
               <a 
-                href="#cotizar" 
+                href={`https://wa.me/573128052720?text=Hola,%20quiero%20una%20cotización%20exacta%20para%20lavado%20de%20colchones%20en%20${encodeURIComponent(ciudad)}.%20¿Me%20pueden%20ayudar?`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
               >
                 Cotizar Mi Colchón Ahora

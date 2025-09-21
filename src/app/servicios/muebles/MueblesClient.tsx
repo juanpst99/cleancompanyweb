@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 'use client'
 
 import { Metadata } from 'next'
@@ -560,9 +561,12 @@ export default function MueblesClient() {
             <div className="text-center mt-8">
               <p className="text-gray-600 mb-4">
                 * Precios con descuento del {descuento}%. Cotización exacta según estado del mueble.
+                *El precio puede variar de acuerdo al tamaño
               </p>
               <a 
-                href="#cotizar" 
+                href={`https://wa.me/573128052720?text=Hola,%20quiero%20una%20cotización%20exacta%20para%20lavado%20de%20muebles%20en%20${encodeURIComponent(ciudad)}.%20¿Me%20pueden%20ayudar?`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
              >
                Obtener Cotización Exacta

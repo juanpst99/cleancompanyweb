@@ -2,13 +2,16 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+
 import StructuredData from '@/components/SEO/StructuredData' // Asumo que este componente existe
-import Script from 'next/script'; // Ya lo tenías importado, lo cual es bueno
+import Script from 'next/script' // Ya lo tenías importado, lo cual es bueno
 import CookieConsent from '@/components/CookieConsent'
 import ResourceHints from '@/components/ResourceHints'
 import GTMProvider from '@/components/GTMProvider'
+// (Opcional recomendado) escucha de pageviews en SPA
+// import GTMEvents from '@/components/analytics/GTMEvents'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap', // Evitar FOIT (flash of invisible text)
   preload: true, // Precargar fuente (default es true)
@@ -19,10 +22,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://cleancompany.com.co'),
   title: {
-    default: 'Clean Company | Lavado de Alfombras, Muebles y Colchones en Bogotá y Medellín',
-    template: '%s | Clean Company'
+    default:
+      'Clean Company | Lavado de Alfombras, Muebles y Colchones en Bogotá y Medellín',
+    template: '%s | Clean Company Colombia', // ← cambio
   },
-  description: 'Servicio profesional de lavado de alfombras, muebles y colchones a domicilio en Bogotá y Medellín. ✓ Limpieza de tapetes ✓ Lavado a vapor ✓ Resultados garantizados ✓ Desde 2015',
+  description:
+    'Servicio profesional de lavado de alfombras, muebles y colchones a domicilio en Bogotá y Medellín. ✓ Limpieza de tapetes ✓ Lavado a vapor ✓ Resultados garantizados ✓ Desde 2015',
   keywords: [
     'clean company',
     'clean company colombia',
@@ -41,28 +46,38 @@ export const metadata: Metadata = {
     'lavado de tapetes bogotá',
     'limpieza a domicilio',
     'desinfección de colchones',
-    'limpieza de tapicería'
+    'limpieza de tapicería',
+    'lavado de alfombras a domicilio bogotá',
+    'lavado de muebles cerca de mí medellín',
+    'servicio de lavado de colchones bogotá norte',
+    'limpieza de alfombras persas bogotá',
+    'lavado de sofás medellín precio',
+    'desinfección de colchones medellín',
+    'lavado de tapetes orientales bogotá',
+    'limpieza de muebles de cuero bogotá',
+    'lavado ecológico de alfombras medellín',
+    'servicio 24 horas lavado de alfombras bogotá',
+    'lavado de colchones antialérgico medellín',
   ],
   authors: [{ name: 'Clean Company' }],
   creator: 'Clean Company',
   publisher: 'Clean Company',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
-    title: 'Clean Company | Lavado de Alfombras, Muebles y Colchones en Bogotá y Medellín',
-    description: 'Expertos en limpieza profesional. Lavado de alfombras, muebles y colchones a domicilio. Servicio garantizado en Bogotá y Medellín.',
+    title:
+      'Clean Company | Lavado de Alfombras, Muebles y Colchones en Bogotá y Medellín',
+    description:
+      'Expertos en limpieza profesional. Lavado de alfombras, muebles y colchones a domicilio. Servicio garantizado en Bogotá y Medellín.',
     url: 'https://cleancompany.com.co',
     siteName: 'Clean Company',
     images: [
       {
-        url: '/og-image.jpg', // Asegúrate que esta imagen exista en tu carpeta public
+        url: '/images/og-main.png', // ← cambio
         width: 1200,
         height: 630,
-        alt: 'Clean Company - Lavado profesional de alfombras, muebles y colchones',
-      }
+        alt:
+          'Clean Company - Lavado profesional de alfombras, muebles y colchones',
+      },
     ],
     locale: 'es_CO',
     type: 'website',
@@ -70,8 +85,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Clean Company - Lavado Profesional en Bogotá y Medellín',
-    description: 'Lavado de alfombras, muebles y colchones a domicilio. Servicio profesional garantizado.',
-    images: ['/og-image.jpg'], // Asegúrate que esta imagen exista en tu carpeta public
+    description:
+      'Lavado de alfombras, muebles y colchones a domicilio. Servicio profesional garantizado.',
+    images: ['/images/og-main.png'], // ← cambio
   },
   robots: {
     index: true,
@@ -84,16 +100,15 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: 'https://cleancompany.com.co',
-  },
+  alternates: { canonical: 'https://cleancompany.com.co' },
   verification: {
-    google: 'tu-codigo-de-verificacion', // Reemplaza con tu código de Google Search Console
+    google: 'tu-codigo-de-verificacion',
   },
-};
+  themeColor: '#3AAA35', // ← añadido
+}
 
 // TU ID específico de Google Tag Manager
-const GTM_ID = 'GTM-WG2MH57'; 
+const GTM_ID = 'GTM-WG2MH57'
 
 export default function RootLayout({
   children,
@@ -106,7 +121,7 @@ export default function RootLayout({
         {/* Resource Hints para optimización */}
         {/* Preconnect a dominios críticos */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* DNS Prefetch para dominios secundarios */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -123,7 +138,6 @@ export default function RootLayout({
           as="image" 
           href="/images/hero/alfombras.webp" 
           type="image/webp"
-          fetchPriority="high"
         />
         {/* Consent Mode - Configuración por defecto ANTES de GTM */}
         <Script
@@ -259,6 +273,8 @@ export default function RootLayout({
           }}
         />
         <GTMProvider>
+          {/* Pageviews en navegaciones SPA (si usas este componente, descomenta el import) */}
+          {/* <GTMEvents /> */}
           {children}
         </GTMProvider>
         <CookieConsent />

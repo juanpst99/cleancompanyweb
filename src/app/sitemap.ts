@@ -32,13 +32,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/servicios/vehiculos`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.9, // actualizado
     },
     {
       url: `${baseUrl}/servicios/empresarial`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.9, // actualizado
+    },
+    {
+      url: `${baseUrl}/garantia`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7, // nuevo
     },
     {
       url: `${baseUrl}/blog`,

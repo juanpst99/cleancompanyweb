@@ -1,3 +1,4 @@
+// src/app/servicios/empresarial/page.tsx
 import { Metadata } from 'next'
 import Header from '@/components/Header'
 import WhatsAppButton from '@/components/WhatsAppButton'
