@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { ArrowRight, Calendar, User } from 'lucide-react'
 
 const Blog = () => {
@@ -45,13 +46,19 @@ const Blog = () => {
               key={article.id}
               className="group cursor-pointer transform hover:-translate-y-2 transition-all duration-300"
             >
-              <div className="overflow-hidden rounded-2xl mb-4 shadow-lg">
-                <img 
-                  src={article.image}
-                  alt={article.title}
-                  className="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+              <div className="overflow-hidden rounded-2xl mb-4 shadow-lg relative">
+                <div className="relative h-48 w-full">
+                  <Image 
+                    src={article.image}
+                    alt={article.title}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    loading="lazy"
+                    decoding="async"
+                    className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm z-10">
                   {article.category}
                 </div>
               </div>

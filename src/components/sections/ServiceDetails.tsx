@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Check, Clock, Shield, Sparkles } from 'lucide-react'
 
 const ServiceDetails = () => {
@@ -119,10 +120,14 @@ const ServiceDetails = () => {
           <div className="container mx-auto px-4">
             {/* Hero del servicio */}
             <div className="relative h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 sm:mb-12">
-              <img 
+              <Image 
                 src={service.hero} 
                 alt={service.title}
-                className="w-full h-full object-cover"
+                fill
+                sizes="100vw"
+                loading="lazy"
+                decoding="async"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
                 <div className="p-6 sm:p-8 text-white">

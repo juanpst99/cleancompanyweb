@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Check, ArrowRight, Car, Building } from 'lucide-react'
 import Link from 'next/link'
 
@@ -69,10 +70,14 @@ const Services = () => {
               className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl"
             >
               <div className="relative h-48 overflow-hidden">
-                <img 
+                <Image 
                   src={service.image} 
                   alt={service.title}
-                  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  loading="lazy"
+                  decoding="async"
+                  className="object-cover transform hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                 <h3 className="absolute bottom-4 left-4 text-white text-xl sm:text-2xl font-bold">{service.title}</h3>

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const Testimonials = () => {
@@ -80,10 +81,14 @@ const Testimonials = () => {
             
             {/* Testimonial actual */}
             <div className="text-center">
-              <img 
+              <Image 
                 src={testimonials[activeIndex].image}
                 alt={testimonials[activeIndex].name}
-                className="w-24 h-24 rounded-full mx-auto mb-6 object-cover shadow-lg"
+                width={96}
+                height={96}
+                loading="lazy"
+                decoding="async"
+                className="rounded-full mx-auto mb-6 object-cover shadow-lg"
               />
               <h4 className="font-bold text-xl mb-2">{testimonials[activeIndex].name}</h4>
               <p className="text-blue-600 text-sm mb-4">{testimonials[activeIndex].service}</p>

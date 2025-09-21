@@ -4,8 +4,17 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import StructuredData from '@/components/SEO/StructuredData' // Asumo que este componente existe
 import Script from 'next/script'; // Ya lo tenías importado, lo cual es bueno
+import CookieConsent from '@/components/CookieConsent'
+import ResourceHints from '@/components/ResourceHints'
+import GTMProvider from '@/components/GTMProvider'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap', // Evitar FOIT (flash of invisible text)
+  preload: true, // Precargar fuente (default es true)
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+  variable: '--font-inter', // CSS variable para usar en Tailwind
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://cleancompany.com.co'),
@@ -92,27 +101,155 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es-CO" className="scroll-smooth">
+    <html lang="es-CO" className={`${inter.variable} scroll-smooth`}>
       <head>
-        {/* Google Tag Manager (script para <head>) */}
+        {/* Resource Hints para optimización */}
+        {/* Preconnect a dominios críticos */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        
+        {/* DNS Prefetch para dominios secundarios */}
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        
+        {/* Prefetch de rutas críticas */}
+        <link rel="prefetch" href="/servicios/alfombras" />
+        <link rel="prefetch" href="/servicios/muebles" />
+        <link rel="prefetch" href="/servicios/colchones" />
+        
+        {/* Preload de imagen hero crítica */}
+        <link 
+          rel="preload" 
+          as="image" 
+          href="/images/hero/alfombras.webp" 
+          type="image/webp"
+          fetchPriority="high"
+        />
+        {/* Consent Mode - Configuración por defecto ANTES de GTM */}
         <Script
-          id="gtm-script-head"
-          strategy="afterInteractive"
+          id="consent-mode-default"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','${GTM_ID}');
+              // Configurar Consent Mode por defecto (denied)
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              
+              // Establecer consentimiento por defecto como denegado
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'functionality_storage': 'denied',
+                'personalization_storage': 'denied',
+                'security_storage': 'granted',
+                'wait_for_update': 2000
+              });
+              
+              // Función global para otorgar consentimiento
+              window.grantConsent = function() {
+                gtag('consent', 'update', {
+                  'ad_storage': 'granted',
+                  'ad_user_data': 'granted',
+                  'ad_personalization': 'granted',
+                  'analytics_storage': 'granted',
+                  'functionality_storage': 'granted',
+                  'personalization_storage': 'granted'
+                });
+                
+                // Guardar consentimiento en localStorage
+                localStorage.setItem('cookieConsent', 'granted');
+                
+                // Disparar evento personalizado
+                window.dispatchEvent(new CustomEvent('consentGranted'));
+                
+                // Cargar GTM si no está cargado
+                if (!window.gtmLoaded) {
+                  loadGTM();
+                }
+              };
+              
+              // Función para cargar GTM
+              window.loadGTM = function() {
+                if (window.gtmLoaded) return;
+                window.gtmLoaded = true;
+                
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','${GTM_ID}');
+              };
+              
+              // Verificar consentimiento previo
+              if (localStorage.getItem('cookieConsent') === 'granted') {
+                gtag('consent', 'update', {
+                  'ad_storage': 'granted',
+                  'ad_user_data': 'granted',
+                  'ad_personalization': 'granted',
+                  'analytics_storage': 'granted',
+                  'functionality_storage': 'granted',
+                  'personalization_storage': 'granted'
+                });
+              }
             `,
           }}
         />
-        {/* Fin Google Tag Manager */}
+        
+        {/* Google Tag Manager - Carga diferida */}
+        <Script
+          id="gtm-lazy-load"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Cargar GTM después de 3 segundos o en la primera interacción
+              let gtmLoadTimer;
+              let hasInteracted = false;
+              
+              function handleInteraction() {
+                if (!hasInteracted && !window.gtmLoaded) {
+                  hasInteracted = true;
+                  clearTimeout(gtmLoadTimer);
+                  
+                  // Solo cargar si hay consentimiento o después de interacción
+                  if (localStorage.getItem('cookieConsent') === 'granted') {
+                    window.loadGTM();
+                  } else {
+                    // Si no hay consentimiento previo, mostrar banner (si existe)
+                    if (window.showConsentBanner) {
+                      window.showConsentBanner();
+                    }
+                  }
+                  
+                  // Remover listeners después de la primera interacción
+                  document.removeEventListener('scroll', handleInteraction);
+                  document.removeEventListener('click', handleInteraction);
+                  document.removeEventListener('touchstart', handleInteraction);
+                  document.removeEventListener('mousemove', handleInteraction);
+                }
+              }
+              
+              // Listeners para detectar interacción
+              document.addEventListener('scroll', handleInteraction, { once: true, passive: true });
+              document.addEventListener('click', handleInteraction, { once: true });
+              document.addEventListener('touchstart', handleInteraction, { once: true, passive: true });
+              document.addEventListener('mousemove', handleInteraction, { once: true, passive: true });
+              
+              // Timer de respaldo: cargar después de 5 segundos si hay consentimiento previo
+              gtmLoadTimer = setTimeout(() => {
+                if (localStorage.getItem('cookieConsent') === 'granted' && !window.gtmLoaded) {
+                  window.loadGTM();
+                }
+              }, 5000);
+            `,
+          }}
+        />
+        
         <StructuredData />
       </head>
-      <body className={inter.className}>
-        {/* Google Tag Manager (noscript para <body>) */}
+      <body className={`${inter.className} font-sans`}>
+        {/* Google Tag Manager (noscript) - Solo se activa si GTM se ha cargado */}
         <noscript
           dangerouslySetInnerHTML={{
             __html: `
@@ -121,8 +258,11 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Fin Google Tag Manager (noscript) */}
-        {children}
+        <GTMProvider>
+          {children}
+        </GTMProvider>
+        <CookieConsent />
+        <ResourceHints />
       </body>
     </html>
   )

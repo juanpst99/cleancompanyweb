@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Award, Target, Eye } from 'lucide-react'
 
 const About = () => {
@@ -63,11 +64,17 @@ const About = () => {
           </div>
           
           <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600"
-              alt="Equipo Clean Company"
-              className="rounded-2xl shadow-2xl"
-            />
+            <div className="relative aspect-[4/3] w-full">
+              <Image 
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600"
+                alt="Equipo Clean Company"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                loading="lazy"
+                decoding="async"
+                className="object-cover rounded-2xl shadow-2xl"
+              />
+            </div>
             <div className="absolute -bottom-8 -left-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 rounded-2xl shadow-xl">
               <div className="text-5xl font-bold">10+</div>
               <div className="text-lg">Años de Experiencia</div>

@@ -3,6 +3,7 @@
 import { Metadata } from 'next'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import Footer from '@/components/sections/Footer'
@@ -392,11 +393,17 @@ export default function MueblesClient() {
           
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative">
-              <img 
-                src="/images/servicios/lavado-muebles-bogota.webp" 
-                alt="Proceso de lavado profesional de muebles Clean Company"
-                className="rounded-2xl shadow-xl"
-              />
+              <div className="relative aspect-[4/3] w-full">
+                <Image 
+                  src="/images/servicios/lavado-muebles-bogota.webp" 
+                  alt="Proceso de lavado profesional de muebles Clean Company"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  loading="lazy"
+                  decoding="async"
+                  className="object-cover rounded-2xl shadow-xl"
+                />
+              </div>
               <div className="absolute -bottom-6 -right-6 bg-yellow-400 text-black p-6 rounded-2xl shadow-xl">
                 <div className="text-3xl font-bold">{descuento}%</div>
                 <div className="text-sm">Descuento web</div>
@@ -457,10 +464,14 @@ export default function MueblesClient() {
             {testimoniosMuebles.map((testimonio, index) => (
               <div key={index} className="bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
                 <div className="flex items-center mb-4">
-                  <img 
+                  <Image 
                     src={testimonio.foto} 
                     alt={testimonio.nombre}
-                    className="w-16 h-16 rounded-full object-cover mr-4"
+                    width={64}
+                    height={64}
+                    loading="lazy"
+                    decoding="async"
+                    className="rounded-full object-cover mr-4"
                   />
                   <div>
                     <h4 className="font-semibold">{testimonio.nombre}</h4>

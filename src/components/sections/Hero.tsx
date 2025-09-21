@@ -1,15 +1,30 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Phone, ChevronDown } from 'lucide-react'
+import { useGTM } from '@/hooks/useGTM'
 
 const Hero = () => {
+  const { trackWhatsAppClick } = useGTM()
+  
   const handleScrollToServices = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const element = document.querySelector('#servicios')
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
+      // Track navegación a servicios
+      window.dataLayer?.push({
+        event: 'navigation_click',
+        navigation_target: 'servicios',
+        navigation_location: 'hero_cta'
+      })
     }
+  }
+  
+  const handleWhatsAppClick = () => {
+    const message = 'Hola, quiero cotizar un servicio de limpieza.'
+    trackWhatsAppClick('general', message)
   }
 
   return (
@@ -36,6 +51,7 @@ const Hero = () => {
                 href="https://wa.me/573128052720?text=Hola,%20quiero%20cotizar%20un%20servicio%20de%20limpieza."
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={handleWhatsAppClick}
                 className="bg-green-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold hover:bg-green-600 transform hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg"
               >
                 <Phone className="w-5 h-5" />
@@ -68,12 +84,18 @@ const Hero = () => {
           </div>
           
           <div className="relative animate-float mt-8 md:mt-0">
-            <img 
-              src="/images/hero/alfombras.webp"
-              alt="Limpieza profesional"
-              title="alfombras - Clean Company"
-              className="rounded-2xl shadow-2xl transform md:rotate-3 hover:rotate-0 transition-transform duration-500 w-full max-w-md mx-auto"
-            />
+            <div className="relative aspect-[4/3] w-full max-w-md mx-auto">
+              <Image 
+                src="/images/hero/alfombras.webp"
+                alt="Limpieza profesional de alfombras y tapetes - Clean Company"
+                title="alfombras - Clean Company"
+                fill
+                priority
+                fetchPriority="high"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover rounded-2xl shadow-2xl transform md:rotate-3 hover:rotate-0 transition-transform duration-500"
+              />
+            </div>
             {/* Badge de descuento - posición ajustada para móviles */}
             <div className="absolute -top-4 -right-4 md:-top-4 md:-right-4 bg-yellow-400 text-blue-900 p-4 sm:p-6 rounded-2xl shadow-xl animate-bounce">
               <div className="text-2xl sm:text-3xl font-bold">20%</div>

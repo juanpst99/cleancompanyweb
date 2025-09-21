@@ -1,0 +1,67 @@
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 1,
+      "startServerCommand": "npm run build && npm run start",
+      "startServerReadyPattern": "ready on",
+      "startServerReadyTimeout": 60000,
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/servicios/alfombras",
+        "http://localhost:3000/servicios/muebles",
+        "http://localhost:3000/servicios/colchones"
+      ],
+      "settings": {
+        "formFactor": "mobile",
+        "throttling": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "cpuSlowdownMultiplier": 4
+        },
+        "screenEmulation": {
+          "mobile": true,
+          "width": 360,
+          "height": 640,
+          "deviceScaleFactor": 2
+        },
+        "emulatedUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.85, "aggregationMethod": "median" }],
+        "categories:accessibility": ["warn", { "minScore": 0.90, "aggregationMethod": "median" }],
+        "categories:best-practices": ["warn", { "minScore": 0.95, "aggregationMethod": "median" }],
+        "categories:seo": ["warn", { "minScore": 1, "aggregationMethod": "median" }],
+        
+        "first-contentful-paint": ["warn", { "maxNumericValue": 1800 }],
+        "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["warn", { "maxNumericValue": 300 }],
+        "speed-index": ["warn", { "maxNumericValue": 3400 }],
+        
+        "uses-webp-images": "warn",
+        "uses-optimized-images": "warn",
+        "uses-text-compression": "warn",
+        "uses-responsive-images": "warn",
+        "offscreen-images": "warn",
+        "uses-rel-preconnect": "warn",
+        "font-display": "warn",
+        "no-unload-listeners": "error",
+        
+        "unused-javascript": ["warn", { "maxLength": 0 }],
+        "unused-css-rules": ["warn", { "maxLength": 0 }],
+        "modern-image-formats": "warn",
+        
+        "server-response-time": ["warn", { "maxNumericValue": 600 }],
+        "render-blocking-resources": ["warn", { "maxLength": 0 }],
+        "uses-long-cache-ttl": "warn",
+        "dom-size": ["warn", { "maxNumericValue": 1500 }],
+        "critical-request-chains": ["warn", { "maxLength": 2 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import Footer from '@/components/sections/Footer'
@@ -402,11 +403,17 @@ export default function AlfombrasClient() {
             </div>
             
             <div className="relative">
-              <img 
-                src="/images/servicios/lavado-alfombras-bogota.webp" 
-                alt="Proceso profesional de lavado de alfombras Clean Company"
-                className="rounded-2xl shadow-xl"
-              />
+              <div className="relative aspect-[4/3] w-full">
+                <Image 
+                  src="/images/servicios/lavado-alfombras-bogota.webp" 
+                  alt="Proceso profesional de lavado de alfombras Clean Company"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  loading="lazy"
+                  decoding="async"
+                  className="object-cover rounded-2xl shadow-xl"
+                />
+              </div>
               <div className="absolute -bottom-6 -right-6 bg-yellow-400 text-black p-6 rounded-2xl shadow-xl">
                 <div className="text-3xl font-bold">{descuento}%</div>
                 <div className="text-sm">Descuento hoy</div>
@@ -427,10 +434,14 @@ export default function AlfombrasClient() {
             {testimoniosAlfombras.map((testimonio, index) => (
               <div key={index} className="bg-gray-50 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
                 <div className="flex items-center mb-4">
-                  <img 
+                  <Image 
                     src={testimonio.foto} 
                     alt={testimonio.nombre}
-                    className="w-16 h-16 rounded-full object-cover mr-4"
+                    width={64}
+                    height={64}
+                    loading="lazy"
+                    decoding="async"
+                    className="rounded-full object-cover mr-4"
                   />
                   <div>
                     <h4 className="font-semibold">{testimonio.nombre}</h4>
@@ -495,7 +506,7 @@ export default function AlfombrasClient() {
                 * Precio referencial para alfombra de 2x3 metros. Cotización exacta según tamaño y estado.
               </p>
               <a 
-                href="#cotizar" 
+                href={`https://wa.me/573128052720?text=Quiero%20aprovechar%20la%20oferta%20del%20${descuento}%%20en%20lavado%20de%20alfombras`} 
                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
               >
                 Obtener Precio Exacto

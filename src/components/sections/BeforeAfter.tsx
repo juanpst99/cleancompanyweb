@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react'
 
 const BeforeAfter = () => {
@@ -45,22 +46,34 @@ const BeforeAfter = () => {
             onTouchMove={handleTouchMove}
           >
             {/* Imagen Antes */}
-            <img 
-              src="/images/antes-despues/despues-sofa.webp"
-              alt="Antes"
-              className="w-full h-96 object-cover"
-            />
+            <div className="relative w-full h-96">
+              <Image 
+                src="/images/antes-despues/despues-sofa.webp"
+                alt="Antes"
+                fill
+                sizes="100vw"
+                loading="lazy"
+                decoding="async"
+                className="object-cover"
+              />
+            </div>
             
             {/* Imagen Después */}
             <div 
               className="absolute top-0 left-0 h-full overflow-hidden"
               style={{ width: `${sliderPosition}%` }}
             >
-              <img 
-                src="/images/antes-despues/antes-sofa.webp"
-                alt="Después"
-                className="w-full h-96 object-cover"
-              />
+              <div className="relative w-full h-96">
+                <Image 
+                  src="/images/antes-despues/antes-sofa.webp"
+                  alt="Después"
+                  fill
+                  sizes="100vw"
+                  loading="lazy"
+                  decoding="async"
+                  className="object-cover"
+                />
+              </div>
             </div>
             
             {/* Línea divisora */}
