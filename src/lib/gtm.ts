@@ -162,13 +162,13 @@ export const GTMEvents = {
 // Helper para obtener valor estimado del servicio
 function getServiceValue(service: string): number {
   const serviceValues: Record<string, number> = {
-    'alfombras': 150000,
-    'tapetes': 150000,
-    'muebles': 250000,
-    'colchones': 200000,
-    'vehiculos': 180000,
-    'empresarial': 500000,
-    'default': 180000,
+    'alfombras': 5000,
+    'tapetes': 6500,
+    'muebles': 6500,
+    'colchones': 6500,
+    'vehiculos': 5000,
+    'empresarial': 8000,
+    'default': 6500,
   };
   
   return serviceValues[service.toLowerCase()] || serviceValues.default;
