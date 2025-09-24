@@ -57,22 +57,39 @@ export default function MueblesClient() {
     return () => clearInterval(timer)
   }, [])
 
+  // ⬇️⬇️⬇️ [GTM] Editado: push al dataLayer con los campos antes de abrir WhatsApp
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const mensaje = `Hola, quiero cotizar lavado de muebles. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Tipo: ${formData.tipoMueble}, Cuando: ${formData.cuando}`
+    const mensaje = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
     const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(mensaje)}`
-    
-    // Track conversion
-    if (typeof window !== 'undefined' && (window as any).dataLayer) {
-      (window as any).dataLayer.push({
-        'event': 'form_submit',
-        'form_type': 'cotizacion_muebles',
-        'utm_campaign': utm_campaign
+
+    if (typeof window !== 'undefined') {
+      const w = window as unknown as { dataLayer?: any[] }
+      w.dataLayer = w.dataLayer || []
+
+      // Evento principal para disparar la conversión en GTM/GA4
+      w.dataLayer.push({
+        event: 'whatsapp_click',
+        form_name: 'cotizacion_alfombras',
+        user_name: formData.nombre,
+        phone: formData.telefono,
+        city: formData.ciudad,
+        when: formData.cuando,
+        utm_campaign,
+        link_url: whatsappUrl,
+      })
+
+      // (Opcional) micro-evento de "form_submit" para análisis interno
+      w.dataLayer.push({
+        event: 'form_submit',
+        form_type: 'cotizacion_alfombras',
+        utm_campaign,
       })
     }
-    
-    window.open(whatsappUrl, '_blank')
+
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
   }
+  // ⬆️⬆️⬆️ [GTM] Fin de edición
 
   const testimoniosMuebles = [
     {
@@ -218,17 +235,16 @@ export default function MueblesClient() {
                 <p className="text-gray-600">Respuesta inmediata • Sin compromiso</p>
               </div>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Tu nombre"
-                    value={formData.nombre}
-                    onChange={(e) => setFormData({...formData, nombre: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
+                   {/* ⬇️ [GTM] Editado: añadimos id al form */}
+              <form id="form-cotizacion" onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Tu nombre"
+                  value={formData.nombre}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600"
+                  required
+                />
                 
                 <div>
                   <input
