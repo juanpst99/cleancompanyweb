@@ -442,7 +442,7 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
             {problemasColchon.map((problema, index) => (
               <div key={index} className="text-center group hover:transform hover:scale-105 transition-all duration-300">
                 <div className={`bg-${problema.color}-100 p-6 rounded-2xl mb-4 group-hover:bg-${problema.color}-600 transition-colors`}>
-                  {/* @ts-ignore */}
+                  
                   <problema.icon className={`w-12 h-12 text-${problema.color}-600 mx-auto group-hover:text-white`} />
                 </div>
                 <h3 className="font-semibold text-lg mb-2">{problema.title}</h3>

@@ -435,7 +435,7 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
                   {tipo.isEmoji ? (
                     <span className="text-5xl">{tipo.icon}</span>
                   ) : (
-                    // @ts-ignore - Evita errores de tipo al pasar el componente Icon
+                    
                     <tipo.icon className={`w-12 h-12 text-${tipo.color}-600 mx-auto group-hover:text-white`} />
                   )}
                 </div>
