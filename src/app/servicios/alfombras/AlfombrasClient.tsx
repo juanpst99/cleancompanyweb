@@ -6,8 +6,8 @@ import Image from 'next/image'
 import Header from '@/components/Header'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import Footer from '@/components/sections/Footer'
-import { formatWhatsappRefLine } from '@/lib/ccRef'
-
+// Importamos solo tu nuevo tracker silencioso
+import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 
 import {
   Check,
@@ -58,19 +58,45 @@ export default function AlfombrasClient() {
     return () => clearInterval(timer)
   }, [])
 
-  const appendRef = (msg: string) => `${msg}\n\n${formatWhatsappRefLine()}`
-
-  // ⬇️⬇️⬇️ [GTM] Editado: push al dataLayer con los campos antes de abrir WhatsApp
-  const handleSubmit = (e: React.FormEvent) => {
+  // ⬇️⬇️⬇️ BOTÓN 1: Formulario Principal
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const mensaje = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
-    const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(appendRef(mensaje))}`
+  
+    // 1. Envía el webhook silencioso a n8n y obtén la referencia corta
+    const shortId = trackWhatsAppClick()
+  
+    // 2. Formatear los datos del formulario
+    const formatCiudad = (val: string) => {
+      if (val === 'bogota') return 'Bogotá'
+      if (val === 'medellin') return 'Medellín'
+      return val
+    }
+  
+    const formatCuando = (val: string) => {
+      const map: Record<string, string> = {
+        hoy: 'Hoy mismo',
+        manana: 'Mañana',
+        esta_semana: 'Esta semana',
+        proxima_semana: 'Próxima semana'
+      }
+      return map[val] || val
+    }
+  
+    // 3. Construir el mensaje base
+    const baseMessage = `Hola Clean Company, quiero cotizar el Lavado de Alfombras.
+  Nombre: ${formData.nombre}
+  Teléfono: ${formData.telefono}
+  Ciudad: ${formatCiudad(formData.ciudad)}
+  Para cuándo: ${formatCuando(formData.cuando)}`
+  
+    // 4. Adjuntar la referencia corta limpia
+    const finalMessage = `${baseMessage}\n\n(Ref: ${shortId})`
+    const url = `https://wa.me/573128052720?text=${encodeURIComponent(finalMessage)}`
 
+    // Mantenemos tu GTM tracking intacto
     if (typeof window !== 'undefined') {
       const w = window as unknown as { dataLayer?: any[] }
       w.dataLayer = w.dataLayer || []
-
-      // Evento principal para disparar la conversión en GTM/GA4
       w.dataLayer.push({
         event: 'whatsapp_click',
         form_name: 'cotizacion_alfombras',
@@ -79,20 +105,12 @@ export default function AlfombrasClient() {
         city: formData.ciudad,
         when: formData.cuando,
         utm_campaign,
-        link_url: whatsappUrl,
-      })
-
-      // (Opcional) micro-evento de "form_submit" para análisis interno
-      w.dataLayer.push({
-        event: 'form_submit',
-        form_type: 'cotizacion_alfombras',
-        utm_campaign,
+        link_url: url,
       })
     }
-
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+  
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
-  // ⬆️⬆️⬆️ [GTM] Fin de edición
 
   const testimoniosAlfombras = [
     {
@@ -121,11 +139,8 @@ export default function AlfombrasClient() {
     },
   ]
 
-  // URLs de WhatsApp correctas y codificadas
   const precioMsg = `Hola, quiero una cotización exacta para lavado de alfombras en ${ciudad}. ¿Me pueden ayudar?`
-  const precioHref = `https://wa.me/573128052720?text=${encodeURIComponent(precioMsg)}`
   const ofertaMsg = `Quiero aprovechar la oferta del ${descuento}% en lavado de alfombras`
-  const ofertaHref = `https://wa.me/573128052720?text=${encodeURIComponent(ofertaMsg)}`
 
   return (
     <>
@@ -207,7 +222,6 @@ export default function AlfombrasClient() {
                 <p className="text-gray-600">Sin compromiso • Respuesta inmediata</p>
               </div>
 
-              {/* ⬇️ [GTM] Editado: añadimos id al form */}
               <form id="form-cotizacion" onSubmit={handleSubmit} className="space-y-4">
                 <input
                   type="text"
@@ -262,21 +276,21 @@ export default function AlfombrasClient() {
                 </button>
               </form>
 
+              {/* ⬇️⬇️⬇️ BOTÓN 2: Alterno del formulario */}
               <button
                   type="button"
-                  onClick={() => {
-                    const mensaje = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
-                    const whatsappUrl = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(appendRef(mensaje))}`
-
+                  onClick={async () => {
+                    const shortId = trackWhatsAppClick()
+                    const mensajeBase = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
+                    const finalMessage = `${mensajeBase}\n\n(Ref: ${shortId})`
+                    const whatsappUrl = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(finalMessage)}`
 
                     if (typeof window !== 'undefined') {
                       const w = window as unknown as { dataLayer?: any[] }
                       w.dataLayer = w.dataLayer || []
-
-                      // mismo evento, pero con link_url del número alterno
                       w.dataLayer.push({
                         event: 'whatsapp_click',
-                        form_name: 'cotizacion_alfombras',
+                        form_name: 'cotizacion_alfombras_alterno',
                         user_name: formData.nombre,
                         phone: formData.telefono,
                         city: formData.ciudad,
@@ -288,7 +302,7 @@ export default function AlfombrasClient() {
 
                     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
                   }}
-                  className="w-full border-2 border-green-600 text-green-700 py-3 rounded-lg font-bold text-base hover:bg-green-50 transition-all duration-300 shadow-sm flex items-center justify-center"
+                  className="w-full border-2 border-green-600 text-green-700 py-3 rounded-lg font-bold text-base hover:bg-green-50 transition-all duration-300 shadow-sm flex items-center justify-center mt-4"
                 >
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12.004 2c-5.46 0-9.89 4.43-9.89 9.89 0 1.75.46 3.39 1.24 4.82L2.004 22l5.41-1.34A9.868 9.868 0 0012.004 22c5.46 0 9.89-4.43 9.89-9.89 0-2.65-1.03-5.14-2.9-7.01A9.818 9.818 0 0012.004 2zm0 1.67c4.54 0 8.22 3.68 8.22 8.22 0 4.54-3.68 8.22-8.22 8.22-1.37 0-2.68-.34-3.82-.97l-.27-.15-2.83.7.72-2.77-.17-.29a8.174 8.174 0 01-1.08-4.02c0-4.54 3.68-8.22 8.22-8.22h.23zm-2.71 4.25c-.17 0-.44.06-.67.31-.23.26-.87.85-.87 2.07 0 1.22.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74 2.05.88 2.48.71 2.93.66.45-.05 1.45-.59 1.65-1.16.2-.57.2-1.05.14-1.16-.06-.11-.23-.17-.48-.29-.25-.12-1.47-.73-1.7-.81-.23-.08-.4-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.12-.11.25-.29.37-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14 0-.31-.02-.48-.02z"/>
@@ -577,31 +591,36 @@ export default function AlfombrasClient() {
               <p className="text-gray-600 mb-4">
                 * Precio referencial para alfombra de 2x3 metros. Cotización exacta según tamaño y estado.
               </p>
-              <a
-  href={precioHref} // sin ref, estable
-  onClick={(e) => {
-    e.preventDefault()
-    const url = `https://wa.me/573128052720?text=${encodeURIComponent(appendRef(precioMsg))}`
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
->
-  Obtener Precio Exacto
-</a>
+
+              {/* ⬇️⬇️⬇️ BOTÓN 3: Obtener precio exacto */}
+              <button
+                onClick={async (e) => {
+                  e.preventDefault()
+                  const shortId = trackWhatsAppClick()
+                  const finalMessage = `${precioMsg}\n\n(Ref: ${shortId})`
+                  const url = `https://wa.me/573128052720?text=${encodeURIComponent(finalMessage)}`
+                  window.open(url, '_blank', 'noopener,noreferrer')
+                }}
+                className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
+              >
+                Obtener Precio Exacto
+              </button>
 
               <div className="mt-4">
-           <a
-             href={`https://wa.me/${whatsappSecundario}?text=Quiero%20aprovechar%20el%20${descuento}%%20de%20descuento%20en%20lavado%20de%20muebles`}
-             target="_blank"
-             rel="noopener noreferrer"
-             className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
-           >
-             
-             WhatsApp alterno: 320 921 0866
-           </a>
-         </div>
+                {/* ⬇️⬇️⬇️ BOTÓN 4: Alterno precios */}
+               <button
+                 onClick={async (e) => {
+                  e.preventDefault()
+                  const shortId = trackWhatsAppClick()
+                  const finalMessage = `Quiero aprovechar el ${descuento}% de descuento en lavado de alfombras\n\n(Ref: ${shortId})`
+                  const url = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(finalMessage)}`
+                  window.open(url, '_blank', 'noopener,noreferrer')
+                 }}
+                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
+               >
+                 WhatsApp alterno: 320 921 0866
+               </button>
+             </div>
 
             </div>
           </div>
@@ -749,19 +768,19 @@ export default function AlfombrasClient() {
             </p>
           </div>
 
-          <a
-  href={ofertaHref} // sin ref, estable
-  onClick={(e) => {
-    e.preventDefault()
-    const url = `https://wa.me/573128052720?text=${encodeURIComponent(appendRef(ofertaMsg))}`
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse"
->
-  ...
-</a>
+          {/* ⬇️⬇️⬇️ BOTÓN 5: CTA Final */}
+          <button
+            onClick={async (e) => {
+              e.preventDefault()
+              const shortId = trackWhatsAppClick()
+              const finalMessage = `${ofertaMsg}\n\n(Ref: ${shortId})`
+              const url = `https://wa.me/573128052720?text=${encodeURIComponent(finalMessage)}`
+              window.open(url, '_blank', 'noopener,noreferrer')
+            }}
+            className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse cursor-pointer"
+          >
+            Obtener Oferta por WhatsApp
+          </button>
 
 
           <p className="mt-6 text-sm opacity-80">* Válido solo para nuevos clientes. Un uso por hogar. Aplica solo en {ciudad}.</p>

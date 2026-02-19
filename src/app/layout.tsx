@@ -278,14 +278,13 @@ export default function RootLayout({
             `,
           }}
         />
-        <GTMProvider>
+<GTMProvider>
           {/* Pageviews en navegaciones SPA (si usas este componente, descomenta el import) */}
           {/* <GTMEvents /> */}
           {children}
         </GTMProvider>
         <CookieConsent />
         <AttributionInit />
-        <GTMProvider>{children}</GTMProvider>
         <ResourceHints />
       </body>
     </html>

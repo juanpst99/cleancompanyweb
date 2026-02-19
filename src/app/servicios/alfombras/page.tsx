@@ -5,21 +5,22 @@ import { Metadata } from 'next';
 import AlfombrasClient from './AlfombrasClient';
 import { Suspense } from 'react';
 
-// (Opcional) Tipado si luego lo necesitas
-interface AlfombrasPageProps {
-  params: { [key: string]: string | string[] };
-  searchParams: { [key: string]: string | string[] | undefined };
+// Tipado moderno para Next.js 15+ (params y searchParams son Promesas)
+type Props = {
+  params: Promise<{ [key: string]: string | string[] }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export async function generateMetadata(
-  { params, searchParams }: { params: any; searchParams: any }
-): Promise<Metadata> {
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  // 1. ESPERAMOS los parámetros (Esta es la solución mágica al error de la página duplicada)
+  const resolvedSearchParams = await searchParams;
+
   // ciudad desde query (?ciudad=), con fallback
-  const ciudadParam = searchParams.ciudad;
+  const ciudadParam = resolvedSearchParams.ciudad;
   const ciudad = Array.isArray(ciudadParam) ? ciudadParam[0] : ciudadParam || 'Bogotá y Medellín';
 
   // descuento desde query (?desc=), con fallback
-  const descParam = searchParams.desc;
+  const descParam = resolvedSearchParams.desc;
   const descuento = Array.isArray(descParam) ? descParam[0] : descParam || '15';
 
   const nombreServicio = 'Alfombras';
@@ -57,24 +58,20 @@ export async function generateMetadata(
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
-      // images: ['https://www.tu-dominio.com/images/servicio-alfombras.jpg'],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      // images: ['https://www.tu-dominio.com/images/servicio-alfombras-twitter.jpg'],
     },
-    // alternates: {
-    //   canonical: `https://cleancompany.com.co/servicios/alfombras${searchParams.ciudad ? `?ciudad=${Array.isArray(searchParams.ciudad) ? searchParams.ciudad[0] : searchParams.ciudad}` : ''}${searchParams.desc ? `${searchParams.ciudad ? '&' : '?'}desc=${Array.isArray(searchParams.desc) ? searchParams.desc[0] : searchParams.desc}` : ''}`,
-    // },
   };
 }
 
 // Render del cliente
 export default function AlfombrasPage() {
   return (
-    <Suspense>
+    // Siempre es buena práctica poner un div vacío de fallback en el Suspense
+    <Suspense fallback={<div className="min-h-screen bg-gray-50"></div>}>
       <AlfombrasClient />
     </Suspense>
   );
