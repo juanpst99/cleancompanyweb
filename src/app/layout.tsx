@@ -8,6 +8,7 @@ import Script from 'next/script' // Ya lo tenías importado, lo cual es bueno
 import CookieConsent from '@/components/CookieConsent'
 import ResourceHints from '@/components/ResourceHints'
 import GTMProvider from '@/components/GTMProvider'
+import { AttributionInit } from '@/components/analytics/AttributionInit'
 // (Opcional recomendado) escucha de pageviews en SPA
 // import GTMEvents from '@/components/analytics/GTMEvents'
 
@@ -283,6 +284,8 @@ export default function RootLayout({
           {children}
         </GTMProvider>
         <CookieConsent />
+        <AttributionInit />
+        <GTMProvider>{children}</GTMProvider>
         <ResourceHints />
       </body>
     </html>

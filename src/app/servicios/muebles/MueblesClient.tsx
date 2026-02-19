@@ -1,7 +1,7 @@
 
 'use client'
 
-import { Metadata } from 'next'
+
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -10,6 +10,8 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import Footer from '@/components/sections/Footer'
 import { Check, Sofa, Shield, Clock, ArrowLeft, Star, Heart, Lock, CreditCard, Users, Leaf, ChevronDown, MessageCircle, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { formatWhatsappRefLine } from '@/lib/ccRef'
+
 
 
 
@@ -58,11 +60,27 @@ export default function MueblesClient() {
     return () => clearInterval(timer)
   }, [])
 
+  const appendRef = (msg: string) => `${msg}\n\n${formatWhatsappRefLine()}`
+
+  const openWhatsApp = (phone: string, msg: string) => {
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(appendRef(msg))}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+    return url
+  }
+  
+
+
   // ⬇️⬇️⬇️ [GTM] Editado: push al dataLayer con los campos antes de abrir WhatsApp
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const mensaje = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
-    const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(mensaje)}`
+    const mensaje = `Hola, quiero cotizar lavado de muebles. 
+Nombre: ${formData.nombre}
+Teléfono: ${formData.telefono}
+Ciudad: ${formData.ciudad}
+Mueble: ${formData.tipoMueble}
+Cuándo: ${formData.cuando}`.replace(/\n\s+/g, '\n')
+
+    const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(appendRef(mensaje))}`
 
     if (typeof window !== 'undefined') {
       const w = window as unknown as { dataLayer?: any[] }
@@ -71,7 +89,7 @@ export default function MueblesClient() {
       // Evento principal para disparar la conversión en GTM/GA4
       w.dataLayer.push({
         event: 'whatsapp_click',
-        form_name: 'cotizacion_alfombras',
+        form_name: 'cotizacion_muebles',
         user_name: formData.nombre,
         phone: formData.telefono,
         city: formData.ciudad,
@@ -83,7 +101,7 @@ export default function MueblesClient() {
       // (Opcional) micro-evento de "form_submit" para análisis interno
       w.dataLayer.push({
         event: 'form_submit',
-        form_type: 'cotizacion_alfombras',
+        form_type: 'cotizacion_muebles',
         utm_campaign,
       })
     }
@@ -316,8 +334,9 @@ export default function MueblesClient() {
               <button
                   type="button"
                   onClick={() => {
-                    const mensaje = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
-                    const whatsappUrl = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(mensaje)}`
+                    const mensaje = `Hola, quiero cotizar lavado de muebles. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
+                    const whatsappUrl = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(appendRef(mensaje))}`
+
 
                     if (typeof window !== 'undefined') {
                       const w = window as unknown as { dataLayer?: any[] }
@@ -326,7 +345,7 @@ export default function MueblesClient() {
                       // mismo evento, pero con link_url del número alterno
                       w.dataLayer.push({
                         event: 'whatsapp_click',
-                        form_name: 'cotizacion_alfombras',
+                        form_name: 'cotizacion_muebles',
                         user_name: formData.nombre,
                         phone: formData.telefono,
                         city: formData.ciudad,
@@ -614,14 +633,29 @@ export default function MueblesClient() {
                 * Precios con descuento del {descuento}%. Cotización exacta según estado del mueble.
                 *El precio puede variar de acuerdo al tamaño
               </p>
-              <a 
-                href={`https://wa.me/573128052720?text=Hola,%20quiero%20una%20cotización%20exacta%20para%20lavado%20de%20muebles%20en%20${encodeURIComponent(ciudad)}.%20¿Me%20pueden%20ayudar?`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
-             >
-               Obtener Cotización Exacta
-             </a>
+              <a
+  href="https://wa.me/573128052720"
+  onClick={(e) => {
+    e.preventDefault()
+    const msg = `Hola, quiero una cotización exacta para lavado de muebles en ${ciudad}. ¿Me pueden ayudar?`
+    const url = openWhatsApp('573128052720', msg)
+
+    const w = window as unknown as { dataLayer?: any[] }
+    w.dataLayer = w.dataLayer || []
+    w.dataLayer.push({
+      event: 'whatsapp_click',
+      form_name: 'cta_precio_muebles',
+      utm_campaign,
+      link_url: url,
+    })
+  }}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
+>
+  Obtener Cotización Exacta
+</a>
+
            </div>
          </div>
        </div>
@@ -784,30 +818,56 @@ export default function MueblesClient() {
            </p>
          </div>
          
-         <a 
-           href={`https://wa.me/573128052720?text=Quiero%20aprovechar%20el%20${descuento}%%20de%20descuento%20en%20lavado%20de%20muebles`}
-           target="_blank"
-           rel="noopener noreferrer"
-           className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse"
-         >
-           <svg className="w-8 h-8 mr-3" fill="currentColor" viewBox="0 0 24 24">
-             <path d="M12.004 2c-5.46 0-9.89 4.43-9.89 9.89 0 1.75.46 3.39 1.24 4.82L2.004 22l5.41-1.34A9.868 9.868 0 0012.004 22c5.46 0 9.89-4.43 9.89-9.89 0-2.65-1.03-5.14-2.9-7.01A9.818 9.818 0 0012.004 2zm0 1.67c4.54 0 8.22 3.68 8.22 8.22 0 4.54-3.68 8.22-8.22 8.22-1.37 0-2.68-.34-3.82-.97l-.27-.15-2.83.7.72-2.77-.17-.29a8.174 8.174 0 01-1.08-4.02c0-4.54 3.68-8.22 8.22-8.22h.23zm-2.71 4.25c-.17 0-.44.06-.67.31-.23.26-.87.85-.87 2.07 0 1.22.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74 2.05.88 2.48.71 2.93.66.45-.05 1.45-.59 1.65-1.16.2-.57.2-1.05.14-1.16-.06-.11-.23-.17-.48-.29-.25-.12-1.47-.73-1.7-.81-.23-.08-.4-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.12-.11.25-.29.37-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14 0-.31-.02-.48-.02z"/>
-           </svg>
-           Cotizar Ahora con Descuento
-         </a>
+         <a
+  href="https://wa.me/573128052720"
+  onClick={(e) => {
+    e.preventDefault()
+    const msg = `Quiero aprovechar el ${descuento}% de descuento en lavado de muebles`
+    const url = openWhatsApp('573128052720', msg)
+
+    const w = window as unknown as { dataLayer?: any[] }
+    w.dataLayer = w.dataLayer || []
+    w.dataLayer.push({
+      event: 'whatsapp_click',
+      form_name: 'cta_final_muebles',
+      utm_campaign,
+      link_url: url,
+    })
+  }}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse"
+>
+  ...
+  Cotizar Ahora con Descuento
+</a>
+
          
          <div className="mt-4">
-           <a
-             href={`https://wa.me/${whatsappSecundario}?text=Quiero%20aprovechar%20el%20${descuento}%%20de%20descuento%20en%20lavado%20de%20muebles`}
-             target="_blank"
-             rel="noopener noreferrer"
-             className="inline-flex items-center bg-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/25 transform hover:scale-105 transition-all duration-300 shadow-xl"
-           >
-             <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-               <path d="M12.004 2c-5.46 0-9.89 4.43-9.89 9.89 0 1.75.46 3.39 1.24 4.82L2.004 22l5.41-1.34A9.868 9.868 0 0012.004 22c5.46 0 9.89-4.43 9.89-9.89 0-2.65-1.03-5.14-2.9-7.01A9.818 9.818 0 0012.004 2z"/>
-             </svg>
-             WhatsApp alterno: 320 921 0866
-           </a>
+         <a
+  href={`https://wa.me/${whatsappSecundario}`}
+  onClick={(e) => {
+    e.preventDefault()
+    const msg = `Quiero aprovechar el ${descuento}% de descuento en lavado de muebles`
+    const url = openWhatsApp(whatsappSecundario, msg)
+
+    const w = window as unknown as { dataLayer?: any[] }
+    w.dataLayer = w.dataLayer || []
+    w.dataLayer.push({
+      event: 'whatsapp_click',
+      form_name: 'cta_final_muebles_whatsapp_alterno',
+      utm_campaign,
+      link_url: url,
+    })
+  }}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center bg-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/25 transform hover:scale-105 transition-all duration-300 shadow-xl"
+>
+  ...
+  WhatsApp alterno: 320 921 0866
+</a>
+
          </div>
 
 
