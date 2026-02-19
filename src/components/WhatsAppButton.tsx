@@ -1,14 +1,39 @@
 'use client'
 
 import React from 'react'
-import { formatWhatsappRefLine } from '@/lib/ccRef'
+import { getStoredAttribution } from '@/lib/ccAttribution'
 
 const WhatsAppButton = () => {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
 
+    // 1. Generar un identificador corto (ej. 4 caracteres alfanuméricos)
+    const shortId = Math.random().toString(36).substring(2, 6).toUpperCase()
+
+    // 2. Obtener los datos de atribución almacenados
+    const attrib = getStoredAttribution()
+
+    // 3. Enviar los datos a n8n de forma silenciosa (sin bloquear al usuario)
+    // NOTA: Reemplaza la URL por la de tu Webhook de n8n
+    fetch('/api/whatsapp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        shortId,
+        gclid: attrib?.gclid || '',
+        wbraid: attrib?.wbraid || '',
+        gbraid: attrib?.gbraid || '',
+        utm_source: attrib?.utm_source || '',
+        utm_medium: attrib?.utm_medium || '',
+        utm_campaign: attrib?.utm_campaign || '',
+        landing_url: attrib?.landing_url || '',
+        timestamp: attrib?.ts || new Date().toISOString()
+      })
+    }).catch(error => console.error("Error local:", error))
+
+    // 4. Abrir WhatsApp con un mensaje limpio y la referencia corta
     const base = 'Hola, quiero cotizar un servicio con Clean Company.'
-    const msg = `${base}\n\n${formatWhatsappRefLine()}`
+    const msg = `${base} (Ref: ${shortId})`
     const url = `https://wa.me/573128052720?text=${encodeURIComponent(msg)}`
 
     window.open(url, '_blank', 'noopener,noreferrer')
