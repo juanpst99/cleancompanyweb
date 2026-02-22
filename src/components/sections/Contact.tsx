@@ -3,7 +3,8 @@
 import React, { useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter, Send } from 'lucide-react'
 import { formatWhatsappRefLine } from '@/lib/ccRef'
-
+// ✅ IMPORTAR LA FUNCIÓN AQUÍ
+import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -17,12 +18,15 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
+    // ✅ 1. ENVIAR DATOS A N8N (Aquí capturamos el nombre y teléfono)
+    trackWhatsAppClick(formData.nombre, formData.telefono)
+
     // Construir mensaje de WhatsApp
     const message = `Hola, mi nombre es ${formData.nombre}. Quiero solicitar servicio de ${formData.servicio} en ${formData.ciudad}. ${
       formData.mensaje ? `Mensaje adicional: ${formData.mensaje}` : ''
     }`
 
-    // ✅ Agregar línea discreta de referencia al final
+    // Agregar línea discreta de referencia al final
     const messageWithRef = `${message}\n\n${formatWhatsappRefLine()}`
 
     const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(messageWithRef)}`

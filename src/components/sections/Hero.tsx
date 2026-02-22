@@ -85,16 +85,15 @@ const Hero = () => {
           
           <div className="relative animate-float mt-8 md:mt-0">
             <div className="relative aspect-[4/3] w-full max-w-md mx-auto">
-              <Image 
-                src="/images/hero/alfombras.webp"
-                alt="Limpieza profesional de alfombras y tapetes - Clean Company"
-                title="alfombras - Clean Company"
-                fill
-                priority
-                fetchPriority="high"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover rounded-2xl shadow-2xl transform md:rotate-3 hover:rotate-0 transition-transform duration-500"
-              />
+            <Image 
+              src="/images/hero/alfombras.webp"
+              alt="Limpieza profesional de alfombras y tapetes - Clean Company"
+              title="alfombras - Clean Company"
+              fill
+              priority // <-- Solo necesitas dejar este
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover rounded-2xl shadow-2xl transform md:rotate-3 hover:rotate-0 transition-transform duration-500"
+/>
             </div>
             {/* Badge de descuento - posición ajustada para móviles */}
             <div className="absolute -top-4 -right-4 md:-top-4 md:-right-4 bg-yellow-400 text-blue-900 p-4 sm:p-6 rounded-2xl shadow-xl animate-bounce">

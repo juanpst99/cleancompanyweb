@@ -63,7 +63,7 @@ export default function AlfombrasClient() {
     e.preventDefault()
   
     // 1. Envía el webhook silencioso a n8n y obtén la referencia corta
-    const shortId = trackWhatsAppClick()
+    const shortId = trackWhatsAppClick(formData.nombre, formData.telefono)
   
     // 2. Formatear los datos del formulario
     const formatCiudad = (val: string) => {

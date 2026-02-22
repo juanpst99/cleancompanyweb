@@ -1,134 +1,148 @@
- import { Metadata } from 'next'
-  import Header from '@/components/Header'
-  import Footer from '@/components/sections/Footer'
-  import WhatsAppButton from '@/components/WhatsAppButton'
-  import { ArrowRight, Calendar, User } from 'lucide-react'
+import fs from "node:fs/promises";
+import path from "node:path";
+import matter from "gray-matter";
+import Link from "next/link";
+import Image from "next/image";
 
-  export const metadata: Metadata = {
-    title: 'Blog y Consejos de Limpieza | Clean Company',
-    description: 'Consejos profesionales para el cuidado de alfombras, muebles y colchones. Aprende las mejores técnicas de limpieza y mantenimiento.',
-    keywords: ['blog limpieza', 'consejos lavado alfombras', 'cuidado muebles', 'mantenimiento colchones', 'tips limpieza profesional'],
-  }
+type PostFrontmatter = {
+  title?: string;
+  date?: string;
+  excerpt?: string;
+  coverImage?: string;
+  readingTime?: string;
+  category?: string;
+  tags?: string[];
+};
 
-  const articles = [
-    {
-      id: 1,
-      title: "5 Consejos para Mantener tus Alfombras Limpias",
-      excerpt: "Descubre los mejores trucos para prolongar la vida útil de tus alfombras y mantenerlas siempre impecables.",
-      image: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=600",
-      date: "15 Mayo 2024",
-      author: "Clean Company",
-      category: "Consejos",
-      slug: "5-consejos-mantener-alfombras-limpias"
-    },
-    {
-      id: 2,
-      title: "Beneficios de la Limpieza Ecológica",
-      excerpt: "Por qué los productos biodegradables son mejores para tu familia y el medio ambiente.",
-      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600",
-      date: "10 Mayo 2024",
-      author: "Clean Company",
-      category: "Salud",
-      slug: "beneficios-limpieza-ecologica"
-    },
-    {
-      id: 3,
-      title: "¿Cada Cuánto Limpiar tus Muebles?",
-      excerpt: "La frecuencia ideal para mantener tus muebles en perfecto estado y libre de ácaros.",
-      image: "https://images.unsplash.com/photo-1545378763-505b1a205ad2?w=600",
-      date: "5 Mayo 2024",
-      author: "Clean Company",
-      category: "Mantenimiento",
-      slug: "cada-cuanto-limpiar-muebles"
-    }
-  ]
+const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
-  export default function BlogPage() {
-    return (
-      <>
-        <Header />
-        <WhatsAppButton />
+function formatDate(dateStr?: string) {
+  if (!dateStr) return "";
+  // Si viene en YYYY-MM-DD, se ve bien tal cual. Si luego quieres “21 feb 2026”, lo cambiamos.
+  return dateStr;
+}
 
-        <main className="min-h-screen pt-20">
-          <section className="py-16 bg-gradient-to-br from-blue-600 to-blue-800">
-            <div className="container mx-auto px-4">
-              <div className="text-center text-white">
-                <h1 className="text-5xl font-bold mb-4">Blog y Consejos de Limpieza</h1>
-                <p className="text-xl opacity-90 max-w-2xl mx-auto">
-                  Aprende de los expertos: trucos, consejos y guías para mantener tus espacios impecables
+export default async function BlogIndexPage() {
+  const files = (await fs.readdir(BLOG_DIR)).filter((f) => f.endsWith(".md"));
+
+  const posts = await Promise.all(
+    files.map(async (file) => {
+      const slug = file.replace(/\.md$/, "");
+      const raw = await fs.readFile(path.join(BLOG_DIR, file), "utf8");
+
+      // ✅ Blindaje BOM/whitespace (Windows)
+      const normalized = raw.replace(/^\uFEFF/, "").trimStart();
+
+      const { data } = matter(normalized);
+      const fm = data as PostFrontmatter;
+
+      return {
+        slug,
+        title: fm.title ?? slug,
+        excerpt: fm.excerpt ?? "",
+        date: fm.date ?? "",
+        coverImage: fm.coverImage,
+        readingTime: fm.readingTime,
+        category: fm.category ?? "Clean Company",
+        tags: Array.isArray(fm.tags) ? fm.tags : [],
+      };
+    })
+  );
+
+  posts.sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      {/* Header */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
+            Blog
+          </h1>
+          <p className="mt-2 text-zinc-600">
+            Consejos y guías para el cuidado profesional del hogar.
+          </p>
+        </div>
+
+        <a
+          href="https://wa.me/573128052720"
+          className="inline-flex items-center justify-center rounded-xl bg-[#3AAA35] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-95"
+        >
+          Cotizar por WhatsApp
+        </a>
+      </div>
+
+      {/* Grid */}
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((p) => (
+          <Link
+            key={p.slug}
+            href={`/blog/${p.slug}`}
+            className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+          >
+            {/* Cover */}
+            <div className="relative h-44 w-full bg-zinc-100">
+              {p.coverImage ? (
+                <Image
+                  src={p.coverImage}
+                  alt={p.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  priority={false}
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-zinc-100 to-zinc-50" />
+              )}
+
+              {/* Category badge */}
+              <div className="absolute left-4 top-4">
+                <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-zinc-900 backdrop-blur">
+                  {p.category}
+                </span>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="p-5">
+              <h2 className="text-lg font-semibold leading-snug text-zinc-900 group-hover:underline group-hover:underline-offset-4">
+                {p.title}
+              </h2>
+
+              {p.excerpt ? (
+                <p className="mt-2 text-sm leading-6 text-zinc-600 line-clamp-3">
+                  {p.excerpt}
                 </p>
+              ) : null}
+
+              {/* Tags */}
+              {p.tags?.length ? (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {p.tags.slice(0, 3).map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-700"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              {/* Meta */}
+              <div className="mt-4 flex items-center gap-2 text-xs text-zinc-500">
+                {p.date ? <span>{formatDate(p.date)}</span> : null}
+                {p.readingTime ? (
+                  <>
+                    <span className="text-zinc-300">•</span>
+                    <span>{p.readingTime}</span>
+                  </>
+                ) : null}
               </div>
             </div>
-          </section>
-
-          <section className="py-20 bg-gray-50">
-            <div className="container mx-auto px-4">
-              <div className="grid md:grid-cols-3 gap-8">
-                {articles.map((article) => (
-                  <article
-                    key={article.id}
-                    className="group cursor-pointer transform hover:-translate-y-2 transition-all duration-300 bg-white rounded-2xl
-  overflow-hidden shadow-lg"
-                  >
-                    <div className="relative overflow-hidden h-48">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
-                        {article.category}
-                      </div>
-                    </div>
-
-                    <div className="p-6 space-y-3">
-                      <div className="flex items-center text-sm text-gray-500 space-x-4">
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {article.date}
-                        </div>
-                        <div className="flex items-center">
-                          <User className="w-4 h-4 mr-1" />
-                          {article.author}
-                        </div>
-                      </div>
-
-                      <h2 className="text-xl font-semibold group-hover:text-blue-600 transition-colors">
-                        {article.title}
-                      </h2>
-                      <p className="text-gray-600">{article.excerpt}</p>
-
-                      <a
-                        href={`/blog/${article.slug}`}
-                        className="text-blue-600 font-semibold hover:text-blue-700 flex items-center group/link"
-                      >
-                        Leer más
-                        <ArrowRight className="w-4 h-4 ml-1 transform group-hover/link:translate-x-1 transition-transform" />
-                      </a>
-                    </div>
-                  </article>
-                ))}
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-8 mt-12">
-                {[4, 5, 6].map((num) => (
-                  <div key={num} className="bg-white rounded-2xl p-8 shadow-lg">
-                    <div className="animate-pulse">
-                      <div className="bg-gray-200 h-48 rounded-lg mb-4"></div>
-                      <div className="bg-gray-200 h-4 rounded w-24 mb-4"></div>
-                      <div className="bg-gray-200 h-6 rounded mb-3"></div>
-                      <div className="bg-gray-200 h-4 rounded mb-2"></div>
-                      <div className="bg-gray-200 h-4 rounded w-3/4"></div>
-                    </div>
-                    <p className="text-center text-gray-500 mt-4 text-sm">Próximamente</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </main>
-
-        <Footer />
-      </>
-    )
-  }
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
