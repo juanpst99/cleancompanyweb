@@ -1,3 +1,4 @@
+// src/app/blog/page.tsx
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
@@ -6,9 +7,9 @@ import Image from "next/image";
 
 type PostFrontmatter = {
   title?: string;
-  date?: string;
+  date?: string; // "YYYY-MM-DD"
   excerpt?: string;
-  coverImage?: string;
+  coverImage?: string; // "/images/..."
   readingTime?: string;
   category?: string;
   tags?: string[];
@@ -17,9 +18,7 @@ type PostFrontmatter = {
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
 function formatDate(dateStr?: string) {
-  if (!dateStr) return "";
-  // Si viene en YYYY-MM-DD, se ve bien tal cual. Si luego quieres “21 feb 2026”, lo cambiamos.
-  return dateStr;
+  return dateStr ?? "";
 }
 
 export default async function BlogIndexPage() {
@@ -30,7 +29,7 @@ export default async function BlogIndexPage() {
       const slug = file.replace(/\.md$/, "");
       const raw = await fs.readFile(path.join(BLOG_DIR, file), "utf8");
 
-      // ✅ Blindaje BOM/whitespace (Windows)
+      // ✅ Windows-safe: quita BOM + whitespace antes del frontmatter
       const normalized = raw.replace(/^\uFEFF/, "").trimStart();
 
       const { data } = matter(normalized);
@@ -49,12 +48,13 @@ export default async function BlogIndexPage() {
     })
   );
 
+  // orden por fecha desc (si viene YYYY-MM-DD)
   posts.sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       {/* Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
             Blog
@@ -88,8 +88,7 @@ export default async function BlogIndexPage() {
                   alt={p.title}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 33vw"
-                  priority={false}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-zinc-100 to-zinc-50" />
@@ -110,13 +109,13 @@ export default async function BlogIndexPage() {
               </h2>
 
               {p.excerpt ? (
-                <p className="mt-2 text-sm leading-6 text-zinc-600 line-clamp-3">
+                <p className="mt-2 text-sm leading-6 text-zinc-600">
                   {p.excerpt}
                 </p>
               ) : null}
 
               {/* Tags */}
-              {p.tags?.length ? (
+              {p.tags.length ? (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {p.tags.slice(0, 3).map((t) => (
                     <span
@@ -130,7 +129,7 @@ export default async function BlogIndexPage() {
               ) : null}
 
               {/* Meta */}
-              <div className="mt-4 flex items-center gap-2 text-xs text-zinc-500">
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
                 {p.date ? <span>{formatDate(p.date)}</span> : null}
                 {p.readingTime ? (
                   <>

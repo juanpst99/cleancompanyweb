@@ -40,10 +40,10 @@ async function getPostBySlug(slug: string): Promise<Post> {
   const filePath = path.join(BLOG_DIR, `${slug}.md`);
   const raw = await fs.readFile(filePath, "utf8");
 
-// ✅ quita BOM + whitespace antes del frontmatter
-const normalized = raw.replace(/^\uFEFF/, "").trimStart();
+  // ✅ quita BOM + cualquier whitespace antes del frontmatter (Windows-safe)
+  const normalized = raw.replace(/^\uFEFF/, "").trimStart();
 
-const { data, content } = matter(normalized);
+  const { data, content } = matter(normalized);
   const fm = data as Partial<PostFrontmatter>;
 
   const processed = await remark()
@@ -56,7 +56,7 @@ const { data, content } = matter(normalized);
 
   return {
     slug,
-    title: fm.title ?? "Clean Company • Blog",
+    title: fm.title ?? slug,
     date: fm.date ?? "",
     excerpt: fm.excerpt ?? "",
     coverImage: fm.coverImage,
@@ -80,9 +80,15 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-// ✅ SEO (opcional pero recomendado)
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
+// ✅ SEO (Next 15: params es Promise)
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+
   return {
     title: post.title,
     description: post.excerpt,
@@ -101,18 +107,22 @@ function BlogPostLayout({ post, children }: { post: Post; children: ReactNode })
       <header className="relative overflow-hidden border-b border-zinc-200">
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-50 to-white" />
         <div className="relative mx-auto max-w-3xl px-6 py-10">
-          <p className="text-sm font-semibold text-[#3AAA35]">Clean Company • Blog</p>
+          <p className="text-sm font-semibold text-[#3AAA35]">
+            Clean Company • Blog
+          </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">
             {post.title}
           </h1>
 
-          <p className="mt-3 text-base leading-7 text-zinc-600">{post.excerpt}</p>
+          <p className="mt-3 text-base leading-7 text-zinc-600">
+            {post.excerpt}
+          </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500">
             <span>{post.date}</span>
             <span className="text-zinc-300">•</span>
-            <span>{post.readingTime}</span>
+            <span>{post.readingTime ?? "6–8 min lectura"}</span>
             <span className="text-zinc-300">•</span>
             <span>Bogotá / Medellín</span>
           </div>
@@ -124,6 +134,7 @@ function BlogPostLayout({ post, children }: { post: Post; children: ReactNode })
             >
               Cotizar por WhatsApp
             </a>
+
             <a
               href="/servicios/colchones"
               className="inline-flex items-center justify-center rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-900 hover:bg-zinc-50"
@@ -136,20 +147,31 @@ function BlogPostLayout({ post, children }: { post: Post; children: ReactNode })
 
       {/* CUERPO */}
       <main className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1fr_360px]">
-      <article className="prose prose-clean prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:scroll-mt-24">
+        <article className="prose prose-clean prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:scroll-mt-24">
           {children}
         </article>
 
         <aside className="hidden lg:block">
           <div className="sticky top-6 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-            <p className="text-sm font-semibold text-zinc-900">¿Listo para agendar?</p>
-            <p className="mt-2 text-sm text-zinc-600">Te cotizamos en menos de 2 minutos por WhatsApp.</p>
+            <p className="text-sm font-semibold text-zinc-900">
+              ¿Listo para agendar?
+            </p>
+            <p className="mt-2 text-sm text-zinc-600">
+              Te cotizamos en menos de 2 minutos por WhatsApp.
+            </p>
             <a
               href="https://wa.me/573128052720"
               className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#3AAA35] px-4 py-3 text-sm font-semibold text-white hover:opacity-95"
             >
               Agendar ahora
             </a>
+
+            <div className="mt-4 rounded-xl bg-zinc-50 p-4">
+              <p className="text-xs font-semibold text-zinc-700">Servicio</p>
+              <p className="mt-1 text-sm text-zinc-600">
+                Bogotá y Medellín • Domicilio
+              </p>
+            </div>
           </div>
         </aside>
       </main>
@@ -157,10 +179,16 @@ function BlogPostLayout({ post, children }: { post: Post; children: ReactNode })
   );
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
+// ✅ PageProps en Next 15: params es Promise
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
-  // ✅ Aquí se renderiza el HTML del Markdown
+  // ✅ Render del HTML del Markdown
   const content = <div dangerouslySetInnerHTML={{ __html: post.html }} />;
 
   return <BlogPostLayout post={post}>{content}</BlogPostLayout>;
