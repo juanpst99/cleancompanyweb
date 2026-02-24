@@ -2,25 +2,31 @@
 
 import React from 'react'
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
+import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber' // <-- Importamos nuestro nuevo hook
 
 const WhatsAppButton = () => {
+  // Llamamos al hook para obtener el número correcto según el día
+  const whatsappNumber = useWhatsAppNumber()
+
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
 
-    // 1. Obtiene el ID y dispara el webhook en segundo plano (sin 'await')
+    // 1. Obtiene el ID y dispara el webhook en segundo plano
     const shortId = trackWhatsAppClick()
 
-    // 2. Abrir WhatsApp de inmediato
+    // 2. Prepara el mensaje con el ID de rastreo
     const base = 'Hola, quiero cotizar un servicio con Clean Company.'
     const msg = `${base} (Ref: ${shortId})`
-    const url = `https://wa.me/573128052720?text=${encodeURIComponent(msg)}`
+    
+    // 3. Usa el número dinámico para construir la URL final
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
 
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   return (
     <a
-      href="https://wa.me/573128052720"
+      href={`https://wa.me/${whatsappNumber}`} // <-- Usamos el número dinámico también en el href por accesibilidad
       onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
@@ -28,7 +34,7 @@ const WhatsAppButton = () => {
       aria-label="Contactar por WhatsApp"
     >
       <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12.004 2c-5.46 0-9.89 4.43-9.89 9.89 0 1.75.46 3.39 1.24 4.82L2.004 22l5.41-1.34A9.868 9.868 0 0012.004 22c5.46 0 9.89-4.43 9.89-9.89 0-2.65-1.03-5.14-2.9-7.01A9.818 9.818 0 0012.004 2zm0 1.67c4.54 0 8.22 3.68 8.22 8.22 0 4.54-3.68 8.22-8.22 8.22-1.37 0-2.68-.34-3.82-.97l-.27-.15-2.83.7.72-2.77-.17-.29a8.174 8.174 0 01-1.08-4.02c0-4.54 3.68-8.22 8.22-8.22h.23zm-2.71 4.25c-.17 0-.44.06-.67.31-.23.26-.87.85-.87 2.07 0 1.22.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74 2.05.88 2.48.71 2.93.66.45-.05 1.45-.59 1.65-1.16.2-.57.2-1.05.14-1.16-.06-.11-.23-.17-.48-.29-.25-.12-1.47-.73-1.7-.81-.23-.08-.4-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.12-.11.25-.29.37-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14 0-.31-.02-.48-.02z" />
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
       </svg>
     </a>
   )

@@ -10,8 +10,10 @@ import { Check, Moon, Shield, Clock, ArrowLeft, Star, Heart, Lock, CreditCard, U
 import Link from 'next/link'
 // Importamos el tracker silencioso
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
+import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 
 export default function ColchonesClient() {
+  const whatsappNumber = useWhatsAppNumber()
   const searchParams = useSearchParams()
   const ciudad = searchParams.get('ciudad') || 'Bogotá y Medellín'
   const descuento = searchParams.get('desc') || '20'
@@ -112,7 +114,7 @@ Tamaño: ${mapTamano[formData.tamanoColchon] || formData.tamanoColchon}
 Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
 
     // Abrimos WhatsApp y trackeamos
-    openWhatsApp('573128052720', baseMessage, 'cotizacion_colchones')
+    openWhatsApp(whatsappNumber, baseMessage, 'cotizacion_colchones')
 
     // (Opcional) micro-evento de "form_submit" para análisis interno
     if (typeof window !== 'undefined') {
@@ -717,7 +719,7 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
                 onClick={(e) => {
                   e.preventDefault()
                   const msg = `Hola, quiero una cotización exacta para lavado de colchones en ${formatCiudad(ciudad)}. ¿Me pueden ayudar?`
-                  openWhatsApp('573128052720', msg, 'cta_precio_colchones')
+                  openWhatsApp(whatsappNumber, msg, 'cta_precio_colchones')
                 }}
                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg cursor-pointer"
               >
@@ -896,7 +898,7 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
             onClick={(e) => {
               e.preventDefault()
               const msg = `Quiero el ${descuento}% de descuento en lavado de colchones para mejorar mi salud`
-              openWhatsApp('573128052720', msg, 'cta_final_colchones')
+              openWhatsApp(whatsappNumber, msg, 'cta_final_colchones')
             }}
             className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse cursor-pointer"
           >

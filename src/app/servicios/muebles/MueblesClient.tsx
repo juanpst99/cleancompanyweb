@@ -10,8 +10,10 @@ import { Check, Sofa, Shield, Clock, ArrowLeft, Star, Heart, Lock, CreditCard, U
 import Link from 'next/link'
 // Importamos el tracker silencioso
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
+import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 
 export default function MueblesClient() {
+  const whatsappNumber = useWhatsAppNumber()
   const searchParams = useSearchParams()
   const ciudad = searchParams.get('ciudad') || 'Bogotá y Medellín'
   const descuento = searchParams.get('desc') || '20'
@@ -113,7 +115,7 @@ Mueble: ${mapMueble[formData.tipoMueble] || formData.tipoMueble}
 Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
 
     // Usamos nuestra función unificada (envía el evento específico para este form)
-    openWhatsApp('573128052720', baseMessage, 'cotizacion_muebles')
+    openWhatsApp(whatsappNumber, baseMessage, 'cotizacion_colchones')
 
     // (Opcional) micro-evento extra que tenías
     if (typeof window !== 'undefined') {

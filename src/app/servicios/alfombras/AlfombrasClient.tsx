@@ -8,6 +8,7 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import Footer from '@/components/sections/Footer'
 // Importamos solo tu nuevo tracker silencioso
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
+import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 
 import {
   Check,
@@ -27,6 +28,7 @@ import {
 import Link from 'next/link'
 
 export default function AlfombrasClient() {
+  const whatsappNumber = useWhatsAppNumber()
   const searchParams = useSearchParams()
   const ciudad = searchParams.get('ciudad') || 'Bogotá y Medellín'
   const descuento = searchParams.get('desc') || '20'
@@ -91,7 +93,7 @@ export default function AlfombrasClient() {
   
     // 4. Adjuntar la referencia corta limpia
     const finalMessage = `${baseMessage}\n\n(Ref: ${shortId})`
-    const url = `https://wa.me/573128052720?text=${encodeURIComponent(finalMessage)}`
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
 
     // Mantenemos tu GTM tracking intacto
     if (typeof window !== 'undefined') {
@@ -598,7 +600,7 @@ export default function AlfombrasClient() {
                   e.preventDefault()
                   const shortId = trackWhatsAppClick()
                   const finalMessage = `${precioMsg}\n\n(Ref: ${shortId})`
-                  const url = `https://wa.me/573128052720?text=${encodeURIComponent(finalMessage)}`
+                  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
                   window.open(url, '_blank', 'noopener,noreferrer')
                 }}
                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
@@ -774,7 +776,7 @@ export default function AlfombrasClient() {
               e.preventDefault()
               const shortId = trackWhatsAppClick()
               const finalMessage = `${ofertaMsg}\n\n(Ref: ${shortId})`
-              const url = `https://wa.me/573128052720?text=${encodeURIComponent(finalMessage)}`
+              const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
               window.open(url, '_blank', 'noopener,noreferrer')
             }}
             className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse cursor-pointer"
