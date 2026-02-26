@@ -17,6 +17,7 @@ export const trackWhatsAppClick = (nombre?: string, telefono?: string): string =
       shortId,
       nombre: nombre || '',     // ✅ Se envían al webhook
       telefono: telefono || '', // ✅ Se envían al webhook
+      fbclid: attrib?.fbclid || '', // 🔥 AQUÍ EMPACAMOS EL DATO DE META
       gclid: attrib?.gclid || '',
       wbraid: attrib?.wbraid || '',
       gbraid: attrib?.gbraid || '',

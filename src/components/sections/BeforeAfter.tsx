@@ -1,140 +1,146 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect, MouseEvent, TouchEvent } from 'react'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react'
+import { ChevronRight, ChevronLeft } from 'lucide-react'
 
-const BeforeAfter = () => {
+// Aquí definimos los 3 casos de tu Plan 360°
+const cases = [
+  {
+    id: 'sofa',
+    title: 'Muebles y Sofás',
+    description: 'Extracción de manchas incrustadas y recuperación del color original de la tela.',
+    before: '/images/antes-despues/antes-sofa.webp',
+    after: '/images/antes-despues/despues-sofa.webp',
+  },
+  {
+    id: 'colchon',
+    title: 'Colchones',
+    description: 'Eliminación profunda de ácaros, piel muerta y neutralización de olores.',
+    before: '/images/antes-despues/antes-colchon.webp',
+    after: '/images/antes-despues/despues-colchon.webp',
+  },
+  {
+    id: 'alfombra',
+    title: 'Alfombras y Tapetes',
+    description: 'Restauración de fibras y lavado anti-bacterias sin dañar los tejidos.',
+    before: '/images/antes-despues/antes-alfombra.webp',
+    after: '/images/antes-despues/despues-alfombra.webp',
+  }
+]
+
+export default function BeforeAfter() {
+  const [activeSlide, setActiveSlide] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging) return
-    
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const percentage = (x / rect.width) * 100
-    setSliderPosition(Math.max(0, Math.min(100, percentage)))
+  // Reiniciamos la barra al centro cada vez que cambian de servicio
+  useEffect(() => {
+    setSliderPosition(50)
+  }, [activeSlide])
+
+  // Lógica matemática para calcular la posición exacta del dedo/mouse
+  const handleMove = (clientX: number) => {
+    if (!isDragging || !containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width))
+    const percent = Math.max(0, Math.min((x / rect.width) * 100, 100))
+    setSliderPosition(percent)
   }
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.touches[0].clientX - rect.left
-    const percentage = (x / rect.width) * 100
-    setSliderPosition(Math.max(0, Math.min(100, percentage)))
-  }
-
-  const benefits = [
-    "Eliminación del 99.9% de bacterias y ácaros",
-    "Recuperación del color y textura original",
-    "Ambiente más saludable para tu familia"
-  ]
+  const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX)
+  const handleTouchMove = (e: TouchEvent) => handleMove(e.touches[0].clientX)
+  const stopDragging = () => setIsDragging(false)
 
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12">Resultados que Hablan</h2>
+    <section className="py-20 bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 text-center">
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">Resultados reales, sin filtros</h2>
+        <p className="text-gray-600 mb-10">
+          Selecciona un servicio y desliza la barra para ver la suciedad que extraemos en nuestro Plan 360°.
+        </p>
         
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Slider */}
+        {/* Pestañas de navegación táctil (Evita conflictos al deslizar) */}
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {cases.map((item, index) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveSlide(index)}
+              className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
+                activeSlide === index 
+                  ? 'bg-blue-600 text-white shadow-md transform scale-105' 
+                  : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+            >
+              {item.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Contenedor Interactivo del Slider */}
+        <div className="bg-white p-3 sm:p-4 rounded-3xl shadow-xl border border-gray-100">
           <div 
-            className="relative rounded-2xl overflow-hidden shadow-2xl cursor-ew-resize select-none"
+            ref={containerRef}
+            className="relative w-full h-[350px] sm:h-[450px] md:h-[500px] rounded-2xl overflow-hidden cursor-ew-resize select-none touch-none bg-gray-200"
             onMouseDown={() => setIsDragging(true)}
-            onMouseUp={() => setIsDragging(false)}
-            onMouseLeave={() => setIsDragging(false)}
+            onMouseUp={stopDragging}
+            onMouseLeave={stopDragging}
             onMouseMove={handleMouseMove}
+            onTouchStart={() => setIsDragging(true)}
+            onTouchEnd={stopDragging}
             onTouchMove={handleTouchMove}
           >
-            {/* Imagen Antes */}
-            <div className="relative w-full h-96">
+            {/* Imagen AFTER (La versión limpia - actúa como fondo) */}
+            <Image 
+              src={cases[activeSlide].after}
+              alt={`${cases[activeSlide].title} limpio`}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 800px"
+              className="object-cover pointer-events-none"
+            />
+
+            {/* Imagen BEFORE (La versión sucia - se recorta dinámicamente) */}
+            <div 
+              className="absolute top-0 left-0 w-full h-full pointer-events-none"
+              style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+            >
               <Image 
-                src="/images/antes-despues/despues-sofa.webp"
-                alt="Antes"
+                src={cases[activeSlide].before}
+                alt={`${cases[activeSlide].title} sucio`}
                 fill
-                sizes="100vw"
-                loading="lazy"
-                decoding="async"
-                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="object-cover pointer-events-none"
               />
             </div>
-            
-            {/* Imagen Después */}
+
+            {/* La línea divisoria y el tirador central */}
             <div 
-              className="absolute top-0 left-0 h-full overflow-hidden"
-              style={{ width: `${sliderPosition}%` }}
+              className="absolute top-0 bottom-0 w-1 bg-white drop-shadow-[0_0_5px_rgba(0,0,0,0.5)] z-10"
+              style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
             >
-              <div className="relative w-full h-96">
-                <Image 
-                  src="/images/antes-despues/antes-sofa.webp"
-                  alt="Después"
-                  fill
-                  sizes="100vw"
-                  loading="lazy"
-                  decoding="async"
-                  className="object-cover"
-                />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex items-center justify-center pointer-events-none">
+                <ChevronLeft className="w-6 h-6 text-blue-600" />
+                <ChevronRight className="w-6 h-6 text-blue-600 -ml-3" />
               </div>
             </div>
             
-            {/* Línea divisora */}
-            <div 
-              className="absolute top-0 h-full w-1 bg-white shadow-lg"
-              style={{ left: `${sliderPosition}%` }}
-            >
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg">
-                <div className="flex space-x-1">
-                  <ChevronLeft className="w-4 h-4 text-gray-600" />
-                  <ChevronRight className="w-4 h-4 text-gray-600" />
-                </div>
-              </div>
-            </div>
-            
-            {/* Etiquetas */}
-            <div className="absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+            {/* Etiquetas Superiores */}
+            <div className="absolute top-4 left-4 bg-red-600/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm z-0">
               ANTES
             </div>
-            <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+            <div className="absolute top-4 right-4 bg-green-600/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm z-0">
               DESPUÉS
             </div>
           </div>
           
-          {/* Información */}
-          <div className="space-y-6">
-            <h3 className="text-3xl font-bold">Transformación Total</h3>
-            <p className="text-gray-600 text-lg">
-              Nuestro proceso de limpieza profunda no solo elimina la suciedad visible, 
-              sino que también restaura los colores originales y elimina olores persistentes. 
-              Utilizamos equipos de última tecnología y productos eco-amigables.
-            </p>
-            
-            <div className="space-y-4">
-              {benefits.map((benefit, index) => (
-                <div 
-                  key={index} 
-                  className="flex items-center animate-fadeInLeft"
-                  style={{ animationDelay: `${index * 200}ms` }}
-                >
-                  <div className="bg-green-100 p-2 rounded-full mr-3">
-                    <Check className="w-5 h-5 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">{benefit}</span>
-                </div>
-              ))}
-            </div>
-            
-            <a 
-              href="https://wa.me/573128052720?text=Quiero%20ver%20más%20resultados%20de%20antes%20y%20después"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              Ver más resultados
-            </a>
-          </div>
+          <p className="mt-5 text-gray-700 font-medium text-center">
+            {cases[activeSlide].description}
+          </p>
         </div>
       </div>
     </section>
   )
 }
-
-export default BeforeAfter

@@ -5,6 +5,7 @@ export type CCAttribution = {
   gclid?: string
   wbraid?: string
   gbraid?: string
+  fbclid?: string // <-- 1. Le decimos a TypeScript que esto existe
   utm_source?: string
   utm_medium?: string
   utm_campaign?: string
@@ -18,7 +19,6 @@ const STORAGE_KEY = 'cc_attrib_v1'
 function nowBogotaTs() {
   const d = new Date()
   const pad = (n: number) => String(n).padStart(2, '0')
-  // Timestamp simple en -05:00 (no perfecto con DST, pero Colombia no usa DST)
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}-0500`
 }
 
@@ -32,6 +32,7 @@ export function captureAndPersistAttribution(): CCAttribution | null {
     gclid: sp.get('gclid') || undefined,
     wbraid: sp.get('wbraid') || undefined,
     gbraid: sp.get('gbraid') || undefined,
+    fbclid: sp.get('fbclid') || undefined, // <-- 2. Atrapamos el dato de la URL
     utm_source: sp.get('utm_source') || undefined,
     utm_medium: sp.get('utm_medium') || undefined,
     utm_campaign: sp.get('utm_campaign') || undefined,
@@ -40,8 +41,8 @@ export function captureAndPersistAttribution(): CCAttribution | null {
     landing_url: window.location.href,
   }
 
-  // Solo persistimos si viene click-id (para no llenar storage con tráfico directo)
-  if (attrib.gclid || attrib.wbraid || attrib.gbraid) {
+  // 3. Persistimos si hay CUALQUIER identificador (Google o Meta)
+  if (attrib.gclid || attrib.wbraid || attrib.gbraid || attrib.fbclid) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(attrib))
     return attrib
   }
