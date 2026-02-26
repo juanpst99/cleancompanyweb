@@ -1,21 +1,36 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
 
-// 1. Obligamos a Vercel a ejecutar esto en vivo, sin usar memoria caché
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
-export async function POST(request: Request) {
+function getClientIp(req: NextRequest) {
+  const xff = req.headers.get('x-forwarded-for') || ''
+  // En Vercel, suele venir "IP, proxy1, proxy2"
+  const ip = xff.split(',')[0]?.trim()
+  return ip || req.headers.get('x-real-ip') || ''
+}
+
+export async function POST(request: NextRequest) {
   try {
-    // 2. Recibir los datos enviados por el botón de WhatsApp
-    const data = await request.json();
+    const data = await request.json()
 
-    // 🌟 LA MAGIA: Generar la hora exacta de Colombia en este milisegundo
-    // El formato "sv-SE" es un truco de programación para que salga perfecto: YYYY-MM-DD HH:MM:SS
-    const colombiaTime = new Date().toLocaleString("sv-SE", { timeZone: "America/Bogota" });
-    
-    // Sobrescribimos la fecha congelada del navegador con la fecha real del servidor
-    data.timestamp = colombiaTime;
+    // Hora Colombia solo para tu logging interno
+    const colombiaTime = new Date().toLocaleString('sv-SE', { timeZone: 'America/Bogota' })
+    data.timestamp = colombiaTime
 
-    // 3. Enviar los datos a n8n inyectando la seguridad
+    // ✅ Campos clave para CAPI
+    data.client_user_agent = request.headers.get('user-agent') || ''
+    data.client_ip_address = getClientIp(request)
+
+    // UNIX seconds (lo que CAPI espera)
+    data.event_time = data.event_time || Math.floor(Date.now() / 1000)
+
+    // URL real del evento (ideal que venga del cliente; fallback al referer)
+    data.event_source_url =
+      data.event_source_url || request.headers.get('referer') || data.landing_url || ''
+
+    // (Opcional) si por alguna razón no te llega fbp/fbc del cliente, podrías leer cookies aquí,
+    // pero si ya lo mandas desde whatsappTracker, no es obligatorio.
+
     const n8nResponse = await fetch(process.env.N8N_WEBHOOK_URL as string, {
       method: 'POST',
       headers: {
@@ -23,18 +38,18 @@ export async function POST(request: Request) {
         'x-cc-token': process.env.N8N_AUTH_SECRET as string,
       },
       body: JSON.stringify(data),
-    });
+    })
 
     if (!n8nResponse.ok) {
-      throw new Error(`Fallo al enviar a n8n. Status: ${n8nResponse.status}`);
+      throw new Error(`Fallo al enviar a n8n. Status: ${n8nResponse.status}`)
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error en API interna de WhatsApp:', error);
+    console.error('Error en API interna de WhatsApp:', error)
     return NextResponse.json(
       { success: false, message: 'Error procesando la solicitud' },
       { status: 500 }
-    );
+    )
   }
 }
