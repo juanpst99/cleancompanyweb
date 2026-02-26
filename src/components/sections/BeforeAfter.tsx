@@ -10,8 +10,8 @@ const cases = [
     id: 'sofa',
     title: 'Muebles y Sofás',
     description: 'Extracción de manchas incrustadas y recuperación del color original de la tela.',
-    before: '/images/antes-despues/antes-sofa.webp',
-    after: '/images/antes-despues/despues-sofa.webp',
+    before: '/images/antes-despues/antes-mueble.webp',
+    after: '/images/antes-despues/despues-mueble.webp',
   },
   {
     id: 'colchon',
@@ -24,8 +24,8 @@ const cases = [
     id: 'alfombra',
     title: 'Alfombras y Tapetes',
     description: 'Restauración de fibras y lavado anti-bacterias sin dañar los tejidos.',
-    before: '/images/antes-despues/antes-alfombra.webp',
-    after: '/images/antes-despues/despues-alfombra.webp',
+    before: '/images/antes-despues/antes-tapete.webp',
+    after: '/images/antes-despues/despues-tapete.webp',
   }
 ]
 
