@@ -18,7 +18,7 @@ const msg = `Hola, quiero cotizar un servicio con Clean Company. (Ref: ${ref})`
     // 3. Usa el número dinámico para construir la URL final
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
     
-    window.open(url, '_blank', 'noopener,noreferrer')
+    setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 250)
   }
 
   return (

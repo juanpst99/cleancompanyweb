@@ -37,7 +37,9 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
         'x-cc-token': process.env.N8N_AUTH_SECRET as string,
       },
+      keepalive: true,
       body: JSON.stringify(data),
+      
     })
 
     if (!n8nResponse.ok) {

@@ -22,12 +22,12 @@ export default function LandingSelector() {
     setIsSubmitting(true)
     
     // Capturamos el clic y los parámetros (fbclid) antes de salir de la web
-    const shortId = trackWhatsAppClick('', '') 
+    const ref  = trackWhatsAppClick('', '') 
 
     const serviceName = services.find(s => s.id === selectedService)?.name
     
     // El mensaje está diseñado para quitarle la fricción de pensar qué escribir
-    const message = `Hola Clean Company 👋 Quiero cotizar el servicio de *${serviceName}* en *${selectedCity}*. Tengo fotos y medidas. ¿Me ayudas con la disponibilidad por favor?\n\n(Ref: ${shortId})`
+    const message = `Hola Clean Company 👋 Quiero cotizar el servicio de *${serviceName}* en *${selectedCity}*. Tengo fotos y medidas. ¿Me ayudas con la disponibilidad por favor?\n\n(Ref: ${ref})`
     
     const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
