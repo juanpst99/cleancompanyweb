@@ -22,7 +22,7 @@ export default function LandingSelector() {
     setIsSubmitting(true)
     
     // Capturamos el clic y los parámetros (fbclid) antes de salir de la web
-    const ref  = trackWhatsAppClick('', '') 
+    const { ref } = trackWhatsAppClick('', '')
 
     const serviceName = services.find(s => s.id === selectedService)?.name
     
