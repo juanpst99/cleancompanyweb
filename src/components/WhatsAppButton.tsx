@@ -12,15 +12,12 @@ const WhatsAppButton = () => {
     e.preventDefault()
 
     // 1. Obtiene el ID y dispara el webhook en segundo plano
-    const shortId = trackWhatsAppClick()
-
-    // 2. Prepara el mensaje con el ID de rastreo
-    const base = 'Hola, quiero cotizar un servicio con Clean Company.'
-    const msg = `${base} (Ref: ${shortId})`
+const { ref } = trackWhatsAppClick()
+const msg = `Hola, quiero cotizar un servicio con Clean Company. (Ref: ${ref})`
     
     // 3. Usa el número dinámico para construir la URL final
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
-
+    
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
