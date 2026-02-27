@@ -68,10 +68,10 @@ export default function ColchonesClient() {
   // Función auxiliar para abrir WhatsApp instantáneamente y trackear en GTM
   const openWhatsApp = (phone: string, msg: string, eventName: string) => {
     // 1. Obtener la referencia corta de n8n al instante (sin await)
-    const shortId = trackWhatsAppClick(formData.nombre, formData.telefono)
+    const { ref } = trackWhatsAppClick(formData.nombre, formData.telefono)
     
     // 2. Armar el mensaje final limpio
-    const finalMessage = `${msg}\n\n(Ref: ${shortId})`
+    const finalMessage = `${msg}\n\n(Ref: ${ref})`
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMessage)}`
     
     // 3. Trackeo en GTM

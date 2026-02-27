@@ -65,7 +65,7 @@ export default function AlfombrasClient() {
     e.preventDefault()
   
     // 1. Envía el webhook silencioso a n8n y obtén la referencia corta
-    const shortId = trackWhatsAppClick(formData.nombre, formData.telefono)
+    const { ref } = trackWhatsAppClick(formData.nombre, formData.telefono)
   
     // 2. Formatear los datos del formulario
     const formatCiudad = (val: string) => {
@@ -92,7 +92,7 @@ export default function AlfombrasClient() {
   Para cuándo: ${formatCuando(formData.cuando)}`
   
     // 4. Adjuntar la referencia corta limpia
-    const finalMessage = `${baseMessage}\n\n(Ref: ${shortId})`
+    const finalMessage = `${baseMessage}\n\n(Ref: ${ref})`
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
 
     // Mantenemos tu GTM tracking intacto
