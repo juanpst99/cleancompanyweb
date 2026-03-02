@@ -55,7 +55,7 @@ export const trackWhatsAppClick = (nombre?: string, telefono?: string) => {
     keepalive: true,
     body: JSON.stringify({
       ref,          // 👈 para tu WhatsApp/Sheet
-      eventId,      // 👈 para Meta dedup
+      event_id: eventId,      // 👈 para Meta dedup
       event_time,
       event_source_url,
       fbp,
