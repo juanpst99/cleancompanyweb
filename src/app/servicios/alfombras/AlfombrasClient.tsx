@@ -282,25 +282,10 @@ export default function AlfombrasClient() {
               <button
                   type="button"
                   onClick={async () => {
-                    const ref = trackWhatsAppClick()
+                    const { ref } = trackWhatsAppClick(formData.nombre, formData.telefono);
                     const mensajeBase = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
                     const finalMessage = `${mensajeBase}\n\n(Ref: ${ref})`
                     const whatsappUrl = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(finalMessage)}`
-
-                    if (typeof window !== 'undefined') {
-                      const w = window as unknown as { dataLayer?: any[] }
-                      w.dataLayer = w.dataLayer || []
-                      w.dataLayer.push({
-                        event: 'whatsapp_click',
-                        form_name: 'cotizacion_alfombras_alterno',
-                        user_name: formData.nombre,
-                        phone: formData.telefono,
-                        city: formData.ciudad,
-                        when: formData.cuando,
-                        utm_campaign,
-                        link_url: whatsappUrl,
-                      })
-                    }
 
                     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
                   }}
@@ -613,8 +598,8 @@ export default function AlfombrasClient() {
                <button
                  onClick={async (e) => {
                   e.preventDefault()
-                  const shortId = trackWhatsAppClick()
-                  const finalMessage = `Quiero aprovechar el ${descuento}% de descuento en lavado de alfombras\n\n(Ref: ${shortId})`
+                  const ref = trackWhatsAppClick()
+                  const finalMessage = `Quiero aprovechar el ${descuento}% de descuento en lavado de alfombras\n\n(Ref: ${ref})`
                   const url = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(finalMessage)}`
                   window.open(url, '_blank', 'noopener,noreferrer')
                  }}
