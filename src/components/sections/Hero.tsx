@@ -4,6 +4,8 @@ import React from 'react'
 import Image from 'next/image'
 import { Phone, ChevronDown } from 'lucide-react'
 import { useGTM } from '@/hooks/useGTM'
+// 1. Asegúrate de importar la función que genera la referencia (ajusta la ruta si es necesario)
+import { trackWhatsAppClick as getWhatsAppRef } from '@/lib/whatsappTracker' 
 
 const Hero = () => {
   const { trackWhatsAppClick } = useGTM()
@@ -13,7 +15,6 @@ const Hero = () => {
     const element = document.querySelector('#servicios')
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
-      // Track navegación a servicios
       window.dataLayer?.push({
         event: 'navigation_click',
         navigation_target: 'servicios',
@@ -22,9 +23,20 @@ const Hero = () => {
     }
   }
   
-  const handleWhatsAppClick = () => {
-    const message = 'Hola, quiero cotizar un servicio de limpieza.'
-    trackWhatsAppClick('general', message)
+  // 2. Modifica esta función para interceptar el clic y armar el mensaje con la referencia
+  const handleWhatsAppClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault(); // Evita que el `href` por defecto se abra
+    
+    // Genera la referencia desestructurando correctamente el objeto
+    const { ref } = getWhatsAppRef('Hero General', ''); 
+    
+    const message = `Hola, quiero cotizar un servicio de limpieza. (Ref: ${ref})`;
+    
+    // Dispara tu evento GTM
+    trackWhatsAppClick('general', message);
+    
+    // Redirige manualmente a WhatsApp con el mensaje codificado
+    window.open(`https://wa.me/573128052720?text=${encodeURIComponent(message)}`, '_blank');
   }
 
   return (
@@ -48,7 +60,7 @@ const Hero = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 animate-fadeInUp animation-delay-400 justify-center md:justify-start">
               <a 
-                href="https://wa.me/573128052720?text=Hola,%20quiero%20cotizar%20un%20servicio%20de%20limpieza."
+                href="https://wa.me/573128052720" // 3. El href principal queda limpio (se sobreescribe con el onClick)
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleWhatsAppClick}
@@ -90,10 +102,10 @@ const Hero = () => {
               alt="Limpieza profesional de alfombras y tapetes - Clean Company"
               title="alfombras - Clean Company"
               fill
-              priority // <-- Solo necesitas dejar este
+              priority 
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover rounded-2xl shadow-2xl transform md:rotate-3 hover:rotate-0 transition-transform duration-500"
-/>
+            />
             </div>
             {/* Badge de descuento - posición ajustada para móviles */}
             <div className="absolute -top-4 -right-4 md:-top-4 md:-right-4 bg-yellow-400 text-blue-900 p-4 sm:p-6 rounded-2xl shadow-xl animate-bounce">
