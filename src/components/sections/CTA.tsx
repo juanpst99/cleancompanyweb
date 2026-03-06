@@ -2,8 +2,17 @@
 
 import React from 'react'
 import { Sparkles } from 'lucide-react'
+import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 
 const CTA = () => {
+  const handleWhatsAppClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const { ref } = trackWhatsAppClick()
+    const msg = `Hola, quiero aprovechar el 20% de descuento en mi primera limpieza. (Ref: ${ref})`
+    const url = `https://wa.me/573128052720?text=${encodeURIComponent(msg)}`
+    setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 250)
+  }
+
   return (
     <section className="py-20 bg-gradient-to-br from-blue-600 to-blue-800 relative overflow-hidden">
       <div className="absolute inset-0">
@@ -39,8 +48,9 @@ const CTA = () => {
             </ul>
           </div>
           
-          <a 
-            href="https://wa.me/573128052720?text=Hola,%20quiero%20aprovechar%20el%2020%%20de%20descuento%20en%20mi%20primera%20limpieza."
+          <a
+            href="https://wa.me/573128052720"
+            onClick={handleWhatsAppClick}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center bg-green-500 text-white px-10 py-4 rounded-full font-semibold hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-fadeInUp animation-delay-600"

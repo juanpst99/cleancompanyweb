@@ -583,7 +583,7 @@ export default function AlfombrasClient() {
               <button
                 onClick={async (e) => {
                   e.preventDefault()
-                  const ref = trackWhatsAppClick()
+                  const { ref } = trackWhatsAppClick()
                   const finalMessage = `${precioMsg}\n\n(Ref: ${ref})`
                   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
                   window.open(url, '_blank', 'noopener,noreferrer')
@@ -598,7 +598,7 @@ export default function AlfombrasClient() {
                <button
                  onClick={async (e) => {
                   e.preventDefault()
-                  const ref = trackWhatsAppClick()
+                  const { ref } = trackWhatsAppClick()
                   const finalMessage = `Quiero aprovechar el ${descuento}% de descuento en lavado de alfombras\n\n(Ref: ${ref})`
                   const url = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(finalMessage)}`
                   window.open(url, '_blank', 'noopener,noreferrer')
@@ -759,7 +759,7 @@ export default function AlfombrasClient() {
           <button
             onClick={async (e) => {
               e.preventDefault()
-              const ref = trackWhatsAppClick()
+              const { ref } = trackWhatsAppClick()
               const finalMessage = `${ofertaMsg}\n\n(Ref: ${ref})`
               const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
               window.open(url, '_blank', 'noopener,noreferrer')

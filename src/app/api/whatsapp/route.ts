@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
     data.client_user_agent = request.headers.get('user-agent') || ''
     data.client_ip_address = getClientIp(request)
 
-    // UNIX seconds (lo que CAPI espera)
-    data.event_time = data.event_time || Math.floor(Date.now() / 1000)
+    // UNIX seconds (lo que CAPI espera) — forzar entero para Meta CAPI
+    data.event_time = Number(data.event_time) || Math.floor(Date.now() / 1000)
 
     // URL real del evento (ideal que venga del cliente; fallback al referer)
     data.event_source_url =
