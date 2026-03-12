@@ -221,4 +221,4 @@ Si detectas que falta el `event_id` compartido entre browser y server, o cualqui
 ---
 
 ## Instrucción final
-Una vez hayas creado y completado `AUDITORIA_META_CAPI.md`, avísame por aquí con un resumen ejecutivo breve de los hallazgos, sin aplicar todavía cambios de código. Espera mi aprobación antes de pasar a la fase de implementación.
+Una vez hayas creado y completado `AUDITORIA_META_CAPI.md`, avísame por aquí con un resumen ejecutivo breve de los hallazgos, sin aplicar todavía cambios de código. Espera mi aprobación antes de pasar a la fase de implementación..

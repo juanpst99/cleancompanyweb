@@ -1,6 +1,7 @@
 import Header from '@/components/Header'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import Hero from '@/components/sections/Hero'
+import VisualQuoter from '@/components/VisualQuoter'
 import WhyChooseUs from '@/components/sections/WhyChooseUs'
 import Services from '@/components/sections/Services'
 import ServiceDetails from '@/components/sections/ServiceDetails'
@@ -28,6 +29,7 @@ export default function Home() {
           <Hero />
         </Suspense>
         
+        <VisualQuoter />
         <WhyChooseUs />
         <Services />
         <ServiceDetails />

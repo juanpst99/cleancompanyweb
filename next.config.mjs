@@ -40,6 +40,13 @@ const nextConfig = {
   experimental: {
     // Optimizaciones de bundle
     optimizeCss: true,
+
+    // Aumenta el límite del body a 10 MB para recibir fotos de alta
+    // resolución en el cotizador visual (/api/quote).
+    // Las fotos tomadas desde móvil pueden superar los 4 MB por defecto.
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
 };
 

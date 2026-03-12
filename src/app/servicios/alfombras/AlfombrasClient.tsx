@@ -9,6 +9,7 @@ import Footer from '@/components/sections/Footer'
 // Importamos solo tu nuevo tracker silencioso
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
+import VisualQuoter from '@/components/VisualQuoter'
 
 import {
   Check,
@@ -542,6 +543,23 @@ export default function AlfombrasClient() {
               <Check className="inline w-4 h-4 text-green-500 mr-1" />
               Todos los testimonios son 100% reales y verificados
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Cotizador Visual IA */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              Calcula tu estimado en segundos
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              Sube una foto de tu alfombra o tapete y nuestra IA te dará un precio aproximado al instante, sin compromisos.
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto">
+            <VisualQuoter />
           </div>
         </div>
       </section>

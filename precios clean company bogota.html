@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clean Company Medellín — Tarifario y Clean Club</title>
+
+  <!-- Tipografía (opcional). Si no carga, usa sistema. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --brand:#3AAA35;
+      --brand2:#1f7a1c;
+      --ink:#111827;
+      --muted:#6b7280;
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --line:#e5e7eb;
+      --soft:#f3f4f6;
+      --warn:#b45309;
+      --ok:#065f46;
+      --radius:16px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+    }
+
+    .page{
+      max-width:1050px;
+      margin:28px auto;
+      padding:0 18px 40px;
+    }
+
+    .topbar{
+      display:flex;
+      gap:16px;
+      align-items:stretch;
+      justify-content:space-between;
+      margin-bottom:16px;
+    }
+
+    .brandCard{
+      flex:1;
+      background:linear-gradient(135deg, rgba(58,170,53,.12), rgba(58,170,53,.03));
+      border:1px solid rgba(58,170,53,.25);
+      border-radius:var(--radius);
+      padding:18px 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .brandCard:after{
+      content:"";
+      position:absolute;
+      right:-60px;
+      top:-60px;
+      width:180px;
+      height:180px;
+      border-radius:999px;
+      background:rgba(58,170,53,.10);
+      filter:blur(0.2px);
+    }
+
+    .brandRow{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .logoBox{
+      width:56px;
+      height:56px;
+      border-radius:14px;
+      background:#fff;
+      border:1px solid rgba(58,170,53,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      color:var(--brand2);
+      letter-spacing:.5px;
+    }
+
+    h1{
+      margin:0;
+      font-size:18px;
+      line-height:1.2;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.35;
+    }
+
+    .tools{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:210px;
+    }
+
+    .btn{
+      background:var(--brand);
+      color:#fff;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(58,170,53,.20);
+    }
+    .btn:active{ transform:translateY(1px); }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      line-height:1.35;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:16px;
+      margin-top:14px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:0 8px 18px rgba(17,24,39,.05);
+    }
+
+    .card h2{
+      margin:0 0 10px;
+      font-size:14.5px;
+      letter-spacing:.2px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .pill{
+      font-size:11px;
+      font-weight:700;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(58,170,53,.12);
+      color:var(--brand2);
+      border:1px solid rgba(58,170,53,.25);
+    }
+
+    .tableWrap{
+      border:1px solid var(--line);
+      border-radius:14px;
+      overflow:hidden;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    thead th{
+      background:linear-gradient(180deg, #f8fafc, #eef2f7);
+      color:#0f172a;
+      font-size:12px;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+      padding:12px 12px;
+      border-bottom:1px solid var(--line);
+    }
+
+    tbody td{
+      padding:11px 12px;
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+    }
+
+    tbody tr:nth-child(even) td{
+      background:#fbfcff;
+    }
+
+    .svc{
+      font-weight:600;
+    }
+    .meta{
+      display:block;
+      margin-top:4px;
+      font-size:11.5px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .money{
+      font-variant-numeric:tabular-nums;
+      white-space:nowrap;
+      font-weight:700;
+    }
+
+    .public{
+      color:#0f172a;
+    }
+    .member{
+      color:var(--brand2);
+    }
+
+    .noteBox{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(17,24,39,.18);
+      background:#fff;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .twoPlans{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .plan{
+      border:1px solid rgba(17,24,39,.10);
+      border-radius:16px;
+      padding:14px;
+      background:linear-gradient(180deg, rgba(58,170,53,.08), rgba(58,170,53,.02));
+    }
+    .plan.plus{
+      border:1px solid rgba(58,170,53,.35);
+      background:linear-gradient(180deg, rgba(58,170,53,.14), rgba(58,170,53,.03));
+      position:relative;
+    }
+    .badge{
+      position:absolute;
+      right:14px;
+      top:14px;
+      font-size:11px;
+      font-weight:800;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(58,170,53,.14);
+      color:var(--brand2);
+      border:1px solid rgba(58,170,53,.28);
+    }
+
+    .plan h3{
+      margin:0 0 6px;
+      font-size:14px;
+    }
+    .priceTag{
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+      margin:2px 0 10px;
+    }
+    .priceTag .big{
+      font-size:22px;
+      font-weight:800;
+      color:#0f172a;
+    }
+    .priceTag .small{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    ul{
+      margin:10px 0 0 18px;
+      padding:0;
+      color:#111827;
+      font-size:12.6px;
+      line-height:1.45;
+    }
+    li{ margin:6px 0; }
+    .muted{ color:var(--muted); }
+
+    .rules{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+
+    .ruleLine{
+      border-left:4px solid rgba(58,170,53,.55);
+      padding:10px 12px;
+      background:#fff;
+      border-radius:12px;
+      border:1px solid var(--line);
+      font-size:12.5px;
+      line-height:1.45;
+    }
+    .ruleLine b{ color:#0f172a; }
+    .warn{ color:var(--warn); font-weight:700; }
+    .ok{ color:var(--ok); font-weight:700; }
+
+    .footer{
+      margin-top:16px;
+      font-size:11.5px;
+      color:var(--muted);
+      line-height:1.45;
+      text-align:center;
+    }
+
+    /* PRINT */
+    @media print{
+      body{ background:#fff; }
+      .page{ max-width:none; margin:0; padding:0; }
+      .tools, .hint{ display:none !important; }
+      .card{ box-shadow:none; }
+      .topbar{ margin-bottom:10px; }
+      .brandCard{ border:1px solid #cfead0; }
+      a{ color:inherit; text-decoration:none; }
+      .footer{ margin-top:10px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <div class="topbar">
+      <div class="brandCard">
+        <div class="brandRow">
+          <div class="logoBox">CC</div>
+          <div>
+            <h1>Clean Company — Tarifario bogota (Público y Clean Club)</h1>
+            <div class="sub">
+              Versión para caja/secretaría • Valores en COP • Recomendado imprimir en carta/A4<br/>
+              <b>Regla general:</b> Precios “Clean Club” aplican a socios activos (Básica o Plus) y con políticas de uso justo.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tools">
+        <button class="btn" onclick="window.print()">Imprimir / Guardar PDF</button>
+        <div class="hint">
+          Tip: imprime en <b>vertical</b>, escala <b>100%</b>. Si queda muy grande, baja a 95%.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <!-- TARIFARIO DOMICILIO -->
+      <div class="card">
+        <h2>Servicios a domicilio <span class="pill">Medellín</span></h2>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:52%">Servicio</th>
+                <th style="width:24%">Sin membresía</th>
+                <th style="width:24%">Con Clean Club</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="svc">Sofá 2 puestos</span>
+                  <span class="meta">Limpieza profunda + desinfección básica. (Domicilio)</span>
+                </td>
+                <td class="money public">$120.000</td>
+                <td class="money member">$95.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Sofá 3 puestos</span>
+                  <span class="meta">Limpieza profunda + desinfección básica. (Domicilio)</span>
+                </td>
+                <td class="money public">$135.000</td>
+                <td class="money member">$105.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Sala en L (hasta 5 puestos)</span>
+                  <span class="meta">Incluye módulos, cojinería fija y removible. (Domicilio)</span>
+                </td>
+                <td class="money public">$240.000</td>
+                <td class="money member">$190.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Sala en L grande (5+ módulos)</span>
+                  <span class="meta">Mayor tiempo y área. (Domicilio)</span>
+                </td>
+                <td class="money public">$260.000</td>
+                <td class="money member">$220.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Sofacama</span>
+                  <span class="meta">Incluye mayor maniobra y estructura. (Domicilio)</span>
+                </td>
+                <td class="money public">$120.000</td>
+                <td class="money member">$110.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Poltrona / Sillón 1 puesto</span>
+                  <span class="meta">(Domicilio)</span>
+                </td>
+                <td class="money public">$60.000</td>
+                <td class="money member">$45.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Silla gamer</span>
+                  <span class="meta">(Domicilio)</span>
+                </td>
+                <td class="money public">$80.000</td>
+                <td class="money member">$65.000</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Silla comedor (solo asiento)</span>
+                  <span class="meta"><b>Mínimo 4 sillas</b> por visita.</span>
+                </td>
+                <td class="money public">$15.000</td>
+                <td class="money member">$10.800</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Silla comedor (toda la cojinería)</span>
+                  <span class="meta"><b>Mínimo 4 sillas</b> por visita.</span>
+                </td>
+                <td class="money public">$20.000</td>
+                <td class="money member">$14.400</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Cojín removible / decorativo (c/u)</span>
+                  <span class="meta"><b>Solo add-on</b> o <b>mínimo 6 unidades</b>.</span>
+                </td>
+                <td class="money public">$8.000</td>
+                <td class="money member">$7.200</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Colchón 1.00 m</span>
+                  <span class="meta">Lavado por ambas caras y laterales + antiácaros. Secado aprox. 3h post-servicio.</span>
+                </td>
+                <td class="money public">$90.000</td>
+                <td class="money member">$76.500</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Colchón Semidoble (1.20)</span>
+                  <span class="meta">Antiácaros + lavado completo.</span>
+                </td>
+                <td class="money public">$95.000</td>
+                <td class="money member">$80.500</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Colchón Doble (1.40)</span>
+                  <span class="meta">Antiácaros + lavado completo.</span>
+                </td>
+                <td class="money public">$100.000</td>
+                <td class="money member">$85.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Colchón Queen (1.60)</span>
+                  <span class="meta">Antiácaros + lavado completo.</span>
+                </td>
+                <td class="money public">$110.000</td>
+                <td class="money member">$93.500</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Colchón King (2.00)</span>
+                  <span class="meta">Antiácaros + lavado completo.</span>
+                </td>
+                <td class="money public">$130.000</td>
+                <td class="money member">$110.500</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Base cama</span>
+                  <span class="meta">(Domicilio)</span>
+                </td>
+                <td class="money public">$49.900</td>
+                <td class="money member">$42.500</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Espaldar de cama</span>
+                  <span class="meta">(Domicilio)</span>
+                </td>
+                <td class="money public">$60.000</td>
+                <td class="money member">$51.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Combo Base + Espaldar</span>
+                  <span class="meta">(Domicilio)</span>
+                </td>
+                <td class="money public">$90.000</td>
+                <td class="money member">$76.500</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Paquete sala completa (Sofá 3 puestos + 2 poltronas)</span>
+                  <span class="meta">Ideal para ticket eficiente. (Domicilio)</span>
+                </td>
+                <td class="money public">$210.000</td>
+                <td class="money member">$160.000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="noteBox">
+          <b>Notas rápidas de cobro:</b><br/>
+          • Los valores “Clean Club” aplican a socios activos. • Precios sujetos a inspección (materiales delicados o suciedad extrema pueden requerir recargo).<br/>
+          • Recomendación operativa: mantener cobros en múltiplos de <b>$500</b> para facilidad en caja.
+        </div>
+      </div>
+
+      <!-- TAPETES + POLÍTICAS -->
+      <div class="card">
+        <h2>Tapetes, alfombras y tapete fijo <span class="pill">Medellín</span></h2>
+
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:52%">Servicio</th>
+                <th style="width:24%">Sin membresía</th>
+                <th style="width:24%">Con Clean Club</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="svc">Tapete suelto — tarifa por m²</span>
+                  <span class="meta"><b>Mínimo 2 m²</b>. (Recogida/entrega según zona)</span>
+                </td>
+                <td class="money public">$48.500 / m²</td>
+                <td class="money member">$40.000 / m²</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Tapete suelto 1.20 × 1.70 (2,04 m²)</span>
+                  <span class="meta">Paquete frecuente (valor fijo). Incluye mínimo operativo.</span>
+                </td>
+                <td class="money public">$110.000</td>
+                <td class="money member">$90.000</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Tapete suelto 1.60 × 2.30 (3,68 m²)</span>
+                  <span class="meta">Ejemplo de cobro frecuente (referencia).</span>
+                </td>
+                <td class="money public">$180.000</td>
+                <td class="money member">$155.500</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Tapete suelto 2.00 × 3.00 (6,00 m²)</span>
+                  <span class="meta">Ejemplo de cobro frecuente (referencia).</span>
+                </td>
+                <td class="money public">$290.000</td>
+                <td class="money member">$250.400</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Tapete persa / delicado — tarifa por m²</span>
+                  <span class="meta">Tratamiento especial, riesgo y tiempo mayor.</span>
+                </td>
+                <td class="money public">$55.000 / m²</td>
+                <td class="money member">$45.000 / m²</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="svc">Tapete fijo (instalado) — &lt; 20 m²</span>
+                  <span class="meta"><b>Mínimo de facturación</b> aplica (ver reglas).</span>
+                </td>
+                <td class="money public">$30.000 / m²</td>
+                <td class="money member">$20.800 / m²</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Tapete fijo — 20 a 50 m²</span>
+                  <span class="meta">Tarifa por volumen.</span>
+                </td>
+                <td class="money public">$20.000 / m²</td>
+                <td class="money member">$12.000 / m²</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Tapete fijo — 50 a 100 m²</span>
+                  <span class="meta">Tarifa por volumen.</span>
+                </td>
+                <td class="money public">$15.000 / m²</td>
+                <td class="money member">$11.200 / m²</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Tapete fijo — 100 a 300 m²</span>
+                  <span class="meta">Tarifa por volumen.</span>
+                </td>
+                <td class="money public">$9.000 / m²</td>
+                <td class="money member">$7.400 / m²</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="svc">Tapete fijo — 301 m² o más</span>
+                  <span class="meta">Tarifa por volumen.</span>
+                </td>
+                <td class="money public">$6.500 / m²</td>
+                <td class="money member">$6.900 / m²</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="noteBox">
+          <b>Cómo se cobra m²:</b> largo × ancho (en metros). Para caja, se recomienda redondear el total al múltiplo de <b>$500</b> más cercano.<br/>
+          <b>Importante:</b> tapetes delicados pueden requerir inspección y prueba de solidez de color antes del lavado.
+        </div>
+
+        <h2 style="margin-top:14px;">Reglas y mínimos <span class="pill">obligatorio</span></h2>
+        <div class="rules">
+          <div class="ruleLine">
+            <b>Mínimo a domicilio:</b> <span class="ok">$79.900</span> por orden (si el total del servicio es menor, se cobra mínimo).
+          </div>
+          <div class="ruleLine">
+            <b>Sillas comedor:</b> se atienden con <span class="ok">mínimo 4 sillas</span> por visita.
+          </div>
+          <div class="ruleLine">
+            <b>Cojines:</b> solo <span class="ok">add-on</span> o <span class="ok">mínimo 6 unidades</span>.
+          </div>
+          <div class="ruleLine">
+            <b>Tapete suelto:</b> <span class="ok">mínimo 2 m²</span>. El paquete 1.20×1.70 tiene tarifa fija.
+          </div>
+          <div class="ruleLine">
+            <b>Tapete fijo (instalado):</b> <span class="warn">mínimo de facturación $350.000</span> (por desplazamiento, alistamiento y secado).
+          </div>
+          <div class="ruleLine">
+            <b>Recargos (si aplica):</b> suciedad extrema, orina/mascota, moho/olor fuerte, exceso de pelo: <span class="warn">+15% a +35%</span> según evaluación.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLEAN CLUB -->
+    <div class="card" style="margin-top:16px;">
+      <h2>Planes Clean Club (membresía anual) <span class="pill">Medellín</span></h2>
+
+      <div class="twoPlans">
+        <div class="plan">
+          <h3>Clean Club Básica</h3>
+          <div class="priceTag">
+            <div class="big">$149.900</div>
+            <div class="small">/ año • 1 dirección registrada</div>
+          </div>
+
+          <ul>
+            <li><b>Precios de socio</b> en todos los servicios (columna “Con Clean Club”).</li>
+            <li><b>1 servicio incluido</b> (una vez al año) <b>DESPUÉS del 3er servicio pagado</b> del mismo año.</li>
+            <li>
+              <b>Tope del servicio incluido:</b> máximo <b>$110.000</b> (valor público) o su equivalente.
+              <span class="muted">Ejemplos elegibles: Sofá 2 puestos / Sofacama / Colchón hasta Queen / Tapete suelto hasta ~3 m² (según evaluación).</span>
+            </li>
+            <li><b>Prioridad de agenda</b> sobre no socios (según disponibilidad).</li>
+            <li class="muted"><b>Uso justo:</b> precios de socio aplican hasta <b>6 órdenes/año</b> a domicilio por la dirección registrada (para evitar uso compartido).</li>
+          </ul>
+        </div>
+
+        <div class="plan plus">
+          <div class="badge">Recomendado</div>
+          <h3>Clean Club Plus</h3>
+          <div class="priceTag">
+            <div class="big">$179.900</div>
+            <div class="small">/ año • 1 dirección registrada</div>
+          </div>
+
+          <ul>
+            <li><b>Todos los descuentos</b> (misma columna “Con Clean Club”).</li>
+            <li><b>1 servicio incluido</b> (una vez al año) <b>DESPUÉS del 2do servicio pagado</b> del mismo año.</li>
+            <li>
+              <b>Tope del servicio incluido:</b> máximo <b>$160.000</b> (valor público) o su equivalente.
+              <span class="muted">Ejemplos elegibles: Sofá 3 puestos / Sala en L hasta 5 / Colchón King / Tapete suelto hasta ~5 m² (según evaluación).</span>
+            </li>
+            <li><b>2 “rescates” al año</b> (mancha puntual / refuerzo anti-olor) — no es lavado completo.</li>
+            <li><b>Prioridad VIP</b> (agenda preferencial 24–48h cuando sea posible).</li>
+            <li class="muted"><b>Uso justo:</b> precios de socio aplican hasta <b>10 órdenes/año</b> a domicilio por la dirección registrada.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="noteBox">
+        <b>Políticas clave (ambos planes):</b><br/>
+        • <b>1 dirección única</b> por membresía (no transferible). • No acumulable con otras promociones o cupones. • Servicios incluidos se programan preferiblemente <b>lunes a jueves</b> (horas valle) para cuidar la operación.<br/>
+        • Si el cliente cambia de domicilio: se permite <b>1 cambio de dirección</b> durante la vigencia, previa verificación (para evitar uso compartido).<br/>
+        • La membresía aplica a Medellín y área operativa definida por Clean Company (zonas lejanas pueden tener recargo de desplazamiento).
+      </div>
+    </div>
+
+    <div class="footer">
+      Clean Company • Medellín • Tarifario interno para caja/secretaría • Ajustes o excepciones solo con aprobación administrativa.
+    </div>
+  </div>
+
+  <script>
+    // (Opcional) Puedes activar aquí una fecha automática si quieres imprimir con fecha:
+    // document.querySelector('.sub').insertAdjacentHTML('beforeend', '<br><b>Fecha:</b> ' + new Date().toLocaleDateString('es-CO'));
+  </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import React from 'react'
 import LandingSelector from '@/components/sections/LandingSelector'
 import BeforeAfter from '@/components/sections/BeforeAfter' // <-- IMPORTAMOS TU SLIDER
+import VisualQuoter from '@/components/VisualQuoter'
 import { ShieldCheck, Droplets, Clock, Star, MessageCircle, CalendarCheck, Home } from 'lucide-react'
 
 // Optimizacion Next.js: robots como objeto
@@ -114,6 +115,23 @@ export default function HogarSaludableLanding() {
 
       {/* EL SLIDER INTERACTIVO (Reutilizamos tu componente ya creado) */}
       <BeforeAfter />
+
+      {/* Cotizador Visual IA */}
+      <section className="py-16 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              Calcula tu estimado en segundos
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              Sube una foto de tus muebles o tapetes y nuestra IA te dará un precio aproximado al instante, sin compromisos.
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto">
+            <VisualQuoter />
+          </div>
+        </div>
+      </section>
 
       {/* FAQ Semántico (Manejo de expectativas reales) */}
       <section className="py-20 bg-white border-t border-gray-100">
