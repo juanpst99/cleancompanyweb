@@ -32,7 +32,7 @@ const nextConfig = {
   compiler: {
     // Eliminar console.logs en producción
     removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error', 'warn'],
+      exclude: ['error', 'warn', 'info'],
     } : false,
   },
   

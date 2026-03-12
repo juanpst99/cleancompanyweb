@@ -16,45 +16,90 @@ interface QuoteResult {
   explicacion: string
 }
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+// Límite duro: si después de compresión la imagen sigue pasando esto, no la enviamos.
+// Edge Runtime limita body a ~4.5 MB y un base64 de 1.5 MB ya usa ~2 MB de JSON payload.
+const MAX_PAYLOAD_CHARS = 1_500_000 // ~1.1 MB de imagen real
+
+// Timeout para el fetch al backend (2 llamadas a Gemini + lógica = ~30s normal, cap a 50s)
+const FETCH_TIMEOUT_MS = 50_000
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const formatCOP = (value: number) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(value)
 
 /**
- * Comprime la imagen a JPEG antes de enviarla al backend.
- * maxWidth 800 px + calidad 0.7 produce archivos de ~100–250 KB
- * desde originales de hasta 10 MB — suficiente para que Gemini
- * identifique objetos y mida bounding boxes con precisión.
+ * Comprime la imagen a JPEG usando Canvas.
+ *
+ * Robustez en móvil:
+ *   - Usa createImageBitmap cuando está disponible (mejor memoria en iOS/Android)
+ *   - Fallback a new Image() + objectURL
+ *   - HEIC de iOS se decodifica bien via createImageBitmap en Safari 17+
+ *   - Si todo falla, lanza error que el caller captura
+ *
+ * Retorna un data URL `data:image/jpeg;base64,...`
  */
-const compressImage = (file: File, maxWidth = 800, quality = 0.7): Promise<string> =>
-  new Promise((resolve, reject) => {
+async function compressImage(file: File, maxWidth = 800, quality = 0.6): Promise<string> {
+  // Intentar createImageBitmap primero (más eficiente en memoria, mejor soporte HEIC)
+  let source: ImageBitmap | HTMLImageElement
+
+  if (typeof createImageBitmap === 'function') {
+    try {
+      source = await createImageBitmap(file)
+    } catch {
+      // Fallback: algunos Android viejos fallan con createImageBitmap en ciertos MIME
+      source = await loadImageFromFile(file)
+    }
+  } else {
+    source = await loadImageFromFile(file)
+  }
+
+  const srcW = source instanceof HTMLImageElement ? source.naturalWidth : source.width
+  const srcH = source instanceof HTMLImageElement ? source.naturalHeight : source.height
+
+  if (srcW === 0 || srcH === 0) {
+    throw new Error('La imagen no se pudo leer correctamente.')
+  }
+
+  // Escalar manteniendo aspect ratio; nunca ampliar
+  const scale = Math.min(1, maxWidth / srcW)
+  const w = Math.round(srcW * scale)
+  const h = Math.round(srcH * scale)
+
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('Tu navegador no soporta procesamiento de imágenes.')
+
+  ctx.drawImage(source, 0, 0, w, h)
+
+  // Liberar ImageBitmap si se usó
+  if (source instanceof ImageBitmap) source.close()
+
+  return canvas.toDataURL('image/jpeg', quality)
+}
+
+/** Fallback: carga imagen a través de objectURL + HTMLImageElement */
+function loadImageFromFile(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
     const img = new Image()
-    const objectUrl = URL.createObjectURL(file)
+    const url = URL.createObjectURL(file)
 
     img.onload = () => {
-      URL.revokeObjectURL(objectUrl)
-
-      // Escalar manteniendo aspect ratio; nunca ampliar si es más pequeña
-      const scale = Math.min(1, maxWidth / img.width)
-      const canvas = document.createElement('canvas')
-      canvas.width  = Math.round(img.width  * scale)
-      canvas.height = Math.round(img.height * scale)
-
-      const ctx = canvas.getContext('2d')
-      if (!ctx) return reject(new Error('Canvas no disponible en este dispositivo'))
-
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-      resolve(canvas.toDataURL('image/jpeg', quality))
+      URL.revokeObjectURL(url)
+      resolve(img)
     }
-
     img.onerror = () => {
-      URL.revokeObjectURL(objectUrl)
-      reject(new Error('No se pudo cargar la imagen'))
+      URL.revokeObjectURL(url)
+      reject(new Error('No se pudo cargar la imagen. Intenta con otro formato (JPG o PNG).'))
     }
-
-    img.src = objectUrl
+    img.src = url
   })
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -126,14 +171,43 @@ export default function VisualQuoter() {
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   const handleFile = useCallback(async (file: File) => {
-    if (!file.type.startsWith('image/')) return
-    // Mostramos el original en el preview (solo visual, no se envía)
-    const url = URL.createObjectURL(file)
-    // Comprimimos antes de guardar en estado — lo que llega al backend
-    const base64 = await compressImage(file)
-    setPreviewUrl(url)
-    setImageBase64(base64)
-    setStep('preview')
+    if (!file.type.startsWith('image/') && file.type !== '') {
+      // file.type puede ser '' en Android para HEIC/formatos raros
+      // Si es '' lo dejamos pasar e intentamos comprimir igualmente
+      return
+    }
+
+    try {
+      const url = URL.createObjectURL(file)
+      const base64 = await compressImage(file)
+
+      // Verificar tamaño del base64 resultante
+      if (base64.length > MAX_PAYLOAD_CHARS) {
+        URL.revokeObjectURL(url)
+        // Intentar con calidad más baja
+        const base64Low = await compressImage(file, 640, 0.4)
+        if (base64Low.length > MAX_PAYLOAD_CHARS) {
+          setErrorMsg('La imagen es demasiado grande incluso después de comprimirla. Intenta con una foto de menor resolución.')
+          setStep('error')
+          return
+        }
+        console.info('[Quoter] Recomprimida a calidad baja:', Math.round(base64Low.length / 1024), 'KB')
+        setPreviewUrl(url)
+        setImageBase64(base64Low)
+        setStep('preview')
+        return
+      }
+
+      console.info('[Quoter] Imagen comprimida:', Math.round(base64.length / 1024), 'KB')
+      setPreviewUrl(url)
+      setImageBase64(base64)
+      setStep('preview')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'No se pudo procesar la imagen.'
+      console.error('[Quoter] Error comprimiendo:', msg)
+      setErrorMsg(`No pudimos procesar tu foto: ${msg}`)
+      setStep('error')
+    }
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,24 +229,62 @@ export default function VisualQuoter() {
     setResult(null)
     setErrorMsg('')
 
-    try {
-      // ── Diagnóstico de tamaño ────────────────────────────────────────────────
-      // Si ves un valor > 300 KB en consola, revisar compressImage().
-      // Con maxWidth=800 y quality=0.7 el valor esperado es 80–250 KB.
-      console.log('Tamaño de imagen a enviar (KB):', Math.round(imageBase64.length / 1024))
-      // ────────────────────────────────────────────────────────────────────────
+    // AbortController para timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
 
+    try {
       const res = await fetch('/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageBase64, ciudad, categoria }),
+        signal: controller.signal,
       })
-      if (!res.ok) throw new Error('Error en el servidor')
-      const data: QuoteResult = await res.json()
-      setResult(data)
+
+      clearTimeout(timeoutId)
+
+      // Leer el body de la respuesta SIEMPRE — el backend envía mensajes útiles
+      const data = await res.json()
+
+      if (!res.ok) {
+        // El backend devuelve { error: "mensaje legible" } en todos los status codes
+        const serverMsg = data?.error || ''
+
+        // Elegir mensaje según el tipo de error
+        if (res.status === 422) {
+          // 422 = foto rechazada o falta referencia — mostrar mensaje del backend tal cual
+          setErrorMsg(serverMsg || 'La foto no es adecuada. Intenta con otra.')
+        } else if (res.status === 502) {
+          // 502 = Gemini respondió mal — error temporal
+          setErrorMsg(serverMsg || 'Nuestro sistema de análisis tuvo un problema temporal. Intenta de nuevo.')
+        } else if (res.status >= 500) {
+          // 5xx = error del servidor
+          setErrorMsg('Estamos experimentando problemas técnicos. Intenta de nuevo en unos segundos.')
+        } else {
+          // 4xx = error del request
+          setErrorMsg(serverMsg || 'Hubo un problema con la solicitud. Intenta de nuevo.')
+        }
+
+        setStep('error')
+        return
+      }
+
+      // Éxito: data ya tiene la estructura QuoteResult
+      setResult(data as QuoteResult)
       setStep('result')
-    } catch {
-      setErrorMsg('Ocurrió un problema al analizar la foto. Por favor intenta de nuevo.')
+
+    } catch (err) {
+      clearTimeout(timeoutId)
+
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setErrorMsg('El análisis tardó demasiado. Esto puede pasar con fotos muy complejas. Intenta con una foto más simple o inténtalo de nuevo.')
+        setStep('error')
+        return
+      }
+
+      // Error de red (offline, DNS, CORS, etc.)
+      console.error('[Quoter] Error de red:', err instanceof Error ? err.message : err)
+      setErrorMsg('No se pudo conectar con el servidor. Verifica tu conexión a internet e intenta de nuevo.')
       setStep('error')
     }
   }
@@ -430,7 +542,7 @@ export default function VisualQuoter() {
           {step === 'error' && (
             <div className="flex flex-col items-center gap-4 py-6">
               <span className="text-4xl">😞</span>
-              <div className="text-center">
+              <div className="text-center px-2">
                 <p className="text-sm font-semibold text-gray-700">{errorMsg}</p>
               </div>
               <button

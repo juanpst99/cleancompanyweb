@@ -127,13 +127,45 @@ function parseDataUrl(dataUrl: string): { data: string; mimeType: string } {
   return { data: match[2], mimeType: match[1] }
 }
 
-/** Limpia posibles markdown code fences y parsea el JSON del modelo. */
-function parseModelJSON<T>(raw: string): T {
-  const clean = raw
-    .replace(/^```(?:json)?\s*/i, '')
-    .replace(/\s*```\s*$/i, '')
-    .trim()
-  return JSON.parse(clean) as T
+/**
+ * Extrae y parsea JSON de una respuesta de Gemini que puede venir envuelta
+ * en code fences, texto previo/posterior, o directamente como JSON.
+ *
+ * Estrategia (en orden):
+ *   1. Busca la primera ocurrencia de { ... } (balance de llaves)
+ *   2. Intenta parsear ese substring
+ *   3. Si falla, loguea el raw para diagnóstico y lanza error legible
+ */
+function parseModelJSON<T>(raw: string, step: string): T {
+  // Buscar el primer '{' y emparejar llaves
+  const startIdx = raw.indexOf('{')
+  if (startIdx === -1) {
+    console.error(`[quote:${step}] Respuesta sin JSON. Raw (500 chars):`, raw.slice(0, 500))
+    throw new Error(`Gemini no devolvió JSON en ${step}`)
+  }
+
+  let depth = 0
+  let endIdx = -1
+  for (let i = startIdx; i < raw.length; i++) {
+    if (raw[i] === '{') depth++
+    else if (raw[i] === '}') {
+      depth--
+      if (depth === 0) { endIdx = i; break }
+    }
+  }
+
+  if (endIdx === -1) {
+    console.error(`[quote:${step}] JSON incompleto. Raw (500 chars):`, raw.slice(0, 500))
+    throw new Error(`JSON incompleto en respuesta de Gemini (${step})`)
+  }
+
+  const jsonStr = raw.slice(startIdx, endIdx + 1)
+  try {
+    return JSON.parse(jsonStr) as T
+  } catch (e) {
+    console.error(`[quote:${step}] JSON inválido. Extraído:`, jsonStr.slice(0, 300))
+    throw new Error(`JSON inválido en respuesta de Gemini (${step})`)
+  }
 }
 
 /**
@@ -219,7 +251,13 @@ Responde:
     }],
   })
 
-  return parseModelJSON<ValidationResult>(response.text ?? '{}')
+  const raw = response.text ?? ''
+  if (!raw) {
+    console.error('[quote:paso1] Gemini devolvió respuesta vacía')
+    throw new Error('Gemini devolvió respuesta vacía en validación')
+  }
+
+  return parseModelJSON<ValidationResult>(raw, 'paso1')
 }
 
 // ─── Paso 2: Detección y medición (gemini-2.5-flash) ─────────────────────────
@@ -278,15 +316,26 @@ REGLAS CRÍTICAS:
         { text: prompt },
       ],
     }],
-    // Thinking desactivado: optimiza latencia y costo para detección de objetos
-    // estructurada. El razonamiento extendido no mejora significativamente
-    // la precisión de bounding boxes frente a una respuesta directa.
     config: {
       thinkingConfig: { thinkingBudget: 0 },
     },
   })
 
-  return parseModelJSON<DetectionResult>(response.text ?? '{}')
+  const raw = response.text ?? ''
+  if (!raw) {
+    console.error('[quote:paso2] Gemini devolvió respuesta vacía')
+    throw new Error('Gemini devolvió respuesta vacía en detección')
+  }
+
+  const result = parseModelJSON<DetectionResult>(raw, 'paso2')
+
+  // Validación de estructura mínima para no explotar en Paso 3
+  if (!result.elementoPrincipal?.subtipo || !result.elementoPrincipal?.bbox) {
+    console.error('[quote:paso2] Estructura incompleta:', JSON.stringify(result).slice(0, 300))
+    throw new Error('Respuesta de Gemini incompleta en detección')
+  }
+
+  return result
 }
 
 // ─── Paso 3: Lógica de negocio ────────────────────────────────────────────────
@@ -372,16 +421,14 @@ function calcularCotizacion(
 
 // ─── Route Handler ────────────────────────────────────────────────────────────
 
-// Edge Runtime: elimina el cold-start de Node.js y soporta maxDuration de hasta 60 s
-// en planes Pro/Enterprise de Vercel. Compatible con @google/genai (usa fetch nativo).
-// Nota: el body size en Edge está limitado a ~4 MB — la compresión en el frontend
-// (800 px / JPEG 0.7) garantiza imágenes < 300 KB, por lo que no hay conflicto.
-export const runtime    = 'edge'
-export const maxDuration = 60  // segundos (requiere Vercel Pro o superior)
+// Node.js runtime: necesario por compatibilidad con @google/genai que usa APIs
+// de Node (node:buffer, node:crypto). Edge Runtime causa fallos intermitentes.
+// maxDuration 60s cubre las 2 llamadas a Gemini (~5-15s cada una) con margen.
+export const maxDuration = 60
 
 export async function POST(req: NextRequest) {
   if (!GEMINI_API_KEY) {
-    console.error('[/api/quote] GEMINI_API_KEY no está definida.')
+    console.error('[quote] GEMINI_API_KEY no está definida.')
     return NextResponse.json(
       { error: 'El servicio de cotización no está disponible en este momento.' },
       { status: 503 },
@@ -430,47 +477,64 @@ export async function POST(req: NextRequest) {
     // Extraer datos de la imagen
     const { data: imageData, mimeType } = parseDataUrl(image)
 
+    // Log de tamaño del payload recibido (base64 chars ≈ bytes * 4/3)
+    const approxSizeKB = Math.round(imageData.length * 0.75 / 1024)
+    console.info(`[quote] Inicio: ${ciudad} | ${categoria} | ~${approxSizeKB} KB imagen`)
+
     // ── Paso 1: Filtro de calidad ──────────────────────────────────────────
-    console.log(`[/api/quote] Paso 1: validando foto (${ciudad}, ${categoria})`)
+    console.info('[quote] Paso 1: validando foto...')
     const validation = await validarFoto(ai, imageData, mimeType, categoria)
 
     if (!validation.apta) {
+      console.info(`[quote] Paso 1 rechazó foto: ${validation.razon}`)
       return NextResponse.json(
-        { error: validation.razon || 'La foto no es apta. Por favor toma otra.' },
+        { error: validation.razon || 'La foto no es apta. Por favor toma otra con mejor iluminación y enfoque.' },
         { status: 422 },
       )
     }
 
     // ── Paso 2: Detección y medición ────────────────────────────────────────
-    console.log('[/api/quote] Paso 2: detectando objetos y bounding boxes')
+    console.info('[quote] Paso 2: detectando objetos...')
     const detection = await detectarObjetos(ai, imageData, mimeType, categoria)
 
     // ── Paso 3: Lógica de negocio ────────────────────────────────────────────
-    console.log('[/api/quote] Paso 3: calculando cotización')
+    console.info('[quote] Paso 3: calculando cotización...')
     const cotizacion = calcularCotizacion(detection, categoria, ciudad)
 
-    console.log(`[/api/quote] ✅ ${ciudad} | ${cotizacion.itemDetectado} → ${formatCOP(cotizacion.precioEstimado)}`)
+    console.info(`[quote] OK: ${ciudad} | ${cotizacion.itemDetectado} → ${formatCOP(cotizacion.precioEstimado)}`)
     return NextResponse.json(cotizacion)
 
   } catch (err: unknown) {
-    const message      = err instanceof Error ? err.message : 'Error desconocido'
-    const isUserError  = err instanceof UserError
-
-    console.error('[/api/quote] Error:', message)
+    const message     = err instanceof Error ? err.message : 'Error desconocido'
+    const isUserError = err instanceof UserError
 
     if (isUserError) {
+      console.info(`[quote] UserError: ${message}`)
       return NextResponse.json({ error: message }, { status: 422 })
     }
 
-    if (err instanceof SyntaxError) {
+    // Errores de parseo de la respuesta de Gemini
+    if (message.includes('Gemini') || message.includes('JSON')) {
+      console.error(`[quote] Error de modelo: ${message}`)
       return NextResponse.json(
-        { error: 'El análisis de la imagen no devolvió un resultado válido. Por favor intenta de nuevo.' },
+        { error: 'Nuestro sistema de análisis no pudo procesar la imagen. Por favor intenta con otra foto más clara.' },
         { status: 502 },
       )
     }
 
+    // Errores de parseo del body del request
+    if (err instanceof SyntaxError) {
+      console.error(`[quote] Body inválido: ${message}`)
+      return NextResponse.json(
+        { error: 'La solicitud no se pudo procesar. Por favor intenta de nuevo.' },
+        { status: 400 },
+      )
+    }
+
+    // Error inesperado
+    console.error(`[quote] Error inesperado: ${message}`)
     return NextResponse.json(
-      { error: 'Ocurrió un problema al analizar la foto. Por favor intenta de nuevo.' },
+      { error: 'Ocurrió un problema temporal con el servicio. Por favor intenta de nuevo en unos segundos.' },
       { status: 500 },
     )
   }
