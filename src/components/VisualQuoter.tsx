@@ -14,6 +14,7 @@ interface QuoteResult {
   itemDetectado: string
   precioEstimado: number
   explicacion: string
+  sinReferencia?: boolean  // precio orientativo cuando no se detectó referencia de tamaño
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -21,6 +22,12 @@ interface QuoteResult {
 // Límite duro: si después de compresión la imagen sigue pasando esto, no la enviamos.
 // Edge Runtime limita body a ~4.5 MB y un base64 de 1.5 MB ya usa ~2 MB de JSON payload.
 const MAX_PAYLOAD_CHARS = 1_500_000 // ~1.1 MB de imagen real
+
+// Sentinel para distinguir errores de memoria de otros errores de canvas/decode
+const MEMORY_ERROR = 'MEMORY_ERROR__'
+
+// Límite de tamaño de archivo antes de intentar compresión (20 MB)
+const MAX_FILE_BYTES = 20 * 1024 * 1024
 
 // Timeout para el fetch al backend (2 llamadas a Gemini + lógica = ~30s normal, cap a 50s)
 const FETCH_TIMEOUT_MS = 50_000
@@ -33,24 +40,33 @@ const formatCOP = (value: number) =>
 /**
  * Comprime la imagen a JPEG usando Canvas.
  *
- * Robustez en móvil:
- *   - Usa createImageBitmap cuando está disponible (mejor memoria en iOS/Android)
- *   - Fallback a new Image() + objectURL
- *   - HEIC de iOS se decodifica bien via createImageBitmap en Safari 17+
- *   - Si todo falla, lanza error que el caller captura
+ * Mejora de memoria en móvil:
+ *   - createImageBitmap con { resizeWidth } decodifica DIRECTAMENTE al tamaño objetivo.
+ *     Esto reduce el pico de memoria de ~40 MB (12MP completo) a ~4 MB (800px).
+ *   - Fallback a new Image() + objectURL para browsers sin createImageBitmap.
+ *   - Canvas limpiado (width/height = 0) después de exportar para liberar GPU memory.
+ *   - Lanza MEMORY_ERROR si detecta error de OOM (el caller muestra mensaje amigable).
  *
  * Retorna un data URL `data:image/jpeg;base64,...`
  */
 async function compressImage(file: File, maxWidth = 800, quality = 0.6): Promise<string> {
-  // Intentar createImageBitmap primero (más eficiente en memoria, mejor soporte HEIC)
   let source: ImageBitmap | HTMLImageElement
 
   if (typeof createImageBitmap === 'function') {
     try {
-      source = await createImageBitmap(file)
-    } catch {
-      // Fallback: algunos Android viejos fallan con createImageBitmap en ciertos MIME
-      source = await loadImageFromFile(file)
+      // resizeWidth decodifica al tamaño objetivo directamente → pico de memoria ~4 MB
+      source = await createImageBitmap(file, { resizeWidth: maxWidth, resizeQuality: 'medium' })
+    } catch (bitmapErr) {
+      // Algunos Android viejos o HEIC sin soporte nativo fallan aquí — usar fallback
+      const msg = bitmapErr instanceof Error ? bitmapErr.message.toLowerCase() : ''
+      if (msg.includes('memory') || msg.includes('allocation') || msg.includes('oom')) {
+        throw new Error(MEMORY_ERROR)
+      }
+      try {
+        source = await loadImageFromFile(file)
+      } catch {
+        throw new Error('No se pudo cargar la imagen. Intenta con JPG o PNG.')
+      }
     }
   } else {
     source = await loadImageFromFile(file)
@@ -60,10 +76,12 @@ async function compressImage(file: File, maxWidth = 800, quality = 0.6): Promise
   const srcH = source instanceof HTMLImageElement ? source.naturalHeight : source.height
 
   if (srcW === 0 || srcH === 0) {
+    if (source instanceof ImageBitmap) source.close()
     throw new Error('La imagen no se pudo leer correctamente.')
   }
 
-  // Escalar manteniendo aspect ratio; nunca ampliar
+  // Para ImageBitmap con resizeWidth, ya está al tamaño objetivo (scale ≈ 1).
+  // Para HTMLImageElement en el fallback, escalar aquí manteniendo aspect ratio.
   const scale = Math.min(1, maxWidth / srcW)
   const w = Math.round(srcW * scale)
   const h = Math.round(srcH * scale)
@@ -73,14 +91,31 @@ async function compressImage(file: File, maxWidth = 800, quality = 0.6): Promise
   canvas.height = h
 
   const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('Tu navegador no soporta procesamiento de imágenes.')
+  if (!ctx) {
+    if (source instanceof ImageBitmap) source.close()
+    throw new Error('Tu navegador no soporta procesamiento de imágenes.')
+  }
 
   ctx.drawImage(source, 0, 0, w, h)
-
-  // Liberar ImageBitmap si se usó
   if (source instanceof ImageBitmap) source.close()
 
-  return canvas.toDataURL('image/jpeg', quality)
+  let dataUrl: string
+  try {
+    dataUrl = canvas.toDataURL('image/jpeg', quality)
+  } catch (canvasErr) {
+    const msg = canvasErr instanceof Error ? canvasErr.message.toLowerCase() : ''
+    canvas.width = 0; canvas.height = 0
+    if (msg.includes('memory') || msg.includes('oom') || msg.includes('tainted')) {
+      throw new Error(MEMORY_ERROR)
+    }
+    throw canvasErr
+  }
+
+  // Liberar memoria del canvas explícitamente
+  canvas.width = 0
+  canvas.height = 0
+
+  return dataUrl
 }
 
 /** Fallback: carga imagen a través de objectURL + HTMLImageElement */
@@ -177,15 +212,28 @@ export default function VisualQuoter() {
       return
     }
 
+    // Pre-check: rechazar archivos excesivamente grandes antes de intentar decodificar
+    if (file.size > MAX_FILE_BYTES) {
+      setErrorMsg('La imagen es muy grande (máximo 20 MB). Toma la foto con menor resolución o elige otra.')
+      setStep('error')
+      return
+    }
+
+    // Tamaño adaptativo: fotos de cámara de alta resolución necesitan menos ancho
+    // para que createImageBitmap use menos pico de memoria durante el decode.
+    const adaptiveMaxWidth = file.size > 6 * 1024 * 1024 ? 560
+      : file.size > 3 * 1024 * 1024 ? 700
+      : 800
+
     try {
       const url = URL.createObjectURL(file)
-      const base64 = await compressImage(file)
+      const base64 = await compressImage(file, adaptiveMaxWidth)
 
       // Verificar tamaño del base64 resultante
       if (base64.length > MAX_PAYLOAD_CHARS) {
         URL.revokeObjectURL(url)
         // Intentar con calidad más baja
-        const base64Low = await compressImage(file, 640, 0.4)
+        const base64Low = await compressImage(file, 560, 0.4)
         if (base64Low.length > MAX_PAYLOAD_CHARS) {
           setErrorMsg('La imagen es demasiado grande incluso después de comprimirla. Intenta con una foto de menor resolución.')
           setStep('error')
@@ -203,9 +251,14 @@ export default function VisualQuoter() {
       setImageBase64(base64)
       setStep('preview')
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'No se pudo procesar la imagen.'
-      console.error('[Quoter] Error comprimiendo:', msg)
-      setErrorMsg(`No pudimos procesar tu foto: ${msg}`)
+      const isMemory = err instanceof Error && err.message === MEMORY_ERROR
+      if (isMemory) {
+        setErrorMsg('Memoria insuficiente para procesar esta foto. Intenta con una imagen más pequeña o toma la foto con menor resolución.')
+      } else {
+        const msg = err instanceof Error ? err.message : 'No se pudo procesar la imagen.'
+        console.error('[Quoter] Error comprimiendo:', msg)
+        setErrorMsg(`No pudimos procesar tu foto: ${msg}`)
+      }
       setStep('error')
     }
   }, [])
@@ -301,7 +354,9 @@ export default function VisualQuoter() {
     const { ref } = trackWhatsAppClick()
     const price = result ? formatCOP(result.precioEstimado) : ''
     const item = result?.itemDetectado ?? ''
-    const msg = `Hola, quiero *reservar por este precio*. 🧹\n\n*Cotización Visual Clean Company*\nItem detectado: ${item}\nPrecio estimado: ${price}\nCiudad: ${ciudad}\n\n(Ref: ${ref})`
+    const msg = result?.sinReferencia
+      ? `Hola, quiero confirmar el precio exacto de mi tapete. 🧹\n\n*Cotización Visual Clean Company*\nItem: ${item}\nPrecio orientativo: ~${price}\nCiudad: ${ciudad}\n\n(No puse objeto de referencia — por favor ayúdenme con el precio exacto)\n(Ref: ${ref})`
+      : `Hola, quiero *reservar por este precio*. 🧹\n\n*Cotización Visual Clean Company*\nItem detectado: ${item}\nPrecio estimado: ${price}\nCiudad: ${ciudad}\n\n(Ref: ${ref})`
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
     setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 150)
   }
@@ -499,13 +554,23 @@ export default function VisualQuoter() {
               </div>
 
               {/* Price — Big display */}
-              <div className="text-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-6 px-4 border border-blue-100">
-                <p className="text-xs text-blue-500 font-semibold uppercase tracking-widest mb-1">Precio estimado</p>
-                <p className="text-5xl font-black text-blue-700 tracking-tight">
-                  {formatCOP(result.precioEstimado)}
-                </p>
-                <p className="text-xs text-blue-400 mt-1">En {ciudad}</p>
-              </div>
+              {result.sinReferencia ? (
+                <div className="text-center bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl py-6 px-4 border border-amber-200">
+                  <p className="text-xs text-amber-600 font-semibold uppercase tracking-widest mb-1">Precio orientativo</p>
+                  <p className="text-5xl font-black text-amber-700 tracking-tight">
+                    ~{formatCOP(result.precioEstimado)}
+                  </p>
+                  <p className="text-xs text-amber-500 mt-1">En {ciudad} · sin referencia de tamaño</p>
+                </div>
+              ) : (
+                <div className="text-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-6 px-4 border border-blue-100">
+                  <p className="text-xs text-blue-500 font-semibold uppercase tracking-widest mb-1">Precio estimado</p>
+                  <p className="text-5xl font-black text-blue-700 tracking-tight">
+                    {formatCOP(result.precioEstimado)}
+                  </p>
+                  <p className="text-xs text-blue-400 mt-1">En {ciudad}</p>
+                </div>
+              )}
 
               {/* Explanation */}
               <div className="flex gap-3 bg-gray-50 rounded-xl p-4 border border-gray-100">
@@ -525,7 +590,7 @@ export default function VisualQuoter() {
                 <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.876 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
                 </svg>
-                Reservar por este precio
+                {result.sinReferencia ? 'Confirmar precio exacto por WhatsApp' : 'Reservar por este precio'}
               </button>
 
               {/* Start over */}

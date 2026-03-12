@@ -116,6 +116,7 @@ interface CotizacionResult {
   itemDetectado:  string
   precioEstimado: number
   explicacion:    string
+  sinReferencia?: boolean  // true cuando el tapete se cotizó sin referencia de tamaño visible
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -234,7 +235,6 @@ CRITERIOS PARA QUE LA FOTO SEA APTA (todos deben cumplirse):
 2. El ítem principal (${esTapete ? 'tapete o alfombra' : 'mueble: sala, sofá, poltrona o silla'}) se ve completo o casi completo.
 3. Hay suficiente iluminación para distinguir el ítem.
 4. El ítem es claramente un ${esTapete ? 'tapete o alfombra (no un colchón ni un mueble)' : 'mueble tapizable (no un colchón ni un tapete)'}.
-${esTapete ? '5. OBLIGATORIO para tapetes: debe haber un objeto de referencia visible (zapato, botella, hoja A4, libro, etc.) junto al tapete.' : ''}
 
 Responde:
 - Si apta: {"apta": true, "razon": ""}
@@ -258,6 +258,58 @@ Responde:
   }
 
   return parseModelJSON<ValidationResult>(raw, 'paso1')
+}
+
+// ─── Paso 2b: Búsqueda enfocada de referencia (segunda pasada) ───────────────
+//
+// Se invoca sólo cuando Paso 2 no encontró objetoReferencia para un tapete.
+// Usa un prompt muy permisivo que lista docenas de objetos cotidianos, tolerante
+// a visibilidad parcial o posición en el borde del encuadre.
+
+async function buscarReferenciaFocused(
+  ai: GoogleGenAI,
+  imageData: string,
+  mimeType: string,
+): Promise<{ tipo: string; bbox: BBox } | null> {
+  const prompt = `Eres un sistema de búsqueda de objetos de referencia de tamaño para Clean Company.
+
+Tu única tarea: determinar si hay CUALQUIER objeto cotidiano en la imagen que pueda servir como referencia de escala junto al tapete.
+
+Objetos a buscar (acepta aunque estén PARCIALMENTE visibles o en el borde):
+zapato, tenis, sandalia, bota, chancleta, botella, vaso, taza, jarro, control remoto, libro, revista, carpeta, cuaderno, hoja A4, papel, llave, moneda, billetera, cartera, bolso, teléfono celular, tablet, mano humana, pie humano, ropa doblada, almohada, cojín, cinta métrica, regla, bolsa, paquete, caja, cualquier objeto doméstico identificable.
+
+Responde ÚNICAMENTE con JSON válido (sin texto adicional, sin markdown):
+{"encontrado": boolean, "tipo": "nombre del objeto o vacío", "bbox": [ymin, xmin, ymax, xmax]}
+
+- Si NO encuentras ningún objeto de referencia: {"encontrado": false, "tipo": "", "bbox": [0,0,0,0]}
+- Las coordenadas bbox son NORMALIZADAS entre 0 y 1000 (1000 = dimensión completa de la imagen).
+- Sé MUY PERMISIVO: ante cualquier duda, marca como encontrado.`
+
+  try {
+    const response = await ai.models.generateContent({
+      model: MODEL_DETECTION,
+      contents: [{
+        role: 'user',
+        parts: [
+          { inlineData: { data: imageData, mimeType } },
+          { text: prompt },
+        ],
+      }],
+      config: { thinkingConfig: { thinkingBudget: 0 } },
+    })
+
+    const raw = response.text ?? ''
+    if (!raw) return null
+
+    const parsed = parseModelJSON<{ encontrado: boolean; tipo: string; bbox: BBox }>(raw, 'paso2b')
+    if (parsed.encontrado && parsed.tipo && parsed.bbox) {
+      return { tipo: parsed.tipo, bbox: parsed.bbox }
+    }
+    return null
+  } catch {
+    // Si la segunda pasada falla, continuar sin referencia (graceful degradation)
+    return null
+  }
 }
 
 // ─── Paso 2: Detección y medición (gemini-2.5-flash) ─────────────────────────
@@ -335,6 +387,19 @@ REGLAS CRÍTICAS:
     throw new Error('Respuesta de Gemini incompleta en detección')
   }
 
+  // Segunda pasada enfocada: si es tapete y no se detectó referencia, intentar de nuevo
+  // con un prompt permisivo que busca cualquier objeto cotidiano visible.
+  if (categoria === 'Tapete' && !result.objetoReferencia) {
+    console.info('[quote] Paso 2b: sin referencia en primera pasada, iniciando búsqueda enfocada...')
+    const refFocused = await buscarReferenciaFocused(ai, imageData, mimeType)
+    if (refFocused) {
+      console.info(`[quote] Paso 2b: referencia encontrada en segunda pasada → ${refFocused.tipo}`)
+      result.objetoReferencia = refFocused
+    } else {
+      console.info('[quote] Paso 2b: sin referencia tras segunda pasada, se usará precio orientativo')
+    }
+  }
+
   return result
 }
 
@@ -352,9 +417,27 @@ function calcularCotizacion(
   // ── Tapete ──────────────────────────────────────────────────────────────────
   if (categoria === 'Tapete' || subtipo === 'tapete') {
     if (!objetoReferencia) {
-      throw new UserError(
-        'No encontramos un objeto de referencia en la foto. Coloca un zapato o una hoja A4 al lado del tapete y vuelve a intentarlo.'
-      )
+      // Graceful degradation: precio orientativo basado en ~3 m² (tamaño típico de tapete mediano)
+      const areaTypical = 3
+      let precioTypical: number
+
+      if (subtipoTapete === 'Fijo') {
+        precioTypical = redondear500(Math.max(areaTypical * tarifa.alfombraFijaPorM2, tarifa.minimoFijo))
+      } else {
+        const areaFacturar = Math.max(areaTypical, tarifa.tapeteMinM2)
+        precioTypical = redondear500(Math.max(areaFacturar * tarifa.tapeteRemoviblePorM2, tarifa.minimoDomicilio))
+      }
+
+      const tipoLabel = subtipoTapete === 'Fijo' ? 'alfombra fija' : 'tapete removible'
+      return {
+        itemDetectado:  tipo,
+        precioEstimado: precioTypical,
+        explicacion:
+          `No detectamos un objeto de referencia de tamaño en la foto, así que el precio mostrado es orientativo ` +
+          `para un ${tipoLabel} de tamaño mediano (~${areaTypical} m²) en ${ciudad}. ` +
+          `Para un precio exacto, envíanos las medidas del tapete por WhatsApp.`,
+        sinReferencia: true,
+      }
     }
 
     const areaM2         = calcularAreaTapeteM2(bboxItem, objetoReferencia.bbox)
