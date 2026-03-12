@@ -21,12 +21,39 @@ interface QuoteResult {
 const formatCOP = (value: number) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(value)
 
-const fileToBase64 = (file: File): Promise<string> =>
+/**
+ * Comprime la imagen a JPEG antes de enviarla al backend.
+ * maxWidth 800 px + calidad 0.7 produce archivos de ~100–250 KB
+ * desde originales de hasta 10 MB — suficiente para que Gemini
+ * identifique objetos y mida bounding boxes con precisión.
+ */
+const compressImage = (file: File, maxWidth = 800, quality = 0.7): Promise<string> =>
   new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = reject
-    reader.readAsDataURL(file)
+    const img = new Image()
+    const objectUrl = URL.createObjectURL(file)
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl)
+
+      // Escalar manteniendo aspect ratio; nunca ampliar si es más pequeña
+      const scale = Math.min(1, maxWidth / img.width)
+      const canvas = document.createElement('canvas')
+      canvas.width  = Math.round(img.width  * scale)
+      canvas.height = Math.round(img.height * scale)
+
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return reject(new Error('Canvas no disponible en este dispositivo'))
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      resolve(canvas.toDataURL('image/jpeg', quality))
+    }
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      reject(new Error('No se pudo cargar la imagen'))
+    }
+
+    img.src = objectUrl
   })
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -100,8 +127,10 @@ export default function VisualQuoter() {
 
   const handleFile = useCallback(async (file: File) => {
     if (!file.type.startsWith('image/')) return
+    // Mostramos el original en el preview (solo visual, no se envía)
     const url = URL.createObjectURL(file)
-    const base64 = await fileToBase64(file)
+    // Comprimimos antes de guardar en estado — lo que llega al backend
+    const base64 = await compressImage(file)
     setPreviewUrl(url)
     setImageBase64(base64)
     setStep('preview')
@@ -127,6 +156,12 @@ export default function VisualQuoter() {
     setErrorMsg('')
 
     try {
+      // ── Diagnóstico de tamaño ────────────────────────────────────────────────
+      // Si ves un valor > 300 KB en consola, revisar compressImage().
+      // Con maxWidth=800 y quality=0.7 el valor esperado es 80–250 KB.
+      console.log('Tamaño de imagen a enviar (KB):', Math.round(imageBase64.length / 1024))
+      // ────────────────────────────────────────────────────────────────────────
+
       const res = await fetch('/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -372,9 +372,12 @@ function calcularCotizacion(
 
 // ─── Route Handler ────────────────────────────────────────────────────────────
 
-// Las fotos en base64 pueden superar los 4 MB. El límite se aumentó a 10 MB
-// en next.config.mjs → experimental.serverActions.bodySizeLimit: '10mb'.
-export const maxDuration = 30  // segundos; subir a 60 en Vercel Pro si es necesario
+// Edge Runtime: elimina el cold-start de Node.js y soporta maxDuration de hasta 60 s
+// en planes Pro/Enterprise de Vercel. Compatible con @google/genai (usa fetch nativo).
+// Nota: el body size en Edge está limitado a ~4 MB — la compresión en el frontend
+// (800 px / JPEG 0.7) garantiza imágenes < 300 KB, por lo que no hay conflicto.
+export const runtime    = 'edge'
+export const maxDuration = 60  // segundos (requiere Vercel Pro o superior)
 
 export async function POST(req: NextRequest) {
   if (!GEMINI_API_KEY) {
