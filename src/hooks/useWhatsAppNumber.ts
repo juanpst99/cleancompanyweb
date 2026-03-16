@@ -1,12 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useWhatsAppOverride } from '@/context/WhatsAppNumberContext'
 
 export const useWhatsAppNumber = () => {
+  // Si hay un override de contexto (ej. landing promo), lo usamos directamente.
+  const override = useWhatsAppOverride()
+
   // Inicializamos con el número principal para evitar errores de hidratación en Next.js
   const [whatsappNumber, setWhatsappNumber] = useState('573128052720')
 
   useEffect(() => {
+    // No calcular si ya hay un override activo
+    if (override) return
+
     try {
       // Forzamos la zona horaria de Bogotá, Colombia
       const options = { timeZone: 'America/Bogota', weekday: 'short' as const }
@@ -24,7 +31,8 @@ export const useWhatsAppNumber = () => {
         setWhatsappNumber('573209210866')
       }
     }
-  }, [])
+  }, [override])
 
-  return whatsappNumber
+  // El override tiene prioridad; si no existe, se usa el número calculado por día
+  return override ?? whatsappNumber
 }

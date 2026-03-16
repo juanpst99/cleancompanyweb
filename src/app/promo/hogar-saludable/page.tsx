@@ -2,6 +2,7 @@ import React from 'react'
 import LandingSelector from '@/components/sections/LandingSelector'
 import BeforeAfter from '@/components/sections/BeforeAfter' // <-- IMPORTAMOS TU SLIDER
 import VisualQuoter from '@/components/VisualQuoter'
+import { WhatsAppOverrideProvider } from '@/context/WhatsAppNumberContext'
 import { ShieldCheck, Droplets, Clock, Star, MessageCircle, CalendarCheck, Home } from 'lucide-react'
 
 // Optimizacion Next.js: robots como objeto
@@ -15,6 +16,7 @@ export const metadata = {
 
 export default function HogarSaludableLanding() {
   return (
+    <WhatsAppOverrideProvider number="573209210866">
     <main className="min-h-screen bg-gray-50 font-sans pb-24 md:pb-0">
       
       {/* Top Bar Urgencia */}
@@ -168,7 +170,7 @@ export default function HogarSaludableLanding() {
 
       {/* Sticky Bottom CTA exclusivo para móviles */}
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 pb-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50 lg:hidden flex justify-center">
-        <a 
+        <a
           href="#cotizador"
           className="w-full max-w-sm bg-[#25D366] text-white font-extrabold py-3.5 rounded-xl shadow-md text-center block text-lg"
         >
@@ -177,5 +179,6 @@ export default function HogarSaludableLanding() {
       </div>
 
     </main>
+    </WhatsAppOverrideProvider>
   )
 }
