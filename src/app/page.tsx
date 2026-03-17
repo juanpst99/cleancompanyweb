@@ -13,14 +13,12 @@ import About from '@/components/sections/About'
 import CTA from '@/components/sections/CTA'
 import Contact from '@/components/sections/Contact'
 import Footer from '@/components/sections/Footer'
-import StructuredData from '@/components/SEO/StructuredData'
 import { Suspense } from 'react'
 
 
 export default function Home() {
   return (
     <>
-      <StructuredData />
       <Header />
       <WhatsAppButton />
       <main>

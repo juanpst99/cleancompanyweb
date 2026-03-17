@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Building, Hotel, Hospital, Store } from 'lucide-react'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 const Clients = () => {
   const clientIcons = [
@@ -35,14 +36,12 @@ const Clients = () => {
           <p className="text-gray-600 mb-6">
             Más de 50 empresas en Medellín y Bogotá confían en nuestros servicios corporativos
           </p>
-          <a 
-            href="https://wa.me/573128052720?text=Hola,%20quiero%20información%20sobre%20servicios%20corporativos."
-            target="_blank"
-            rel="noopener noreferrer"
+          <WhatsAppLink
+            message="Hola, quiero información sobre servicios corporativos."
             className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             Solicitar Plan Empresarial
-          </a>
+          </WhatsAppLink>
         </div>
       </div>
     </section>

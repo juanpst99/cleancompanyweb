@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { Award, Target, Eye } from 'lucide-react'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 const About = () => {
   return (
@@ -53,14 +54,12 @@ const About = () => {
               </ul>
             </div>
             
-            <a 
-              href="https://wa.me/573128052720?text=Quiero%20conocer%20más%20sobre%20Clean%20Company"
-              target="_blank"
-              rel="noopener noreferrer"
+            <WhatsAppLink
+              message="Quiero conocer más sobre Clean Company."
               className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               Conoce más
-            </a>
+            </WhatsAppLink>
           </div>
           
           <div className="relative">

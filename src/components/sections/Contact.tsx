@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter, Send } from 'lucide-react'
-import { formatWhatsappRefLine } from '@/lib/ccRef'
-// ✅ IMPORTAR LA FUNCIÓN AQUÍ
+import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Send } from 'lucide-react'
+import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
+import { formatWhatsappRefLine } from '@/lib/ccRef'
 
 const Contact = () => {
+  const whatsappNumber = useWhatsAppNumber()
   const [formData, setFormData] = useState({
     nombre: '',
     telefono: '',
@@ -18,18 +19,15 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // ✅ 1. ENVIAR DATOS A N8N (Aquí capturamos el nombre y teléfono)
-    trackWhatsAppClick(formData.nombre, formData.telefono)
+    const { ref } = trackWhatsAppClick(formData.nombre, formData.telefono)
 
-    // Construir mensaje de WhatsApp
     const message = `Hola, mi nombre es ${formData.nombre}. Quiero solicitar servicio de ${formData.servicio} en ${formData.ciudad}. ${
       formData.mensaje ? `Mensaje adicional: ${formData.mensaje}` : ''
     }`
 
-    // Agregar línea discreta de referencia al final
-    const messageWithRef = `${message}\n\n${formatWhatsappRefLine()}`
+    const messageWithRef = `${message}\n\n${formatWhatsappRefLine()}\n(Ref: ${ref})`
 
-    const whatsappUrl = `https://wa.me/573128052720?text=${encodeURIComponent(messageWithRef)}`
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageWithRef)}`
 
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
   }
@@ -102,22 +100,22 @@ const Contact = () => {
               <h4 className="font-semibold mb-4">Síguenos en Redes Sociales</h4>
               <div className="flex space-x-4">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/profile.php?id=100092972695790"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition transform hover:scale-110"
+                  aria-label="Facebook Clean Company"
                 >
                   <Facebook className="w-5 h-5" />
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/cleancompany_colombia/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-pink-600 text-white p-3 rounded-full hover:bg-pink-700 transition transform hover:scale-110"
+                  aria-label="Instagram Clean Company"
                 >
                   <Instagram className="w-5 h-5" />
-                </a>
-                <a
-                  href="#"
-                  className="bg-blue-400 text-white p-3 rounded-full hover:bg-blue-500 transition transform hover:scale-110"
-                >
-                  <Twitter className="w-5 h-5" />
                 </a>
               </div>
             </div>

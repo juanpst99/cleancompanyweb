@@ -9,8 +9,6 @@ import CookieConsent from '@/components/CookieConsent'
 import ResourceHints from '@/components/ResourceHints'
 import GTMProvider from '@/components/GTMProvider'
 import { AttributionInit } from '@/components/analytics/AttributionInit'
-// (Opcional recomendado) escucha de pageviews en SPA
-// import GTMEvents from '@/components/analytics/GTMEvents'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -102,9 +100,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: { canonical: 'https://cleancompany.com.co' },
-  verification: {
-    google: 'tu-codigo-de-verificacion',
-  },
+  // verification: { google: 'REEMPLAZAR_CON_CODIGO_REAL' },
   // themeColor movido a `viewport`
 }
 

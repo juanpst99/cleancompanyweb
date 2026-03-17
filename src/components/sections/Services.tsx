@@ -4,6 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { Check, ArrowRight, Car, Building } from 'lucide-react'
 import Link from 'next/link'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 const Services = () => {
   const services = [
@@ -96,14 +97,12 @@ const Services = () => {
                </ul>
                
                <div className="space-y-3">
-                 <a 
-                   href={`https://wa.me/573128052720?text=${encodeURIComponent(service.whatsappMessage)}`}
-                   target="_blank"
-                   rel="noopener noreferrer"
+                 <WhatsAppLink
+                   message={service.whatsappMessage}
                    className="block bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-md text-sm sm:text-base"
                  >
                    Cotizar Ahora
-                 </a>
+                 </WhatsAppLink>
                  <Link
                    href={service.link}
                    className="w-full text-blue-600 font-semibold hover:text-blue-700 flex items-center justify-center group text-sm sm:text-base"
@@ -132,15 +131,13 @@ const Services = () => {
              </div>
              <p className="text-gray-600 mb-4 text-sm sm:text-base">{service.detail}</p>
              <div className="flex items-center justify-between">
-               <a 
-                 href={`https://wa.me/573128052720?text=${encodeURIComponent(service.whatsappMessage)}`}
-                 target="_blank"
-                 rel="noopener noreferrer"
+               <WhatsAppLink
+                 message={service.whatsappMessage}
                  className="text-blue-600 font-semibold hover:text-blue-700 flex items-center group text-sm sm:text-base"
                >
-                 Cotizar servicio 
+                 Cotizar servicio
                  <ArrowRight className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" />
-               </a>
+               </WhatsAppLink>
                {service.link && (
                  <Link
                    href={service.link}

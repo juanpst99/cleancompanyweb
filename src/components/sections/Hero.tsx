@@ -3,13 +3,9 @@
 import React from 'react'
 import Image from 'next/image'
 import { Phone, ChevronDown } from 'lucide-react'
-import { useGTM } from '@/hooks/useGTM'
-// 1. Asegúrate de importar la función que genera la referencia (ajusta la ruta si es necesario)
-import { trackWhatsAppClick as getWhatsAppRef } from '@/lib/whatsappTracker' 
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 const Hero = () => {
-  const { trackWhatsAppClick } = useGTM()
-  
   const handleScrollToServices = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const element = document.querySelector('#servicios')
@@ -21,22 +17,6 @@ const Hero = () => {
         navigation_location: 'hero_cta'
       })
     }
-  }
-  
-  // 2. Modifica esta función para interceptar el clic y armar el mensaje con la referencia
-  const handleWhatsAppClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault(); // Evita que el `href` por defecto se abra
-    
-    // Genera la referencia desestructurando correctamente el objeto
-    const { ref } = getWhatsAppRef('Hero General', ''); 
-    
-    const message = `Hola, quiero cotizar un servicio de limpieza. (Ref: ${ref})`;
-    
-    // Dispara tu evento GTM
-    trackWhatsAppClick('general', message);
-    
-    // Redirige manualmente a WhatsApp con el mensaje codificado
-    window.open(`https://wa.me/573128052720?text=${encodeURIComponent(message)}`, '_blank');
   }
 
   return (
@@ -59,16 +39,13 @@ const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 animate-fadeInUp animation-delay-400 justify-center md:justify-start">
-              <a 
-                href="https://wa.me/573128052720" // 3. El href principal queda limpio (se sobreescribe con el onClick)
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleWhatsAppClick}
+              <WhatsAppLink
+                message="Hola, quiero cotizar un servicio de limpieza."
                 className="bg-green-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold hover:bg-green-600 transform hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg"
               >
                 <Phone className="w-5 h-5" />
                 <span>Cotizar por WhatsApp</span>
-              </a>
+              </WhatsAppLink>
               <a 
                 href="#servicios"
                 onClick={handleScrollToServices}

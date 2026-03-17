@@ -451,7 +451,7 @@ export default function VisualQuoter() {
                   <span>📸</span> Abrir cámara
                 </button>
               </div>
-              <p className="text-xs text-gray-400">JPG, PNG o WEBP • Máx. 10 MB</p>
+              <p className="text-xs text-gray-400">JPG, PNG o WEBP • Máx. 20 MB</p>
 
               {/* Hidden inputs */}
               <input

@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { Check, Clock, Shield, Sparkles } from 'lucide-react'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 const ServiceDetails = () => {
   const serviceDetails = [
@@ -191,14 +192,12 @@ const ServiceDetails = () => {
 
             {/* CTA */}
             <div className="text-center mt-8 sm:mt-12">
-              <a 
-                href={`https://wa.me/573128052720?text=${encodeURIComponent(`Hola, quiero más información sobre ${service.title}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <WhatsAppLink
+                message={`Hola, quiero más información sobre ${service.title}`}
                 className="inline-block bg-gradient-to-r from-green-500 to-green-600 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-full font-semibold hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-300 shadow-lg"
               >
                 Cotizar {service.title}
-              </a>
+              </WhatsAppLink>
             </div>
           </div>
         </section>

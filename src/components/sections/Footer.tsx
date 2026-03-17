@@ -2,7 +2,8 @@
 
 import React from 'react'
 import Image from 'next/image'
-import { Sparkles, Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react'
+import { Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -81,14 +82,20 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <a href="https://wa.me/573128052720?text=Hola,%20quiero%20información%20sobre%20limpieza%20de%20vehículos" className="hover:text-white transition">
+                <WhatsAppLink
+                  message="Hola, quiero información sobre limpieza de vehículos."
+                  className="hover:text-white transition"
+                >
                   Limpieza de Vehículos
-                </a>
+                </WhatsAppLink>
               </li>
               <li>
-                <a href="https://wa.me/573128052720?text=Hola,%20quiero%20información%20sobre%20servicios%20empresariales" className="hover:text-white transition">
+                <WhatsAppLink
+                  message="Hola, quiero información sobre servicios empresariales."
+                  className="hover:text-white transition"
+                >
                   Servicio Empresarial
-                </a>
+                </WhatsAppLink>
               </li>
             </ul>
           </div>
@@ -132,15 +139,13 @@ const Footer = () => {
                 </div>
               </div>
             </div>
-            <a 
-              href="https://wa.me/573128052720"
-              target="_blank"
-              rel="noopener noreferrer"
+            <WhatsAppLink
+              message="Hola, quiero más información sobre los servicios de Clean Company."
               className="inline-flex items-center bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition mt-4"
             >
               <Phone className="w-4 h-4 mr-2" />
               WhatsApp
-            </a>
+            </WhatsAppLink>
           </div>
         </div>
         

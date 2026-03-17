@@ -1,7 +1,20 @@
-'use client'
-
 import React from 'react'
 import Script from 'next/script'
+
+const openingHours = [
+  {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "opens": "07:00",
+    "closes": "18:00"
+  },
+  {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": "Sunday",
+    "opens": "08:00",
+    "closes": "14:00"
+  }
+]
 
 const StructuredData = () => {
   const schemaData = {
@@ -36,14 +49,7 @@ const StructuredData = () => {
       { "@type": "GeoCoordinates", "latitude": 6.25184, "longitude": -75.56359 },
       { "@type": "GeoCoordinates", "latitude": 4.71099, "longitude": -74.07209 }
     ],
-    "openingHoursSpecification": [
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        "opens": "08:00",
-        "closes": "17:00"
-      }
-    ],
+    "openingHoursSpecification": openingHours,
     "areaServed": [
       { "@type": "City", "name": "Bogotá" },
       { "@type": "City", "name": "Medellín" }
@@ -60,10 +66,10 @@ const StructuredData = () => {
       "https://www.facebook.com/profile.php?id=100092972695790",
       "https://www.instagram.com/cleancompany_colombia/"
     ],
-    "review": {
+    "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "5",
-      "reviewCount": "5000"
+      "ratingValue": "4.9",
+      "reviewCount": "3200"
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
@@ -113,48 +119,47 @@ const StructuredData = () => {
     }
   }
 
-  const localBusinessSchema = [
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Clean Company Medellín",
-      "image": "https://cleancompany.com.co/logo.png",
-      "telephone": "+573128052720",
-      "email": "cleancompanymed@gmail.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Calle 30 #78-54",
-        "addressLocality": "Medellín",
-        "addressRegion": "Antioquia",
-        "postalCode": "050001",
-        "addressCountry": "CO"
-      },
-      "priceRange": "$$",
-      "paymentAccepted": "Cash, Credit Card, Debit Card",
-      "openingHours": "Mo-Sa 08:00-17:00",
-      "url": "https://cleancompany.com.co"
+  const localBusinessMedellin = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Clean Company Medellín",
+    "image": "https://cleancompany.com.co/logo.png",
+    "telephone": "+573128052720",
+    "email": "cleancompanymed@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Calle 30 #78-54",
+      "addressLocality": "Medellín",
+      "addressRegion": "Antioquia",
+      "postalCode": "050001",
+      "addressCountry": "CO"
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Clean Company Bogotá",
-      "image": "https://cleancompany.com.co/logo.png",
-      "telephone": "+573128052720",
-      "email": "cleancompanymed@gmail.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Calle 22J #104-30",
-        "addressLocality": "Bogotá",
-        "addressRegion": "Bogotá D.C.",
-        "postalCode": "110111",
-        "addressCountry": "CO"
-      },
-      "priceRange": "$$",
-      "paymentAccepted": "Cash, Credit Card, Debit Card",
-      "openingHours": "Mo-Sa 08:00-17:00",
-      "url": "https://cleancompany.com.co"
-    }
-  ]
+    "priceRange": "$$",
+    "paymentAccepted": "Cash, Credit Card, Debit Card",
+    "openingHoursSpecification": openingHours,
+    "url": "https://cleancompany.com.co"
+  }
+
+  const localBusinessBogota = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Clean Company Bogotá",
+    "image": "https://cleancompany.com.co/logo.png",
+    "telephone": "+573128052720",
+    "email": "cleancompanymed@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Calle 22J #104-30",
+      "addressLocality": "Bogotá",
+      "addressRegion": "Bogotá D.C.",
+      "postalCode": "110111",
+      "addressCountry": "CO"
+    },
+    "priceRange": "$$",
+    "paymentAccepted": "Cash, Credit Card, Debit Card",
+    "openingHoursSpecification": openingHours,
+    "url": "https://cleancompany.com.co"
+  }
 
   return (
     <>
@@ -164,9 +169,14 @@ const StructuredData = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
       <Script
-        id="structured-data-local"
+        id="structured-data-local-medellin"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessMedellin) }}
+      />
+      <Script
+        id="structured-data-local-bogota"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessBogota) }}
       />
     </>
   )

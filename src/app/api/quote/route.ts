@@ -502,6 +502,38 @@ function calcularCotizacion(
   }
 }
 
+// ─── Rate Limiter (en memoria) ───────────────────────────────────────────────
+//
+// Protege el consumo de tokens Gemini. Límite: 5 requests por IP cada 60s.
+// En serverless (Vercel), cada instancia tiene su propio Map, así que el
+// límite real es "por instancia". Suficiente para frenar abuso casual.
+
+const RATE_LIMIT_WINDOW_MS = 60_000
+const RATE_LIMIT_MAX = 5
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    return false
+  }
+
+  entry.count++
+  return entry.count > RATE_LIMIT_MAX
+}
+
+// Limpieza periódica para evitar memory leak en long-running instances
+setInterval(() => {
+  const now = Date.now()
+  for (const [ip, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(ip)
+  }
+}, RATE_LIMIT_WINDOW_MS)
+
 // ─── Route Handler ────────────────────────────────────────────────────────────
 
 // Node.js runtime: necesario por compatibilidad con @google/genai que usa APIs
@@ -510,6 +542,17 @@ function calcularCotizacion(
 export const maxDuration = 60
 
 export async function POST(req: NextRequest) {
+  // Rate limiting por IP
+  const xff = req.headers.get('x-forwarded-for') || ''
+  const clientIp = xff.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown'
+
+  if (isRateLimited(clientIp)) {
+    return NextResponse.json(
+      { error: 'Has realizado demasiadas cotizaciones. Intenta de nuevo en un minuto.' },
+      { status: 429 },
+    )
+  }
+
   if (!GEMINI_API_KEY) {
     console.error('[quote] GEMINI_API_KEY no está definida.')
     return NextResponse.json(
