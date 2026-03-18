@@ -8,10 +8,10 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import Footer from '@/components/sections/Footer'
 import { Check, Sofa, Shield, Clock, ArrowLeft, Star, Heart, Lock, CreditCard, Users, Leaf, ChevronDown, MessageCircle, Sparkles } from 'lucide-react'
 import Link from 'next/link'
-// Importamos el tracker silencioso
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 import VisualQuoter from '@/components/VisualQuoter'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 export default function MueblesClient() {
   const whatsappNumber = useWhatsAppNumber()
@@ -19,8 +19,6 @@ export default function MueblesClient() {
   const ciudad = searchParams.get('ciudad') || 'Bogotá y Medellín'
   const descuento = searchParams.get('desc') || '20'
   const utm_campaign = searchParams.get('utm_campaign')
-  const whatsappSecundario = '573209210866' // 3209210866
-  
   // Estado para el formulario
   const [formData, setFormData] = useState({
     nombre: '',
@@ -66,16 +64,12 @@ export default function MueblesClient() {
     return val || 'No especificada'
   }
 
-  // Función auxiliar para abrir WhatsApp instantáneamente y trackear en GTM
-  const openWhatsApp = (phone: string, msg: string, eventName: string) => {
-    // 1. Obtener la referencia corta de n8n al instante (sin await)
+  // Función auxiliar para abrir WhatsApp con tracking (solo para form submit)
+  const openWhatsApp = (msg: string, eventName: string) => {
     const { ref } = trackWhatsAppClick(formData.nombre, formData.telefono)
-    
-    // 2. Armar el mensaje final limpio
     const finalMessage = `${msg}\n\n(Ref: ${ref})`
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMessage)}`
-    
-    // 3. Trackeo en GTM
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
+
     if (typeof window !== 'undefined') {
       const w = window as unknown as { dataLayer?: any[] }
       w.dataLayer = w.dataLayer || []
@@ -84,15 +78,13 @@ export default function MueblesClient() {
         form_name: eventName,
         utm_campaign,
         link_url: url,
-        // Incluimos datos del formulario si existen
         ...(formData.nombre && { user_name: formData.nombre }),
         ...(formData.telefono && { phone: formData.telefono }),
         ...(formData.ciudad && { city: formData.ciudad }),
         ...(formData.cuando && { when: formData.cuando }),
       })
     }
-    
-    // 4. Abrir la ventana sin que el navegador la bloquee
+
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
@@ -115,8 +107,7 @@ Ciudad: ${formatCiudad(formData.ciudad)}
 Mueble: ${mapMueble[formData.tipoMueble] || formData.tipoMueble}
 Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
 
-    // Usamos nuestra función unificada (envía el evento específico para este form)
-    openWhatsApp(whatsappNumber, baseMessage, 'cotizacion_colchones')
+    openWhatsApp(baseMessage, 'cotizacion_muebles')
 
     // (Opcional) micro-evento extra que tenías
     if (typeof window !== 'undefined') {
@@ -349,22 +340,6 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
                   Recibir Cotización por WhatsApp
                 </button>
               </form>
-
-              {/* ⬇️⬇️⬇️ BOTÓN 2: Alterno del formulario */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  const mensaje = `Hola, quiero cotizar lavado de muebles. Nombre: ${formData.nombre}, Ciudad: ${formatCiudad(formData.ciudad)}`
-                  openWhatsApp(whatsappSecundario, mensaje, 'cotizacion_muebles_alterno')
-                }}
-                className="w-full border-2 border-green-600 text-green-700 py-3 rounded-lg font-bold text-base hover:bg-green-50 transition-all duration-300 shadow-sm flex items-center justify-center mt-4"
-              >
-                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.004 2c-5.46 0-9.89 4.43-9.89 9.89 0 1.75.46 3.39 1.24 4.82L2.004 22l5.41-1.34A9.868 9.868 0 0012.004 22c5.46 0 9.89-4.43 9.89-9.89 0-2.65-1.03-5.14-2.9-7.01A9.818 9.818 0 0012.004 2zm0 1.67c4.54 0 8.22 3.68 8.22 8.22 0 4.54-3.68 8.22-8.22 8.22-1.37 0-2.68-.34-3.82-.97l-.27-.15-2.83.7.72-2.77-.17-.29a8.174 8.174 0 01-1.08-4.02c0-4.54 3.68-8.22 8.22-8.22h.23zm-2.71 4.25c-.17 0-.44.06-.67.31-.23.26-.87.85-.87 2.07 0 1.22.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74 2.05.88 2.48.71 2.93.66.45-.05 1.45-.59 1.65-1.16.2-.57.2-1.05.14-1.16-.06-.11-.23-.17-.48-.29-.25-.12-1.47-.73-1.7-.81-.23-.08-.4-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.12-.11.25-.29.37-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14 0-.31-.02-.48-.02z"/>
-                </svg>
-                WhatsApp alterno: 320 921 0866
-              </button>
 
               {/* Social proof */}
               <div className="mt-6 text-center">
@@ -652,17 +627,12 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
                 * El precio puede variar de acuerdo al tamaño
               </p>
 
-              {/* ⬇️⬇️⬇️ BOTÓN 3: Obtener Cotización */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  const msg = `Hola, quiero una cotización exacta para lavado de muebles en ${formatCiudad(ciudad)}. ¿Me pueden ayudar?`
-                  openWhatsApp('573128052720', msg, 'cta_precio_muebles')
-                }}
+              <WhatsAppLink
+                message={`Hola, quiero una cotización exacta para lavado de muebles en ${formatCiudad(ciudad)}. ¿Me pueden ayudar?`}
                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
               >
                 Obtener Cotización Exacta
-              </button>
+              </WhatsAppLink>
             </div>
           </div>
         </div>
@@ -825,31 +795,12 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
             </p>
           </div>
 
-          {/* ⬇️⬇️⬇️ BOTÓN 4: CTA Final */}
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              const msg = `Quiero aprovechar el ${descuento}% de descuento en lavado de muebles`
-              openWhatsApp('573128052720', msg, 'cta_final_muebles')
-            }}
+          <WhatsAppLink
+            message={`Quiero aprovechar el ${descuento}% de descuento en lavado de muebles`}
             className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse cursor-pointer"
           >
             Cotizar Ahora con Descuento
-          </button>
-          
-          <div className="mt-4">
-            {/* ⬇️⬇️⬇️ BOTÓN 5: Alterno Final */}
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                const msg = `Quiero aprovechar el ${descuento}% de descuento en lavado de muebles`
-                openWhatsApp(whatsappSecundario, msg, 'cta_final_muebles_whatsapp_alterno')
-              }}
-              className="inline-flex items-center bg-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/25 transform hover:scale-105 transition-all duration-300 shadow-xl cursor-pointer"
-            >
-              WhatsApp alterno: 320 921 0866
-            </button>
-          </div>
+          </WhatsAppLink>
 
           <p className="mt-6 text-sm opacity-80">
             * Oferta válida solo para nuevos clientes en {formatCiudad(ciudad)}. No acumulable.

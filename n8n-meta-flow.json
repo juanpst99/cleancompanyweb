@@ -1,0 +1,696 @@
+{
+  "name": "Ads_Clicks",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-click",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        448
+      ],
+      "id": "64cb26c8-2209-4c7e-b534-9023747f7f92",
+      "name": "Webhook1",
+      "webhookId": "28a7e101-5817-4a3b-9899-70dc969f24d0",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "9Iqn26epfapSncwj",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "021ab1f7-3060-4180-9a0d-dbd34df7b164",
+              "leftValue": "={{ $('Webhook1').item.json.body.event_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        432,
+        512
+      ],
+      "id": "02b85e86-e0b1-4f23-b413-ffeb181725b5",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wC-rrurFMBiV5txnHOFz-RoDOUUITIN52cyJit--0k4",
+          "mode": "list",
+          "cachedResultName": "google clics",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wC-rrurFMBiV5txnHOFz-RoDOUUITIN52cyJit--0k4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 886662648,
+          "mode": "list",
+          "cachedResultName": "Clics de WhatsApp Clean Company",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wC-rrurFMBiV5txnHOFz-RoDOUUITIN52cyJit--0k4/edit#gid=886662648"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $json.body.timestamp }}",
+            "ID Corto": "={{ $json.body.ref }}",
+            "GCLID": "=",
+            "Fuente": "={{ $json.body.utm_source }}",
+            "Medio": "={{ $json.body.utm_medium }}",
+            "Campaña": "={{ $json.body.utm_campaign }}",
+            "Landing URL": "={{ $json.body.landing_url }}",
+            "nombre": "={{ $json.body.nombre }}",
+            "contacto": "={{ $json.body.telefono }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID Corto",
+              "displayName": "ID Corto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GCLID",
+              "displayName": "GCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fuente",
+              "displayName": "Fuente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Medio",
+              "displayName": "Medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Campaña",
+              "displayName": "Campaña",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Landing URL",
+              "displayName": "Landing URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado del Lead",
+              "displayName": "Estado del Lead",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Valor de la Venta",
+              "displayName": "Valor de la Venta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha de Cierre",
+              "displayName": "Fecha de Cierre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notas",
+              "displayName": "Notas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contacto",
+              "displayName": "contacto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Event ID Meta",
+              "displayName": "Event ID Meta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "FBCLID",
+              "displayName": "FBCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ciudad (URL)",
+              "displayName": "Ciudad (URL)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Servicio (URL)",
+              "displayName": "Servicio (URL)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Segmento CRM",
+              "displayName": "Segmento CRM",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Intentos seg.",
+              "displayName": "Intentos seg.",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Último toque",
+              "displayName": "Último toque",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Próx. paso",
+              "displayName": "Próx. paso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Delay (hrs)",
+              "displayName": "Delay (hrs)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Próx. toque sugerido",
+              "displayName": "Próx. toque sugerido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TemplateID sugerido",
+              "displayName": "TemplateID sugerido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mensaje listo (copiar)",
+              "displayName": "Mensaje listo (copiar)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Acción hoy",
+              "displayName": "Acción hoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        224
+      ],
+      "id": "9af12c64-6b14-40b1-ad49-66242c1bdafb",
+      "name": "Append row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8uxmj1YFCj8vFo0R",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ",
+          "mode": "list",
+          "cachedResultName": "contabilidad prueba prueba",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1342718384,
+          "mode": "list",
+          "cachedResultName": "Clics de WhatsApp Clean Company",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit#gid=1342718384"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $json.body.timestamp }}",
+            "ID Corto": "={{ $json.body.ref }}",
+            "GCLID": "={{ $json.body.gclid }}",
+            "Fuente": "={{ $json.body.utm_source }}",
+            "Medio": "={{ $json.body.utm_medium }}",
+            "Campaña": "={{ $json.body.utm_campaign }}",
+            "Landing URL": "={{ $json.body.landing_url }}",
+            "nombre": "={{ $json.body.nombre }}",
+            "contacto": "={{ $json.body.telefono }}",
+            "Event ID Meta": "={{ $json.body.event_id }}",
+            "FBCLID": "={{ $json.body.fbclid }}",
+            "fbp": "={{ $json.body.fbp }}",
+            "fbc": "={{ $json.body.fbc }}",
+            "IP": "={{ $json.body.client_ip_address }}",
+            "User_Agent": "={{ $json.body.client_user_agent }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID Corto",
+              "displayName": "ID Corto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GCLID",
+              "displayName": "GCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fuente",
+              "displayName": "Fuente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Medio",
+              "displayName": "Medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Campaña",
+              "displayName": "Campaña",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Landing URL",
+              "displayName": "Landing URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado del Lead",
+              "displayName": "Estado del Lead",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Valor de la Venta",
+              "displayName": "Valor de la Venta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha de Cierre",
+              "displayName": "Fecha de Cierre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notas",
+              "displayName": "Notas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contacto",
+              "displayName": "contacto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event ID Meta",
+              "displayName": "Event ID Meta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FBCLID",
+              "displayName": "FBCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fbp",
+              "displayName": "fbp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "fbc",
+              "displayName": "fbc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "IP",
+              "displayName": "IP",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "User_Agent",
+              "displayName": "User_Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "Evento_CAPI",
+              "displayName": "Evento_CAPI",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        480
+      ],
+      "id": "0ac4724d-b7e5-4224-8c22-af49ce48aaed",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8uxmj1YFCj8vFo0R",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/1202018205254794/events",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAARUF2QY8d0BQ7wFEfLxtqwOFRZAdfBQ0N0ZA5UAX1IQyXK6HjYMFJqoaeeY1gHXKP8sNyb9ZAErBHtkQQtA2qSrYUKIHlFjAdBkpAr70CZCU0oxzZBdo8Fw2OA58KMxZCVL34DjhSadpE9eV1ffvZAZAAF7ZCQzTxYESlCue9WoTJiLAZA7hGMVa35d6zgA56BgZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": [\n    {\n      \"event_name\": \"Lead\",\n      \"event_time\": {{ Number($node[\"Webhook1\"].json.body.event_time) || Math.floor(Date.now()/1000) }},\n      \"event_id\": \"{{ $node[\"Webhook1\"].json.body.event_id }}\",\n      \"action_source\": \"website\",\n      \"event_source_url\": \"{{ $node[\"Webhook1\"].json.body.event_source_url || $node[\"Webhook1\"].json.body.landing_url || '' }}\",\n      \"user_data\": {\n        \"fbp\": \"{{ $node[\"Webhook1\"].json.body.fbp || '' }}\",\n        \"fbc\": \"{{ $node[\"Webhook1\"].json.body.fbc || '' }}\",\n        \"client_user_agent\": \"{{ $node[\"Webhook1\"].json.body.client_user_agent || '' }}\",\n        \"client_ip_address\": \"{{ $node[\"Webhook1\"].json.body.client_ip_address || '' }}\"\n      },\n      \"custom_data\": {\n        \"content_name\": \"WhatsApp\",\n        \"ref\": \"{{ $node[\"Webhook1\"].json.body.ref || '' }}\",\n        \"currency\": \"COP\"\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        768,
+        432
+      ],
+      "id": "191b8d1f-6be7-46ac-8eb5-e4c5bc3b882e",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "America/Bogota",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1d636d31-fef5-421e-9ae7-38edb7bf280c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "88e4aab74ff0575f6b057bd34969ceacd29a93724c7a3f28780f829103a76296"
+  },
+  "id": "BpKnrCJ29XUShYwv",
+  "tags": []
+}

@@ -10,6 +10,7 @@ import Footer from '@/components/sections/Footer'
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 import VisualQuoter from '@/components/VisualQuoter'
+import WhatsAppLink from '@/components/WhatsAppLink'
 
 import {
   Check,
@@ -34,8 +35,6 @@ export default function AlfombrasClient() {
   const ciudad = searchParams.get('ciudad') || 'Bogotá y Medellín'
   const descuento = searchParams.get('desc') || '20'
   const utm_campaign = searchParams.get('utm_campaign')
-  const whatsappSecundario = '573209210866' // 3209210866
-
   const [formData, setFormData] = useState({
     nombre: '',
     telefono: '',
@@ -278,26 +277,6 @@ export default function AlfombrasClient() {
                   Recibir Cotización por WhatsApp
                 </button>
               </form>
-
-              {/* ⬇️⬇️⬇️ BOTÓN 2: Alterno del formulario */}
-              <button
-                  type="button"
-                  onClick={async () => {
-                    const { ref } = trackWhatsAppClick(formData.nombre, formData.telefono);
-                    const mensajeBase = `Hola, quiero cotizar lavado de alfombras. Nombre: ${formData.nombre}, Ciudad: ${formData.ciudad}, Cuando: ${formData.cuando}`
-                    const finalMessage = `${mensajeBase}\n\n(Ref: ${ref})`
-                    const whatsappUrl = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(finalMessage)}`
-
-                    window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
-                  }}
-                  className="w-full border-2 border-green-600 text-green-700 py-3 rounded-lg font-bold text-base hover:bg-green-50 transition-all duration-300 shadow-sm flex items-center justify-center mt-4"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12.004 2c-5.46 0-9.89 4.43-9.89 9.89 0 1.75.46 3.39 1.24 4.82L2.004 22l5.41-1.34A9.868 9.868 0 0012.004 22c5.46 0 9.89-4.43 9.89-9.89 0-2.65-1.03-5.14-2.9-7.01A9.818 9.818 0 0012.004 2zm0 1.67c4.54 0 8.22 3.68 8.22 8.22 0 4.54-3.68 8.22-8.22 8.22-1.37 0-2.68-.34-3.82-.97l-.27-.15-2.83.7.72-2.77-.17-.29a8.174 8.174 0 01-1.08-4.02c0-4.54 3.68-8.22 8.22-8.22h.23zm-2.71 4.25c-.17 0-.44.06-.67.31-.23.26-.87.85-.87 2.07 0 1.22.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74 2.05.88 2.48.71 2.93.66.45-.05 1.45-.59 1.65-1.16.2-.57.2-1.05.14-1.16-.06-.11-.23-.17-.48-.29-.25-.12-1.47-.73-1.7-.81-.23-.08-.4-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.12-.11.25-.29.37-.44.12-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14 0-.31-.02-.48-.02z"/>
-                  </svg>
-                  WhatsApp alterno: 320 921 0866
-                </button>
-
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
@@ -597,35 +576,12 @@ export default function AlfombrasClient() {
                 * Precio referencial para alfombra de 2x3 metros. Cotización exacta según tamaño y estado.
               </p>
 
-              {/* ⬇️⬇️⬇️ BOTÓN 3: Obtener precio exacto */}
-              <button
-                onClick={async (e) => {
-                  e.preventDefault()
-                  const { ref } = trackWhatsAppClick()
-                  const finalMessage = `${precioMsg}\n\n(Ref: ${ref})`
-                  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
-                  window.open(url, '_blank', 'noopener,noreferrer')
-                }}
+              <WhatsAppLink
+                message={precioMsg}
                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
               >
                 Obtener Precio Exacto
-              </button>
-
-              <div className="mt-4">
-                {/* ⬇️⬇️⬇️ BOTÓN 4: Alterno precios */}
-               <button
-                 onClick={async (e) => {
-                  e.preventDefault()
-                  const { ref } = trackWhatsAppClick()
-                  const finalMessage = `Quiero aprovechar el ${descuento}% de descuento en lavado de alfombras\n\n(Ref: ${ref})`
-                  const url = `https://wa.me/${whatsappSecundario}?text=${encodeURIComponent(finalMessage)}`
-                  window.open(url, '_blank', 'noopener,noreferrer')
-                 }}
-                 className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-full font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg"
-               >
-                 WhatsApp alterno: 320 921 0866
-               </button>
-             </div>
+              </WhatsAppLink>
 
             </div>
           </div>
@@ -773,19 +729,12 @@ export default function AlfombrasClient() {
             </p>
           </div>
 
-          {/* ⬇️⬇️⬇️ BOTÓN 5: CTA Final */}
-          <button
-            onClick={async (e) => {
-              e.preventDefault()
-              const { ref } = trackWhatsAppClick()
-              const finalMessage = `${ofertaMsg}\n\n(Ref: ${ref})`
-              const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`
-              window.open(url, '_blank', 'noopener,noreferrer')
-            }}
+          <WhatsAppLink
+            message={ofertaMsg}
             className="inline-flex items-center bg-green-500 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-green-600 transform hover:scale-105 transition-all duration-300 shadow-2xl animate-pulse cursor-pointer"
           >
             Obtener Oferta por WhatsApp
-          </button>
+          </WhatsAppLink>
 
 
           <p className="mt-6 text-sm opacity-80">* Válido solo para nuevos clientes. Un uso por hogar. Aplica solo en {ciudad}.</p>
