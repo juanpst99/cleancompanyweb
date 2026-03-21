@@ -16,7 +16,8 @@ export default function ColchonesClient() {
   const whatsappNumber = useWhatsAppNumber()
   const searchParams = useSearchParams()
   const ciudad = searchParams.get('ciudad') || 'Bogotá y Medellín'
-  const descuento = searchParams.get('desc') || '20'
+  const rawDesc = parseInt(searchParams.get('desc') || '20', 10)
+  const descuento = String(Math.min(30, Math.max(10, isNaN(rawDesc) ? 20 : rawDesc)))
   const utm_campaign = searchParams.get('utm_campaign')
   // Estado para el formulario
   const [formData, setFormData] = useState({

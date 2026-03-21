@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { CheckCircle2, MapPin, Sparkles } from 'lucide-react'
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
+import { GTMEvents } from '@/lib/gtm'
 
 const services = [
   { id: 'muebles', name: 'Muebles y Sofás', icon: '🛋️' },
@@ -14,10 +16,28 @@ const services = [
 
 const cities = ['Bogotá', 'Medellín']
 
-export default function LandingSelector() {
+/** Mapea query param normalizado → ciudad con formato correcto */
+function resolveCityFromParam(param: string | null): string | null {
+  if (!param) return null
+  const normalized = param.toLowerCase().trim()
+  if (normalized === 'medellin' || normalized === 'medellín') return 'Medellín'
+  if (normalized === 'bogota' || normalized === 'bogotá') return 'Bogotá'
+  return null
+}
+
+interface LandingSelectorProps {
+  defaultCity?: 'Bogotá' | 'Medellín'
+}
+
+export default function LandingSelector({ defaultCity = 'Bogotá' }: LandingSelectorProps) {
   const whatsappNumber = useWhatsAppNumber()
+  const searchParams = useSearchParams()
+
+  // Prioridad: query param > prop defaultCity > fallback 'Bogotá'
+  const initialCity = resolveCityFromParam(searchParams.get('ciudad')) ?? defaultCity
+
   const [selectedService, setSelectedService] = useState('plan360')
-  const [selectedCity, setSelectedCity] = useState('Bogotá')
+  const [selectedCity, setSelectedCity] = useState(initialCity)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleWhatsAppRedirect = () => {
@@ -53,7 +73,10 @@ export default function LandingSelector() {
         {services.map((srv) => (
           <button
             key={srv.id}
-            onClick={() => setSelectedService(srv.id)}
+            onClick={() => {
+              setSelectedService(srv.id)
+              GTMEvents.serviceClick(srv.name, srv.id)
+            }}
             className={`relative p-4 rounded-2xl border-2 text-left transition-all duration-200 flex flex-col ${
               selectedService === srv.id 
                 ? 'border-blue-600 bg-blue-50' 

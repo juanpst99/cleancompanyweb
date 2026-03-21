@@ -87,11 +87,11 @@ export const GTMEvents = {
     });
   },
 
-  // Evento de cotización iniciada
+  // Evento de cotización iniciada (custom — NO usar begin_checkout para evitar
+  // inflar el embudo ecommerce de GA4 con cotizaciones que no son compras reales)
   quotationStart: (service: string, city?: string) => {
     pushToDataLayer({
-      event: 'begin_checkout',
-      conversion_event: 'quotation_start',
+      event: 'quotation_start',
       service_type: service,
       city: city || 'not_specified',
       value: getServiceValue(service),
@@ -99,17 +99,17 @@ export const GTMEvents = {
     });
   },
 
-  // Evento de cotización completada
-  quotationComplete: (service: string, city: string, customerData: any) => {
+  // Evento de cotización completada (custom — NO usar purchase para evitar
+  // generar transacciones ficticias en GA4 con ingresos inflados)
+  quotationComplete: (service: string, city: string, customerData: Record<string, unknown>) => {
     pushToDataLayer({
-      event: 'purchase',
-      conversion_event: 'quotation_complete',
+      event: 'quotation_complete',
       service_type: service,
       city: city,
-      customer_type: customerData.tipo || 'particular',
+      customer_type: (customerData.tipo as string) || 'particular',
       value: getServiceValue(service),
       currency: 'COP',
-      transaction_id: generateTransactionId(),
+      quotation_id: generateTransactionId(),
     });
   },
 

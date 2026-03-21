@@ -1,0 +1,811 @@
+{
+  "name": "Offline_Conversions_Meta",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ",
+          "mode": "list",
+          "cachedResultName": "contabilidad prueba prueba",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1342718384,
+          "mode": "list",
+          "cachedResultName": "Clics de WhatsApp Clean Company",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit#gid=1342718384"
+        },
+        "event": "rowUpdate",
+        "options": {
+          "columnsToWatch": [
+            "Estado del Lead"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        1552
+      ],
+      "id": "759d4dd7-90bd-4ccd-aab2-71644672dcf3",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "uxNBiJIzVHfArTCL",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// SHA-256 puro en JS (no requiere modulos externos)\nfunction sha256hex(ascii) {\n  function rr(v,a){return(v>>>a)|(v<<(32-a));}\n  var P=Math.pow,M=P(2,32),i,j,r='',w=[],bl=ascii.length*8,h=[],k=[],c=0,x={};\n  for(var d=2;c<64;d++){if(!x[d]){for(i=0;i<313;i+=d)x[i]=d;h[c]=(P(d,.5)*M)|0;k[c++]=(P(d,1/3)*M)|0;}}\n  ascii+='\\x80';\n  while(ascii.length%64!==56)ascii+='\\x00';\n  for(i=0;i<ascii.length;i++){j=ascii.charCodeAt(i);w[i>>2]|=j<<((3-i)%4)*8;}\n  w[w.length]=(bl/M)|0;w[w.length]=bl;\n  for(j=0;j<w.length;){\n    var W=w.slice(j,j+=16),H=h.slice(0);\n    h=h.slice(0,8);\n    for(i=0;i<64;i++){\n      var w15=W[i-15],w2=W[i-2],a=h[0],e=h[4];\n      var t1=h[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&h[5])^(~e&h[6]))+k[i]+(W[i]=(i<16)?W[i]:(W[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+W[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);\n      var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&h[1])^(a&h[2])^(h[1]&h[2]));\n      h=[(t1+t2)|0].concat(h);h[4]=(h[4]+t1)|0;h.length=8;\n    }\n    h=h.map(function(v,i){return(v+H[i])|0;});\n  }\n  h.forEach(function(v){for(i=7;i>=0;i--)r+=((v>>>(i*4))&0xf).toString(16);});\n  return r;\n}\n\nconst j = $input.item.json;\n\n// Normalizar teléfono colombiano → E.164 → SHA-256\nconst raw = ((j['contacto'] || '') + '').trim();\nconst digits = raw.replace(/\\D/g, '');\n// Si tiene 10 dígitos (sin código de país), agregar 57\nconst e164 = (digits.length === 10) ? '57' + digits : digits;\nconst ph_hashed = (e164.length >= 10) ? sha256hex(e164) : null;\n\n// Construir fbc desde columna guardada, o reconstruir desde FBCLID\nconst fbc_computed = (j['fbc'] && j['fbc'] !== '')\n  ? j['fbc']\n  : (j['FBCLID'] ? ('fb.1.' + Math.floor(Date.now() / 1000) + '.' + j['FBCLID']) : '');\n\n// event_time: usar Fecha de Cierre si existe y es válida, si no usar ahora\nlet event_time_unix = Math.floor(Date.now() / 1000);\nconst fechaCierre = j['Fecha de Cierre'];\nif (fechaCierre) {\n  const parsed = new Date(fechaCierre);\n  if (!isNaN(parsed.getTime())) {\n    event_time_unix = Math.floor(parsed.getTime() / 1000);\n  }\n}\n\n// event_id único para este evento offline\n// Distinto del event_id del Lead original para evitar falsa deduplicación\nconst event_id_offline = 'offline_' + (j['ID Corto'] || 'X') + '_' + Date.now();\n\n// Valor de venta → número (limpia puntos/comas de formato colombiano)\nconst rawValor = ((j['Valor de la Venta'] || '0') + '').replace(/[^0-9]/g, '');\nconst valor = parseInt(rawValor, 10) || 0;\n\n// user_data: solo incluir campos con valor real (strings vacíos causan error 2804050 en Meta)\nconst user_data = {};\nif (j['IP'])          user_data.client_ip_address = j['IP'];\nif (j['User_Agent'])  user_data.client_user_agent = j['User_Agent'];\nif (fbc_computed)     user_data.fbc = fbc_computed;\nif (j['fbp'])         user_data.fbp = j['fbp'];\nif (ph_hashed)        user_data.ph  = [ph_hashed];\n// external_id como campo garantizado: evita 2804050 aunque el resto esté vacío\n// Usa el ID Corto hasheado (identificador único por conversión)\nif (j['ID Corto']) user_data.external_id = [sha256hex(j['ID Corto'])];\n\n// Payload para evento Schedule (Agendado)\nconst payload_schedule = {\n  data: [{\n    event_name: 'Schedule',\n    event_time: event_time_unix,\n    event_id: event_id_offline,\n    action_source: 'system_generated',\n    event_source_url: j['Landing URL'] || '',\n    user_data: user_data,\n    custom_data: {\n      content_name: 'Servicio Agendado',\n      ref: j['ID Corto'] || ''\n    }\n  }]\n};\n\n// Payload para evento Purchase (Venta Cerrada)\nconst payload_purchase = {\n  data: [{\n    event_name: 'Purchase',\n    event_time: event_time_unix,\n    event_id: event_id_offline,\n    action_source: 'system_generated',\n    event_source_url: j['Landing URL'] || '',\n    user_data: user_data,\n    custom_data: {\n      currency: 'COP',\n      value: valor,\n      content_name: 'Lavado Contratado',\n      ref: j['ID Corto'] || ''\n    }\n  }]\n};\n\nreturn {\n  json: {\n    ...j,\n    fbc_computed: fbc_computed,\n    event_time_unix: event_time_unix,\n    event_id_offline: event_id_offline,\n    valor_numerico: valor,\n    payload_schedule_str: JSON.stringify(payload_schedule),\n    payload_purchase_str: JSON.stringify(payload_purchase)\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        1552
+      ],
+      "id": "522a5a34-fb41-4cf6-b74a-9eec643ddfeb",
+      "name": "Code - Enriquecer y Hashear"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond-es-agendado",
+              "leftValue": "={{ $json['Estado del Lead'] }}",
+              "rightValue": "Agendado",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-evento-capi-vacio",
+              "leftValue": "={{ $json['Evento_CAPI'] || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        1392
+      ],
+      "id": "ff25b001-8819-4e7e-a1d6-4f52b4034d15",
+      "name": "IF - Agendado sin procesar"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond-es-venta",
+              "leftValue": "={{ $json['Estado del Lead'] }}",
+              "rightValue": "Venta Cerrada",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-purchase-no-enviado",
+              "leftValue": "={{ $json['Evento_CAPI'] || '' }}",
+              "rightValue": "Purchase_Sent",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        1712
+      ],
+      "id": "42c405d0-d70a-4a04-970f-2aed17b094da",
+      "name": "IF - Venta Cerrada sin Purchase"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/1202018205254794/events",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAARUF2QY8d0BQ7wFEfLxtqwOFRZAdfBQ0N0ZA5UAX1IQyXK6HjYMFJqoaeeY1gHXKP8sNyb9ZAErBHtkQQtA2qSrYUKIHlFjAdBkpAr70CZCU0oxzZBdo8Fw2OA58KMxZCVL34DjhSadpE9eV1ffvZAZAAF7ZCQzTxYESlCue9WoTJiLAZA7hGMVa35d6zgA56BgZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.payload_schedule_str }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        640,
+        1312
+      ],
+      "id": "a3ce9880-172e-47f2-b004-cf15d344b9fc",
+      "name": "HTTP - Meta CAPI Schedule"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/1202018205254794/events",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAARUF2QY8d0BQ7wFEfLxtqwOFRZAdfBQ0N0ZA5UAX1IQyXK6HjYMFJqoaeeY1gHXKP8sNyb9ZAErBHtkQQtA2qSrYUKIHlFjAdBkpAr70CZCU0oxzZBdo8Fw2OA58KMxZCVL34DjhSadpE9eV1ffvZAZAAF7ZCQzTxYESlCue9WoTJiLAZA7hGMVa35d6zgA56BgZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.payload_purchase_str }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        672,
+        1648
+      ],
+      "id": "59e99ef5-5f4a-49f2-a3eb-cdffb9e56a78",
+      "name": "HTTP - Meta CAPI Purchase"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ",
+          "mode": "list",
+          "cachedResultName": "contabilidad prueba prueba",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1342718384,
+          "mode": "list",
+          "cachedResultName": "Clics de WhatsApp Clean Company",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit#gid=1342718384"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID Corto": "={{ $('IF - Agendado sin procesar').item.json[\"ID Corto\"] }}",
+            "Evento_CAPI": "Schedule_Sent"
+          },
+          "matchingColumns": [
+            "ID Corto"
+          ],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID Corto",
+              "displayName": "ID Corto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GCLID",
+              "displayName": "GCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fuente",
+              "displayName": "Fuente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Medio",
+              "displayName": "Medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Campaña",
+              "displayName": "Campaña",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Landing URL",
+              "displayName": "Landing URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Estado del Lead",
+              "displayName": "Estado del Lead",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Valor de la Venta",
+              "displayName": "Valor de la Venta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha de Cierre",
+              "displayName": "Fecha de Cierre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notas",
+              "displayName": "Notas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contacto",
+              "displayName": "contacto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event ID Meta",
+              "displayName": "Event ID Meta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FBCLID",
+              "displayName": "FBCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fbp",
+              "displayName": "fbp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fbc",
+              "displayName": "fbc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "IP",
+              "displayName": "IP",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "User_Agent",
+              "displayName": "User_Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Evento_CAPI",
+              "displayName": "Evento_CAPI",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        1312
+      ],
+      "id": "ad315847-84ca-486d-9b3f-c2ae2bb62c06",
+      "name": "GSheets - Marcar Schedule_Sent",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8uxmj1YFCj8vFo0R",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ",
+          "mode": "list",
+          "cachedResultName": "contabilidad prueba prueba",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1342718384,
+          "mode": "list",
+          "cachedResultName": "Clics de WhatsApp Clean Company",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o5u_jrS2Enjp7IGZcCQarhbvf8ICapO-bTXTLWT_OdQ/edit#gid=1342718384"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID Corto": "={{ $('IF - Venta Cerrada sin Purchase').item.json[\"ID Corto\"] }}",
+            "Evento_CAPI": "Purchase_Sent"
+          },
+          "matchingColumns": [
+            "ID Corto"
+          ],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID Corto",
+              "displayName": "ID Corto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GCLID",
+              "displayName": "GCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fuente",
+              "displayName": "Fuente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Medio",
+              "displayName": "Medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Campaña",
+              "displayName": "Campaña",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Landing URL",
+              "displayName": "Landing URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Estado del Lead",
+              "displayName": "Estado del Lead",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Valor de la Venta",
+              "displayName": "Valor de la Venta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha de Cierre",
+              "displayName": "Fecha de Cierre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notas",
+              "displayName": "Notas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contacto",
+              "displayName": "contacto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event ID Meta",
+              "displayName": "Event ID Meta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FBCLID",
+              "displayName": "FBCLID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fbp",
+              "displayName": "fbp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fbc",
+              "displayName": "fbc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "IP",
+              "displayName": "IP",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "User_Agent",
+              "displayName": "User_Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Evento_CAPI",
+              "displayName": "Evento_CAPI",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        1632
+      ],
+      "id": "0a68802f-8028-434f-8668-aec6a3586d7b",
+      "name": "GSheets - Marcar Purchase_Sent",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8uxmj1YFCj8vFo0R",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code - Enriquecer y Hashear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Enriquecer y Hashear": {
+      "main": [
+        [
+          {
+            "node": "IF - Agendado sin procesar",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF - Venta Cerrada sin Purchase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Agendado sin procesar": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Meta CAPI Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Venta Cerrada sin Purchase": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Meta CAPI Purchase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Meta CAPI Schedule": {
+      "main": [
+        [
+          {
+            "node": "GSheets - Marcar Schedule_Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Meta CAPI Purchase": {
+      "main": [
+        [
+          {
+            "node": "GSheets - Marcar Purchase_Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "6475d0a5-dee4-44e2-b2fb-7176284596ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "88e4aab74ff0575f6b057bd34969ceacd29a93724c7a3f28780f829103a76296"
+  },
+  "id": "arP7dj6X6B7uEEUd",
+  "tags": []
+}

@@ -2,6 +2,43 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
+// ─── Rate Limiter (en memoria) ───────────────────────────────────────────────
+// Protege el webhook de n8n contra spam. Límite: 10 requests por IP cada 60s.
+// En serverless (Vercel), cada instancia tiene su propio Map, así que el
+// límite real es "por instancia". Suficiente para frenar abuso casual.
+//
+// NOTA: Este rate limiter in-memory es un blindaje inicial válido, pero NO es
+// la solución definitiva en serverless con múltiples instancias. Si escalamos
+// tráfico o infraestructura, migrar a Redis/Upstash o equivalente.
+
+const RATE_LIMIT_WINDOW_MS = 60_000
+const RATE_LIMIT_MAX = 10
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    return false
+  }
+
+  entry.count++
+  return entry.count > RATE_LIMIT_MAX
+}
+
+// Limpieza periódica para evitar memory leak en long-running instances
+setInterval(() => {
+  const now = Date.now()
+  for (const [ip, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(ip)
+  }
+}, RATE_LIMIT_WINDOW_MS)
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 function getClientIp(req: NextRequest) {
   const xff = req.headers.get('x-forwarded-for') || ''
   // En Vercel, suele venir "IP, proxy1, proxy2"
@@ -10,6 +47,15 @@ function getClientIp(req: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limiting por IP
+  const clientIp = getClientIp(request) || 'unknown'
+  if (isRateLimited(clientIp)) {
+    return NextResponse.json(
+      { success: false, message: 'Demasiadas solicitudes. Intenta de nuevo en un minuto.' },
+      { status: 429 },
+    )
+  }
+
   try {
     const data = await request.json()
 

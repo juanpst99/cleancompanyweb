@@ -3,6 +3,7 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
+import { GTMEvents } from '@/lib/gtm'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -189,11 +190,16 @@ function CategoryButton({
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export default function VisualQuoter() {
+interface VisualQuoterProps {
+  defaultCity?: Ciudad
+  defaultCategory?: Categoria
+}
+
+export default function VisualQuoter({ defaultCity = 'Bogotá', defaultCategory = 'Mueble' }: VisualQuoterProps) {
   const whatsappNumber = useWhatsAppNumber()
 
-  const [ciudad, setCiudad] = useState<Ciudad>('Bogotá')
-  const [categoria, setCategoria] = useState<Categoria>('Mueble')
+  const [ciudad, setCiudad] = useState<Ciudad>(defaultCity)
+  const [categoria, setCategoria] = useState<Categoria>(defaultCategory)
   const [step, setStep] = useState<Step>('idle')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [imageBase64, setImageBase64] = useState<string | null>(null)
@@ -278,6 +284,10 @@ export default function VisualQuoter() {
 
   const handleAnalyze = async () => {
     if (!imageBase64) return
+
+    // Tracking: usuario inicia análisis con intención real
+    GTMEvents.quotationStart(categoria.toLowerCase(), ciudad)
+
     setStep('loading')
     setResult(null)
     setErrorMsg('')
@@ -323,8 +333,16 @@ export default function VisualQuoter() {
       }
 
       // Éxito: data ya tiene la estructura QuoteResult
-      setResult(data as QuoteResult)
+      const quoteData = data as QuoteResult
+      setResult(quoteData)
       setStep('result')
+
+      // Tracking: cotización completada con éxito
+      GTMEvents.quotationComplete(categoria.toLowerCase(), ciudad, {
+        item: quoteData.itemDetectado,
+        precio: quoteData.precioEstimado,
+        sinReferencia: quoteData.sinReferencia ?? false,
+      })
 
     } catch (err) {
       clearTimeout(timeoutId)
