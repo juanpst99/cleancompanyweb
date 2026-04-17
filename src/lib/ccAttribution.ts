@@ -41,8 +41,9 @@ export function captureAndPersistAttribution(): CCAttribution | null {
     landing_url: window.location.href,
   }
 
-  // 3. Persistimos si hay CUALQUIER identificador (Google o Meta)
-  if (attrib.gclid || attrib.wbraid || attrib.gbraid || attrib.fbclid) {
+  // 3. Persistimos si hay identificador de click O parámetros UTM
+  if (attrib.gclid || attrib.wbraid || attrib.gbraid || attrib.fbclid ||
+      attrib.utm_source || attrib.utm_medium || attrib.utm_campaign) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(attrib))
     return attrib
   }

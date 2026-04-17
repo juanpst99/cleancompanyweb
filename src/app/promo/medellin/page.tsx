@@ -98,14 +98,14 @@ export default function MedellinLanding() {
 
             {/* Copy */}
             <div className="lg:col-span-6 text-center lg:text-left mb-12 lg:mb-0">
-              <div className="inline-flex items-center space-x-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-bold mb-6">
+              <div className="inline-flex items-center space-x-2 bg-green-50 text-[#3AAA35] px-3 py-1 rounded-full text-sm font-bold mb-6">
                 <MapPin className="w-4 h-4" />
                 <span>Servicio a Domicilio en Medellín</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
                 ¿Manchas que no salen?{' '}
-                <span className="text-blue-600">Las eliminamos en 1 visita.</span>
+                <span className="text-[#3AAA35]">Las eliminamos en 1 visita.</span>
               </h1>
 
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
@@ -116,15 +116,15 @@ export default function MedellinLanding() {
               {/* Beneficios */}
               <ul className="space-y-4 text-left max-w-md mx-auto lg:mx-0 mb-8">
                 <li className="flex items-start">
-                  <Droplets className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <Droplets className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Equipos de inyección-extracción y productos biodegradables.</span>
                 </li>
                 <li className="flex items-start">
-                  <Clock className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <Clock className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Secado optimizado y servicio con respaldo de garantía.</span>
                 </li>
                 <li className="flex items-start">
-                  <ShieldCheck className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <ShieldCheck className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Técnicos uniformados y capacitados. Sin sorpresas.</span>
                 </li>
               </ul>
@@ -143,7 +143,7 @@ export default function MedellinLanding() {
               </div>
 
               {/* CTA Secundario: Cotizador IA */}
-              <a href="#cotizador-ia" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+              <a href="#cotizador-ia" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3AAA35] hover:text-[#266d25] transition-colors">
                 O calcula el precio con nuestra IA &darr;
               </a>
 
@@ -198,22 +198,22 @@ export default function MedellinLanding() {
             <p className="text-gray-500">Desde tu celular hasta la sala de tu casa, sin complicaciones.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <MessageCircle className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">1. Cotizas por WhatsApp</h3>
               <p className="text-gray-600 text-sm">Nos cuentas que necesitas lavar. Si envias foto, te cotizamos al instante. Sin compromisos.</p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <CalendarCheck className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">2. Agendamos tu ruta</h3>
               <p className="text-gray-600 text-sm">Elegimos el dia y bloque horario que te funcione segun nuestras rutas activas en Medellin.</p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <Home className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">3. Limpieza y Garantia</h3>
@@ -230,7 +230,7 @@ export default function MedellinLanding() {
       <section id="cotizador-ia" className="py-16 bg-gray-50 border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-[#3AAA35] text-xs font-bold px-4 py-1.5 rounded-full mb-4">
               Opcional &mdash; sin compromisos
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
@@ -253,7 +253,7 @@ export default function MedellinLanding() {
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">Preguntas frecuentes</h2>
           <div className="space-y-4">
             {faqs.map((faq) => (
-              <details key={faq.q} className="group border border-gray-200 rounded-xl bg-gray-50 open:bg-white open:ring-1 open:ring-blue-100 transition-all duration-300">
+              <details key={faq.q} className="group border border-gray-200 rounded-xl bg-gray-50 open:bg-white open:ring-1 open:ring-green-100 transition-all duration-300">
                 <summary className="flex justify-between items-center font-bold cursor-pointer list-none p-5 text-gray-800">
                   <span>{faq.q}</span>
                   <span className="transition group-open:rotate-180">

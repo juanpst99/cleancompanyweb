@@ -107,14 +107,14 @@ export default function MueblesMedellinLanding() {
 
             {/* Copy */}
             <div className="lg:col-span-7 text-center lg:text-left mb-12 lg:mb-0">
-              <div className="inline-flex items-center space-x-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-bold mb-6">
+              <div className="inline-flex items-center space-x-2 bg-green-50 text-[#3AAA35] px-3 py-1 rounded-full text-sm font-bold mb-6">
                 <MapPin className="w-4 h-4" />
                 <span>Lavado de Muebles a Domicilio en Medellín</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
                 ¿Tu sofá tiene manchas imposibles?{' '}
-                <span className="text-blue-600">Nosotros las sacamos.</span>
+                <span className="text-[#3AAA35]">Nosotros las sacamos.</span>
               </h1>
 
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
@@ -125,15 +125,15 @@ export default function MueblesMedellinLanding() {
               {/* Beneficios */}
               <ul className="space-y-4 text-left max-w-md mx-auto lg:mx-0 mb-8">
                 <li className="flex items-start">
-                  <Droplets className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <Droplets className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Inyección-extracción profunda: manchas de café, vino, grasa, mascotas.</span>
                 </li>
                 <li className="flex items-start">
-                  <Clock className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <Clock className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Secado en 2-6 horas. No queda empapado.</span>
                 </li>
                 <li className="flex items-start">
-                  <ShieldCheck className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <ShieldCheck className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Garantía de satisfacción. Si no queda bien, repetimos gratis.</span>
                 </li>
               </ul>
@@ -152,7 +152,7 @@ export default function MueblesMedellinLanding() {
               </div>
 
               {/* CTA Secundario */}
-              <a href="#cotizador-ia" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+              <a href="#cotizador-ia" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3AAA35] hover:text-[#266d25] transition-colors">
                 O sube una foto y calcula el precio con IA &darr;
               </a>
 
@@ -173,14 +173,14 @@ export default function MueblesMedellinLanding() {
             <div className="lg:col-span-5 relative z-10">
               <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-6 sm:p-8 border border-gray-100">
                 <div className="flex items-center gap-2 mb-5">
-                  <Sofa className="w-5 h-5 text-blue-600" />
+                  <Sofa className="w-5 h-5 text-[#3AAA35]" />
                   <h3 className="text-lg font-extrabold text-gray-900">Precios en Medellín</h3>
                 </div>
                 <div className="space-y-3 mb-6">
                   {prices.map((p) => (
                     <div key={p.item} className="flex justify-between items-center py-2.5 px-3 rounded-xl bg-gray-50 border border-gray-100">
                       <span className="text-sm font-medium text-gray-700">{p.item}</span>
-                      <span className="text-sm font-bold text-blue-700 whitespace-nowrap ml-3">{p.price}</span>
+                      <span className="text-sm font-bold text-[#3AAA35] whitespace-nowrap ml-3">{p.price}</span>
                     </div>
                   ))}
                 </div>
@@ -230,22 +230,22 @@ export default function MueblesMedellinLanding() {
             <p className="text-gray-500">Sin complicaciones, desde tu celular.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <MessageCircle className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">1. Envias una foto</h3>
               <p className="text-gray-600 text-sm">Nos mandas foto de tu mueble por WhatsApp y te damos el precio exacto en minutos.</p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <CalendarCheck className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">2. Agendamos tu ruta</h3>
               <p className="text-gray-600 text-sm">Elegimos dia y bloque horario segun nuestras rutas activas en Medellin.</p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <Home className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">3. Resultado visible</h3>
@@ -262,7 +262,7 @@ export default function MueblesMedellinLanding() {
       <section id="cotizador-ia" className="py-16 bg-gray-50 border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-[#3AAA35] text-xs font-bold px-4 py-1.5 rounded-full mb-4">
               Opcional &mdash; sin compromisos
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
@@ -285,7 +285,7 @@ export default function MueblesMedellinLanding() {
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">Preguntas sobre lavado de muebles</h2>
           <div className="space-y-4">
             {faqs.map((faq) => (
-              <details key={faq.q} className="group border border-gray-200 rounded-xl bg-gray-50 open:bg-white open:ring-1 open:ring-blue-100 transition-all duration-300">
+              <details key={faq.q} className="group border border-gray-200 rounded-xl bg-gray-50 open:bg-white open:ring-1 open:ring-green-100 transition-all duration-300">
                 <summary className="flex justify-between items-center font-bold cursor-pointer list-none p-5 text-gray-800">
                   <span>{faq.q}</span>
                   <span className="transition group-open:rotate-180">

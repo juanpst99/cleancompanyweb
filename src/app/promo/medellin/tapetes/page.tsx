@@ -97,14 +97,14 @@ export default function TapetesMedellinLanding() {
 
             {/* Copy */}
             <div className="lg:col-span-6 text-center lg:text-left mb-12 lg:mb-0">
-              <div className="inline-flex items-center space-x-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-bold mb-6">
+              <div className="inline-flex items-center space-x-2 bg-green-50 text-[#3AAA35] px-3 py-1 rounded-full text-sm font-bold mb-6">
                 <MapPin className="w-4 h-4" />
                 <span>Lavado de Tapetes a Domicilio en Medellín</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
                 ¿Ese tapete lo ibas a botar?{' '}
-                <span className="text-blue-600">Nosotros lo rescatamos.</span>
+                <span className="text-[#3AAA35]">Nosotros lo rescatamos.</span>
               </h1>
 
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
@@ -115,15 +115,15 @@ export default function TapetesMedellinLanding() {
               {/* Beneficios */}
               <ul className="space-y-4 text-left max-w-md mx-auto lg:mx-0 mb-8">
                 <li className="flex items-start">
-                  <Droplets className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <Droplets className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Extracción profunda de manchas, olores, polvo y alérgenos.</span>
                 </li>
                 <li className="flex items-start">
-                  <Clock className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <Clock className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Recogemos, lavamos y entregamos. Sin complicaciones.</span>
                 </li>
                 <li className="flex items-start">
-                  <ShieldCheck className="w-6 h-6 text-blue-500 mr-3 shrink-0" />
+                  <ShieldCheck className="w-6 h-6 text-[#3AAA35] mr-3 shrink-0" />
                   <span className="text-gray-700 font-medium">Seguro para fibras delicadas, persas, shaggy y sintéticos.</span>
                 </li>
               </ul>
@@ -195,22 +195,22 @@ export default function TapetesMedellinLanding() {
             <p className="text-gray-500">Recogemos, lavamos y entregamos. Tu solo nos abres la puerta.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <MessageCircle className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">1. Envias foto o medidas</h3>
               <p className="text-gray-600 text-sm">Usa nuestro cotizador con IA o mandanos foto por WhatsApp. Te damos precio exacto al instante.</p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <CalendarCheck className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">2. Recogemos tu tapete</h3>
               <p className="text-gray-600 text-sm">Agendamos recogida a domicilio en Medellin. Lo llevamos a nuestra planta para lavado profesional.</p>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
+            <div className="text-center p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors">
+              <div className="w-16 h-16 mx-auto bg-green-100 text-[#3AAA35] rounded-full flex items-center justify-center mb-4">
                 <Home className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">3. Entrega como nuevo</h3>
@@ -230,12 +230,12 @@ export default function TapetesMedellinLanding() {
           <div className="grid sm:grid-cols-2 gap-4 mb-6">
             <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
               <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-2">Tapete removible</p>
-              <p className="text-2xl font-black text-blue-700">$37.500<span className="text-sm font-semibold text-gray-500">/m²</span></p>
+              <p className="text-2xl font-black text-[#3AAA35]">$37.500<span className="text-sm font-semibold text-gray-500">/m²</span></p>
               <p className="text-xs text-gray-500 mt-1">Minimo 2 m². Incluye recogida y entrega.</p>
             </div>
             <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
               <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-2">Alfombra fija (pared a pared)</p>
-              <p className="text-2xl font-black text-blue-700">$15.000<span className="text-sm font-semibold text-gray-500">/m²</span></p>
+              <p className="text-2xl font-black text-[#3AAA35]">$15.000<span className="text-sm font-semibold text-gray-500">/m²</span></p>
               <p className="text-xs text-gray-500 mt-1">Lavado a domicilio. Minimo $350.000.</p>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function TapetesMedellinLanding() {
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">Preguntas sobre lavado de tapetes</h2>
           <div className="space-y-4">
             {faqs.map((faq) => (
-              <details key={faq.q} className="group border border-gray-200 rounded-xl bg-gray-50 open:bg-white open:ring-1 open:ring-blue-100 transition-all duration-300">
+              <details key={faq.q} className="group border border-gray-200 rounded-xl bg-gray-50 open:bg-white open:ring-1 open:ring-green-100 transition-all duration-300">
                 <summary className="flex justify-between items-center font-bold cursor-pointer list-none p-5 text-gray-800">
                   <span>{faq.q}</span>
                   <span className="transition group-open:rotate-180">

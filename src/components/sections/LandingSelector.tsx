@@ -52,8 +52,10 @@ export default function LandingSelector({ defaultCity = 'Bogotá' }: LandingSele
     const message = `Hola Clean Company 👋 Quiero cotizar el servicio de *${serviceName}* en *${selectedCity}*. Tengo fotos y medidas. ¿Me ayudas con la disponibilidad por favor?\n\n(Ref: ${ref})`
 
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
-    setIsSubmitting(false)
+    setTimeout(() => {
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+      setIsSubmitting(false)
+    }, 250)
   }
 
   return (
@@ -79,21 +81,21 @@ export default function LandingSelector({ defaultCity = 'Bogotá' }: LandingSele
             }}
             className={`relative p-4 rounded-2xl border-2 text-left transition-all duration-200 flex flex-col ${
               selectedService === srv.id 
-                ? 'border-blue-600 bg-blue-50' 
-                : 'border-gray-100 bg-white hover:border-blue-100 hover:bg-gray-50'
+                ? 'border-[#3AAA35] bg-green-50' 
+                : 'border-gray-100 bg-white hover:border-green-100 hover:bg-gray-50'
             }`}
           >
             {srv.highlight && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-sm">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#3AAA35] to-[#266d25] text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-sm">
                 MEJOR VALOR
               </span>
             )}
             <span className="text-2xl mb-1">{srv.icon}</span>
-            <span className={`font-semibold text-sm leading-tight ${selectedService === srv.id ? 'text-blue-900' : 'text-gray-700'}`}>
+            <span className={`font-semibold text-sm leading-tight ${selectedService === srv.id ? 'text-green-900' : 'text-gray-700'}`}>
               {srv.name}
             </span>
             {selectedService === srv.id && (
-              <CheckCircle2 className="absolute bottom-3 right-3 w-5 h-5 text-blue-600 animate-fade-in-up" />
+              <CheckCircle2 className="absolute bottom-3 right-3 w-5 h-5 text-[#3AAA35] animate-fade-in-up" />
             )}
           </button>
         ))}
@@ -110,7 +112,7 @@ export default function LandingSelector({ defaultCity = 'Bogotá' }: LandingSele
               onClick={() => setSelectedCity(city)}
               className={`flex-1 py-2.5 rounded-lg font-bold text-sm transition-all ${
                 selectedCity === city
-                  ? 'bg-white text-blue-600 shadow-sm ring-1 ring-gray-200'
+                  ? 'bg-white text-[#3AAA35] shadow-sm ring-1 ring-gray-200'
                   : 'text-gray-500 hover:text-gray-900'
               }`}
             >
