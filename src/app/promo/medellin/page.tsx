@@ -12,6 +12,9 @@ import {
   MessageCircle,
   CalendarCheck,
   Home,
+  Sofa,
+  Moon,
+  Tag,
 } from 'lucide-react'
 import LandingEngagementTracker from '@/components/analytics/LandingEngagementTracker'
 
@@ -220,6 +223,91 @@ export default function MedellinLanding() {
               <p className="text-gray-600 text-sm">Nuestros tecnicos uniformados llegan con maquinaria industrial. Revisas el resultado y te respaldamos con garantia de satisfaccion.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Precios ────────────────────────────────────────────────── */}
+      <section id="precios" className="py-16 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Precios en Medellín</h2>
+            <p className="text-gray-500 max-w-xl mx-auto">Sin letras pequeñas. Conoce el precio real antes de escribirnos.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+
+            {/* Muebles */}
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Sofa className="w-5 h-5 text-[#3AAA35]" />
+                <h3 className="font-extrabold text-gray-900">Muebles y Sofás</h3>
+              </div>
+              <div className="space-y-2.5">
+                {[
+                  { label: 'Sofá 2 puestos', price: '$90.000' },
+                  { label: 'Sofá 3 puestos', price: '$105.000' },
+                  { label: 'Sala en L (hasta 5 puestos)', price: '$160.000' },
+                  { label: 'Sala en L grande (5+)', price: '$200.000' },
+                  { label: 'Poltrona / Sillón', price: '$45.000' },
+                  { label: 'Silla comedor (mín. 4)', price: '$12.000 c/u' },
+                ].map((r) => (
+                  <div key={r.label} className="flex justify-between items-center text-sm py-1 border-b border-gray-50 last:border-0">
+                    <span className="text-gray-600">{r.label}</span>
+                    <span className="font-bold text-[#3AAA35] whitespace-nowrap ml-2">{r.price}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Colchones */}
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Moon className="w-5 h-5 text-[#3AAA35]" />
+                <h3 className="font-extrabold text-gray-900">Colchones</h3>
+              </div>
+              <div className="space-y-2.5">
+                {[
+                  { label: 'Sencillo (1.00 m)', price: '$90.000' },
+                  { label: 'Semidoble (1.20 m)', price: '$95.000' },
+                  { label: 'Doble (1.40 m)', price: '$100.000' },
+                  { label: 'Queen (1.60 m)', price: '$110.000' },
+                  { label: 'King (2.00 m)', price: '$130.000' },
+                  { label: 'Base + Espaldar', price: '$90.000' },
+                ].map((r) => (
+                  <div key={r.label} className="flex justify-between items-center text-sm py-1 border-b border-gray-50 last:border-0">
+                    <span className="text-gray-600">{r.label}</span>
+                    <span className="font-bold text-[#3AAA35] whitespace-nowrap ml-2">{r.price}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tapetes */}
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Tag className="w-5 h-5 text-[#3AAA35]" />
+                <h3 className="font-extrabold text-gray-900">Tapetes y Alfombras</h3>
+              </div>
+              <div className="space-y-2.5">
+                {[
+                  { label: 'Pack 1.20×1.70 m', price: '$90.000' },
+                  { label: 'Pack 1.60×2.30 m', price: '$138.000' },
+                  { label: 'Pack 2.00×3.00 m', price: '$225.000' },
+                  { label: 'Tapete suelto (tarifa)', price: '$37.500/m²' },
+                  { label: 'Tapete persa / delicado', price: '$50.000/m²' },
+                  { label: 'Alfombra fija instalada', price: '$15.000/m²' },
+                ].map((r) => (
+                  <div key={r.label} className="flex justify-between items-center text-sm py-1 border-b border-gray-50 last:border-0">
+                    <span className="text-gray-600">{r.label}</span>
+                    <span className="font-bold text-[#3AAA35] whitespace-nowrap ml-2">{r.price}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+          <p className="text-xs text-gray-400 text-center mt-6">
+            Mínimo a domicilio $79.900 · Mínimo alfombra fija $350.000 · Precios sujetos a inspección (materiales delicados o suciedad extrema pueden tener recargo)
+          </p>
         </div>
       </section>
 

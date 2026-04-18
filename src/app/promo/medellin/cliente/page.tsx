@@ -1,4 +1,5 @@
 import React from 'react'
+import VisualQuoter from '@/components/VisualQuoter'
 import WhatsAppLink from '@/components/WhatsAppLink'
 import {
   Star,
@@ -171,6 +172,27 @@ export default function ClienteMedellinLanding() {
                 </WhatsAppLink>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Cotizador IA ───────────────────────────────────────────── */}
+      <section id="cotizador-ia" className="py-16 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-[#3AAA35] text-xs font-bold px-4 py-1.5 rounded-full mb-4">
+              Con tu 15% OFF aplicado
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              Calcula el precio de tu próximo servicio
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              Sube una foto de tu mueble o tapete y nuestra IA te da el estimado al instante.
+              Recuerda que como cliente tienes <strong>15% de descuento</strong> al agendar por WhatsApp.
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto">
+            <VisualQuoter defaultCity="Medellín" />
           </div>
         </div>
       </section>

@@ -38,11 +38,11 @@ const WA_MESSAGE = 'Hola Clean Company, quiero cotizar la higienización de colc
 // ─── Datos estáticos ──────────────────────────────────────────────────────────
 
 const prices = [
-  { item: 'Colchón Sencillo', price: '$85.000' },
-  { item: 'Colchón Semidoble', price: '$85.000' },
-  { item: 'Colchón Doble', price: '$90.000', popular: true },
-  { item: 'Colchón Queen', price: '$100.000' },
-  { item: 'Colchón King', price: '$115.000' },
+  { item: 'Colchón Sencillo (1.00 m)', price: '$90.000' },
+  { item: 'Colchón Semidoble (1.20 m)', price: '$95.000' },
+  { item: 'Colchón Doble (1.40 m)', price: '$100.000', popular: true },
+  { item: 'Colchón Queen (1.60 m)', price: '$110.000' },
+  { item: 'Colchón King (2.00 m)', price: '$130.000' },
 ]
 
 const testimonials = [
@@ -66,7 +66,7 @@ const testimonials = [
 const faqs = [
   {
     q: '¿Cuánto cuesta lavar un colchón?',
-    a: 'En Medellín, desde $80.000 para sencillo, semidoble o doble. Queen desde $90.000 y King desde $105.000. Incluye extracción profunda, desodorización y tratamiento anti-ácaros GRATIS.',
+    a: 'En Medellín, sencillo (1.00 m) $90.000, semidoble $95.000, doble $100.000, queen $110.000 y king $130.000. Incluye extracción profunda, desodorización y tratamiento anti-ácaros GRATIS.',
   },
   {
     q: '¿Cada cuánto se debe lavar un colchón?',
@@ -118,7 +118,7 @@ export default function ColchonesMedellinLanding() {
 
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
                 Extracción industrial profunda que retira ácaros, sudor, bacterias y olores acumulados.
-                Colchones desde <strong>$80.000</strong> en Medellín. Duerme más limpio esta noche.
+                Colchones desde <strong>$90.000</strong> en Medellín. Duerme más limpio esta noche.
               </p>
 
               {/* Beneficios */}
