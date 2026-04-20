@@ -345,10 +345,10 @@ REGLAS CRÍTICAS:
 - Formato exacto de cada bbox: [ymin, xmin, ymax, xmax] como números enteros.
 - El bbox debe envolver COMPLETAMENTE el objeto.
 - Para "subtipo" de muebles usa EXACTAMENTE uno de estos valores:
-  · "sala_l"        = sofá seccional en L o en U hasta 5 módulos (el vértice/esquina es visible).
-  · "sala_l_grande" = sofá seccional en L/U con 5 módulos o más (es notablemente grande).
-  · "sala_3"        = sofá recto de 3 puestos.
-  · "sofa_2"        = sofá recto de 2 puestos (más pequeño).
+  · "sala_l"        = sofá seccional que forma físicamente una L o una U: hay un giro/ángulo visible entre los módulos. CRITERIO CLAVE: si los cojines/módulos están alineados en línea recta (sin esquina), NO es sala_l aunque el sofá sea modular.
+  · "sala_l_grande" = igual que sala_l (ángulo visible) pero con 5 módulos o más y es notablemente grande.
+  · "sala_3"        = sofá de 3 asientos en línea recta. Incluye sofás modulares o seccionales si sus módulos están dispuestos en línea recta sin formar una L ni una U.
+  · "sofa_2"        = sofá de 2 asientos en línea recta (más pequeño que sala_3).
   · "poltrona"      = sillón o poltrona de 1 puesto.
   · "silla"         = silla individual (comedor, escritorio, etc.).
 - Para el campo "subtipoTapete":
