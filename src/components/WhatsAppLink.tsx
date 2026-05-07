@@ -41,6 +41,20 @@ export default function WhatsAppLink({
     const fullMessage = `${message} (Ref: ${ref})`
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullMessage)}`
 
+    // GTM tracking — dispara whatsapp_click al dataLayer (mismo patrón que los formularios de servicios)
+    if (typeof window !== 'undefined') {
+      const w = window as unknown as { dataLayer?: any[] }
+      w.dataLayer = w.dataLayer || []
+      w.dataLayer.push({
+        event: 'whatsapp_click',
+        source: 'cta_link',
+        ref,
+        link_url: url,
+        user_name: nombre,
+        phone: telefono,
+      })
+    }
+
     setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 250)
   }
 

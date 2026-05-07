@@ -12,12 +12,24 @@ const WhatsAppButton = () => {
     e.preventDefault()
 
     // 1. Obtiene el ID y dispara el webhook en segundo plano
-const { ref } = trackWhatsAppClick()
-const msg = `Hola, quiero cotizar un servicio con Clean Company. (Ref: ${ref})`
-    
-    // 3. Usa el número dinámico para construir la URL final
+    const { ref } = trackWhatsAppClick()
+    const msg = `Hola, quiero cotizar un servicio con Clean Company. (Ref: ${ref})`
+
+    // 2. Usa el número dinámico para construir la URL final
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
-    
+
+    // 3. GTM tracking — dispara whatsapp_click al dataLayer (mismo patrón que los formularios de servicios)
+    if (typeof window !== 'undefined') {
+      const w = window as unknown as { dataLayer?: any[] }
+      w.dataLayer = w.dataLayer || []
+      w.dataLayer.push({
+        event: 'whatsapp_click',
+        source: 'floating_button',
+        ref,
+        link_url: url,
+      })
+    }
+
     setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 250)
   }
 
