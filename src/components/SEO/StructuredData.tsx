@@ -1,182 +1,256 @@
 import React from 'react'
 import Script from 'next/script'
 
-const openingHours = [
-  {
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    "opens": "07:00",
-    "closes": "18:00"
-  },
-  {
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": "Sunday",
-    "opens": "08:00",
-    "closes": "14:00"
-  }
+// Centraliza los `@id` para mantener un grafo coherente entre páginas.
+export const ENTITY_IDS = {
+  organization: 'https://cleancompany.com.co/#organization',
+  website: 'https://cleancompany.com.co/#website',
+  logo: 'https://cleancompany.com.co/#logo',
+  localBogota: 'https://cleancompany.com.co/#bogota',
+  localMedellin: 'https://cleancompany.com.co/#medellin',
+  contactBogota: 'https://cleancompany.com.co/#contact-bogota',
+  contactMedellin: 'https://cleancompany.com.co/#contact-medellin',
+} as const
+
+const LOGO_URL = 'https://cleancompany.com.co/images/logo/clean-company-logo.png'
+
+const KNOWS_ABOUT = [
+  'Lavado de alfombras',
+  'Lavado de tapetes',
+  'Lavado de muebles',
+  'Lavado de sofás',
+  'Lavado de colchones',
+  'Limpieza de tapicería',
+  'Desinfección textil',
+  'Eliminación de ácaros',
+  'Eliminación de manchas',
+  'Limpieza interior de vehículos',
+  'Limpieza empresarial',
+  'Fibras textiles',
+  'Lavado por inyección-extracción',
 ]
 
-const StructuredData = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "CleaningService",
-    "name": "Clean Company",
-    "image": "https://cleancompany.com.co/logo.png",
-    "@id": "https://cleancompany.com.co",
-    "url": "https://cleancompany.com.co",
-    "email": "cleancompanymed@gmail.com",
-    "telephone": "+573128052720",
-    "priceRange": "$$",
-    "address": [
+// Horario unificado (Lun–Sáb 8:00–17:00 según Footer). Revisión pendiente para Domingo.
+const OPENING_HOURS_WEEK = {
+  '@type': 'OpeningHoursSpecification',
+  dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  opens: '08:00',
+  closes: '17:00',
+}
+
+const OPENING_HOURS_SUNDAY = {
+  '@type': 'OpeningHoursSpecification',
+  dayOfWeek: 'Sunday',
+  opens: '08:00',
+  closes: '14:00',
+}
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': ENTITY_IDS.organization,
+  name: 'Clean Company',
+  url: 'https://cleancompany.com.co',
+  logo: {
+    '@type': 'ImageObject',
+    '@id': ENTITY_IDS.logo,
+    url: LOGO_URL,
+    width: 512,
+    height: 512,
+  },
+  image: { '@id': ENTITY_IDS.logo },
+  slogan: 'Limpieza profesional con resultados garantizados',
+  description:
+    'Empresa colombiana especializada en lavado profesional de alfombras, tapetes, muebles y colchones a domicilio en Bogotá y Medellín desde 2015.',
+  foundingDate: '2015',
+  email: 'cleancompanymed@gmail.com',
+  telephone: '+57-312-805-2720',
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      '@id': ENTITY_IDS.contactBogota,
+      telephone: '+57-312-805-2720',
+      contactType: 'customer service',
+      areaServed: 'CO',
+      availableLanguage: ['es'],
+      hoursAvailable: OPENING_HOURS_WEEK,
+    },
+    {
+      '@type': 'ContactPoint',
+      '@id': ENTITY_IDS.contactMedellin,
+      telephone: '+57-320-921-0866',
+      contactType: 'customer service',
+      areaServed: 'CO',
+      availableLanguage: ['es'],
+      hoursAvailable: OPENING_HOURS_SUNDAY,
+    },
+  ],
+  sameAs: [
+    'https://www.facebook.com/profile.php?id=100092972695790',
+    'https://www.instagram.com/cleancompany_colombia/',
+  ],
+  areaServed: [
+    {
+      '@type': 'City',
+      name: 'Bogotá',
+      containedInPlace: { '@type': 'Country', name: 'Colombia' },
+    },
+    {
+      '@type': 'City',
+      name: 'Medellín',
+      containedInPlace: { '@type': 'Country', name: 'Colombia' },
+    },
+  ],
+  knowsAbout: KNOWS_ABOUT,
+}
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': ENTITY_IDS.website,
+  url: 'https://cleancompany.com.co',
+  name: 'Clean Company',
+  description:
+    'Lavado profesional de alfombras, tapetes, muebles y colchones a domicilio en Bogotá y Medellín.',
+  inLanguage: 'es-CO',
+  publisher: { '@id': ENTITY_IDS.organization },
+}
+
+const buildLocalBusiness = (params: {
+  id: string
+  name: string
+  streetAddress: string
+  addressLocality: string
+  addressRegion: string
+  postalCode: string
+  latitude: number
+  longitude: number
+  city: string
+  region: string
+  radiusMeters: number
+}) => ({
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'CleaningService'],
+  '@id': params.id,
+  name: params.name,
+  parentOrganization: { '@id': ENTITY_IDS.organization },
+  url: 'https://cleancompany.com.co',
+  image: { '@id': ENTITY_IDS.logo },
+  telephone: '+57-312-805-2720',
+  email: 'cleancompanymed@gmail.com',
+  priceRange: '$$',
+  currenciesAccepted: 'COP',
+  paymentAccepted: 'Cash, Credit Card, Debit Card, Bank Transfer',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: params.streetAddress,
+    addressLocality: params.addressLocality,
+    addressRegion: params.addressRegion,
+    postalCode: params.postalCode,
+    addressCountry: 'CO',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: params.latitude,
+    longitude: params.longitude,
+  },
+  openingHoursSpecification: [OPENING_HOURS_WEEK],
+  areaServed: [
+    { '@type': 'City', name: params.city },
+    { '@type': 'AdministrativeArea', name: params.region },
+  ],
+  serviceArea: {
+    '@type': 'GeoCircle',
+    geoMidpoint: {
+      '@type': 'GeoCoordinates',
+      latitude: params.latitude,
+      longitude: params.longitude,
+    },
+    geoRadius: String(params.radiusMeters),
+  },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `Servicios Clean Company ${params.city}`,
+    itemListElement: [
       {
-        "@type": "PostalAddress",
-        "streetAddress": "Calle 30 #78-54",
-        "addressLocality": "Medellín",
-        "addressRegion": "Antioquia",
-        "postalCode": "050001",
-        "addressCountry": "CO"
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Lavado de Alfombras y Tapetes' },
+        areaServed: { '@type': 'City', name: params.city },
       },
       {
-        "@type": "PostalAddress",
-        "streetAddress": "Calle 22J #104-30",
-        "addressLocality": "Bogotá",
-        "addressRegion": "Bogotá D.C.",
-        "postalCode": "110111",
-        "addressCountry": "CO"
-      }
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Lavado de Muebles y Sofás' },
+        areaServed: { '@type': 'City', name: params.city },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Lavado y Desinfección de Colchones' },
+        areaServed: { '@type': 'City', name: params.city },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Limpieza Interior de Vehículos' },
+        areaServed: { '@type': 'City', name: params.city },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: 'Limpieza Empresarial' },
+        areaServed: { '@type': 'City', name: params.city },
+      },
     ],
-    "geo": [
-      { "@type": "GeoCoordinates", "latitude": 6.25184, "longitude": -75.56359 },
-      { "@type": "GeoCoordinates", "latitude": 4.71099, "longitude": -74.07209 }
-    ],
-    "openingHoursSpecification": openingHours,
-    "areaServed": [
-      { "@type": "City", "name": "Bogotá" },
-      { "@type": "City", "name": "Medellín" }
-    ],
-    "serviceType": [
-      "Lavado de alfombras",
-      "Lavado de colchones",
-      "Lavado de muebles",
-      "Limpieza de tapetes",
-      "Lavado a domicilio",
-      "Limpieza profesional"
-    ],
-    "sameAs": [
-      "https://www.facebook.com/profile.php?id=100092972695790",
-      "https://www.instagram.com/cleancompany_colombia/"
-    ],
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "3200"
-    },
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Servicios de limpieza",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Lavado de Alfombras y Tapetes",
-            "description": "Limpieza profunda y desinfección de alfombras y tapetes con técnicas especializadas"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Lavado de Muebles",
-            "description": "Lavado profesional de muebles y tapicería con productos especializados"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Lavado de Colchones",
-            "description": "Desinfección y limpieza profunda de colchones para eliminar ácaros y bacterias"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Limpieza Interior de Vehículos",
-            "description": "Lavado detallado de interiores de vehículos incluyendo tapicería y paneles"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Servicio Empresarial",
-            "description": "Soluciones de limpieza integral para oficinas y espacios comerciales"
-          }
-        }
-      ]
-    }
-  }
+  },
+})
 
-  const localBusinessMedellin = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Clean Company Medellín",
-    "image": "https://cleancompany.com.co/logo.png",
-    "telephone": "+573128052720",
-    "email": "cleancompanymed@gmail.com",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Calle 30 #78-54",
-      "addressLocality": "Medellín",
-      "addressRegion": "Antioquia",
-      "postalCode": "050001",
-      "addressCountry": "CO"
-    },
-    "priceRange": "$$",
-    "paymentAccepted": "Cash, Credit Card, Debit Card",
-    "openingHoursSpecification": openingHours,
-    "url": "https://cleancompany.com.co"
-  }
+const localBogota = buildLocalBusiness({
+  id: ENTITY_IDS.localBogota,
+  name: 'Clean Company Bogotá',
+  streetAddress: 'Calle 22J #104-30',
+  addressLocality: 'Bogotá',
+  addressRegion: 'Bogotá D.C.',
+  postalCode: '110111',
+  latitude: 4.71099,
+  longitude: -74.07209,
+  city: 'Bogotá',
+  region: 'Cundinamarca',
+  radiusMeters: 30000,
+})
 
-  const localBusinessBogota = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Clean Company Bogotá",
-    "image": "https://cleancompany.com.co/logo.png",
-    "telephone": "+573128052720",
-    "email": "cleancompanymed@gmail.com",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Calle 22J #104-30",
-      "addressLocality": "Bogotá",
-      "addressRegion": "Bogotá D.C.",
-      "postalCode": "110111",
-      "addressCountry": "CO"
-    },
-    "priceRange": "$$",
-    "paymentAccepted": "Cash, Credit Card, Debit Card",
-    "openingHoursSpecification": openingHours,
-    "url": "https://cleancompany.com.co"
-  }
+const localMedellin = buildLocalBusiness({
+  id: ENTITY_IDS.localMedellin,
+  name: 'Clean Company Medellín',
+  streetAddress: 'Calle 30 #78-54',
+  addressLocality: 'Medellín',
+  addressRegion: 'Antioquia',
+  postalCode: '050001',
+  latitude: 6.25184,
+  longitude: -75.56359,
+  city: 'Medellín',
+  region: 'Antioquia',
+  radiusMeters: 20000,
+})
 
+const StructuredData = () => {
   return (
     <>
       <Script
-        id="structured-data-main"
+        id="structured-data-organization"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
       />
       <Script
-        id="structured-data-local-medellin"
+        id="structured-data-website"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessMedellin) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
       />
       <Script
         id="structured-data-local-bogota"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessBogota) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBogota) }}
+      />
+      <Script
+        id="structured-data-local-medellin"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localMedellin) }}
       />
     </>
   )

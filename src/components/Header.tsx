@@ -1,111 +1,215 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
+type NavItem =
+  | { name: string; href: string }
+  | { name: string; children: { name: string; href: string; description?: string }[] }
+
+const NAV_ITEMS: NavItem[] = [
+  { name: 'Inicio', href: '/' },
+  {
+    name: 'Servicios',
+    children: [
+      { name: 'Lavado de alfombras y tapetes', href: '/servicios/alfombras', description: 'Persas, sintéticas y de área' },
+      { name: 'Lavado de muebles y sofás', href: '/servicios/muebles', description: 'Tela, cuero y tapicería' },
+      { name: 'Lavado de colchones', href: '/servicios/colchones', description: 'Antiácaros y desinfección' },
+      { name: 'Limpieza interior de vehículos', href: '/servicios/vehiculos', description: 'Tapicería, alfombras y techo' },
+      { name: 'Servicio empresarial', href: '/servicios/empresarial', description: 'Oficinas, hoteles y PH' },
+    ],
+  },
+  { name: 'Proceso', href: '/proceso-de-lavado' },
+  { name: 'Garantía', href: '/garantia' },
+  { name: 'Preguntas', href: '/preguntas-frecuentes' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Contacto', href: '/contacto' },
+]
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
+  const dropdownRef = useRef<HTMLUListElement | null>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const menuItems = [
-    { name: 'Inicio', href: '/' },
-    { name: 'Nosotros', href: '/#nosotros' },
-    { name: 'Servicios', href: '/#servicios' },
-    { name: 'Clientes', href: '/#clientes' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Contacto', href: '/#contacto' }
-  ]
-
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Si es navegación interna a la home o a una sección de la home, usar router push
-    if (href === '/' || href.startsWith('/#')) {
-      e.preventDefault();
-      window.location.href = href;
-      setIsMenuOpen(false);
-      return;
-    }
-    // Si es un anchor local en la misma página
-    if (href.startsWith('#')) {
-      e.preventDefault();
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+  // Cerrar dropdown al click fuera
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null)
       }
-      setIsMenuOpen(false);
-      return;
     }
-    // Por defecto, dejar el comportamiento normal
-  }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const linkColor = scrolled ? 'text-gray-800' : 'text-white'
+  const linkHover = scrolled ? 'hover:text-[#3AAA35]' : 'hover:text-yellow-300'
 
   return (
-    <header className={`fixed top-0 w-full z-40 transition-all duration-300 ${
-      scrolled ? 'bg-white shadow-lg' : 'bg-transparent'
-    }`}>
-      <nav className="container mx-auto px-4 py-4">
+    <header
+      className={`fixed top-0 w-full z-40 transition-all duration-300 ${
+        scrolled ? 'bg-white shadow-md' : 'bg-transparent'
+      }`}
+    >
+      <nav className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2">
-             <Image 
-    src="/images/logo/clean-company-logo.png"
-    alt="Clean Company - Limpieza profesional"
-    width={300}
-    height={80}
-    className="h-12 w-auto"
-    priority
-  />
+          <Link href="/" className="flex items-center" aria-label="Clean Company — Inicio">
+            <Image
+              src="/images/logo/clean-company-logo.png"
+              alt="Clean Company — Limpieza profesional"
+              width={300}
+              height={80}
+              className="h-11 w-auto"
+              priority
+            />
           </Link>
-          
+
           {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-8">
-            {menuItems.map((item) => (
-              <li key={item.name}>
-                <a 
-                  href={item.href}
-                  onClick={(e) => handleClick(e, item.href)}
-                  className={`font-medium hover:text-blue-400 transition ${
-                    scrolled ? 'text-gray-700' : 'text-white'
-                  }`}
-                >
-                  {item.name}
-                </a>
-              </li>
-            ))}
+          <ul className="hidden lg:flex items-center space-x-7" ref={dropdownRef}>
+            {NAV_ITEMS.map((item) => {
+              if ('children' in item) {
+                const isOpen = openDropdown === item.name
+                return (
+                  <li key={item.name} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setOpenDropdown(isOpen ? null : item.name)}
+                      onMouseEnter={() => setOpenDropdown(item.name)}
+                      aria-expanded={isOpen}
+                      aria-haspopup="true"
+                      className={`flex items-center gap-1 font-medium transition ${linkColor} ${linkHover}`}
+                    >
+                      {item.name}
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                    </button>
+                    {isOpen && (
+                      <div
+                        onMouseLeave={() => setOpenDropdown(null)}
+                        className="absolute left-0 mt-3 w-80 rounded-xl bg-white shadow-xl ring-1 ring-black/5 p-2"
+                      >
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            onClick={() => setOpenDropdown(null)}
+                            className="block rounded-lg px-3 py-2 hover:bg-gray-50 transition"
+                          >
+                            <span className="block font-semibold text-gray-900 text-sm">{child.name}</span>
+                            {child.description && (
+                              <span className="block text-xs text-gray-500 mt-0.5">{child.description}</span>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                )
+              }
+              return (
+                <li key={item.name}>
+                  <Link href={item.href} className={`font-medium transition ${linkColor} ${linkHover}`}>
+                    {item.name}
+                  </Link>
+                </li>
+              )
+            })}
+
+            <li>
+              <a
+                href="https://wa.me/573128052720?text=Hola%2C%20quiero%20cotizar%20un%20servicio%20con%20Clean%20Company"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-[#3AAA35] text-white px-4 py-2 text-sm font-semibold shadow-sm hover:opacity-95 transition"
+              >
+                Cotizar por WhatsApp
+              </a>
+            </li>
           </ul>
-          
-          {/* Mobile Menu Button */}
-          <button 
+
+          {/* Mobile menu button */}
+          <button
+            type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`md:hidden ${scrolled ? 'text-gray-700' : 'text-white'}`}
+            aria-expanded={isMenuOpen}
+            aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            className={`lg:hidden ${scrolled ? 'text-gray-900' : 'text-white'}`}
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-        
+
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 bg-white rounded-lg shadow-lg p-4 absolute top-full left-4 right-4">
-            <ul className="space-y-2">
-              {menuItems.map((item) => (
-                <li key={item.name}>
-                  <a 
-                    href={item.href}
-                    onClick={(e) => handleClick(e, item.href)}
-                    className="block py-2 text-gray-700 hover:text-blue-600"
-                  >
-                    {item.name}
-                  </a>
-                </li>
-              ))}
+          <div className="lg:hidden mt-3 bg-white rounded-2xl shadow-xl p-3 absolute top-full left-3 right-3 max-h-[80vh] overflow-y-auto">
+            <ul className="space-y-1">
+              {NAV_ITEMS.map((item) => {
+                if ('children' in item) {
+                  const open = openMobileGroup === item.name
+                  return (
+                    <li key={item.name}>
+                      <button
+                        type="button"
+                        onClick={() => setOpenMobileGroup(open ? null : item.name)}
+                        aria-expanded={open}
+                        className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-gray-900 font-semibold hover:bg-gray-50"
+                      >
+                        {item.name}
+                        <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+                      </button>
+                      {open && (
+                        <ul className="ml-2 mt-1 space-y-1 border-l border-gray-100 pl-3">
+                          {item.children.map((child) => (
+                            <li key={child.href}>
+                              <Link
+                                href={child.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-50"
+                              >
+                                <span className="block text-sm font-medium">{child.name}</span>
+                                {child.description && (
+                                  <span className="block text-xs text-gray-500">{child.description}</span>
+                                )}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  )
+                }
+                return (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-50"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
+
+            <a
+              href="https://wa.me/573128052720?text=Hola%2C%20quiero%20cotizar%20un%20servicio%20con%20Clean%20Company"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsMenuOpen(false)}
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[#3AAA35] text-white px-4 py-3 text-sm font-semibold shadow-sm hover:opacity-95 transition"
+            >
+              Cotizar por WhatsApp
+            </a>
           </div>
         )}
       </nav>

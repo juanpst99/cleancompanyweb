@@ -4,6 +4,8 @@
 import { Metadata } from 'next';
 import ColchonesClient from './ColchonesClient';
 import { Suspense } from 'react';
+import ServiceJsonLd from '@/components/SEO/ServiceJsonLd';
+import BreadcrumbsJsonLd from '@/components/SEO/BreadcrumbsJsonLd';
 
 // (Opcional) Tipado de props si luego lo necesitas
 interface ColchonesPageProps {
@@ -25,8 +27,8 @@ export async function generateMetadata(
 
   const title = `Lavado de Colchones a Domicilio en ${ciudad} | ${descuento}% OFF`;
   const description =
-    `Expertos en lavado y desinfección de colchones a domicilio en ${ciudad}. ` +
-    `Eliminamos 99.9% de ácaros y manchas. ¡Aprovecha ${descuento}% de descuento hoy!`;
+    `Lavado profesional y desinfección de colchones a domicilio en ${ciudad}. ` +
+    `Tratamiento antiácaros, inspección documentada y garantía escrita. ${descuento}% de descuento en tu primer servicio.`;
 
   return {
     title,
@@ -48,27 +50,52 @@ export async function generateMetadata(
       `limpieza de colchones profesional ${ciudad.toLowerCase()}`,
       `tratamiento antiácaros colchones ${ciudad.toLowerCase()}`,
     ],
+    alternates: {
+      canonical: 'https://cleancompany.com.co/servicios/colchones',
+    },
     openGraph: {
       title,
       description,
+      url: 'https://cleancompany.com.co/servicios/colchones',
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
-      // images: ['https://www.tu-dominio.com/images/servicio-colchones.jpg'],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      // images: ['https://www.tu-dominio.com/images/servicio-colchones-twitter.jpg'],
     },
   };
 }
 
 export default function ColchonesPage() {
   return (
-    <Suspense>
-      <ColchonesClient />
-    </Suspense>
+    <>
+      <ServiceJsonLd
+        slug="colchones"
+        name="Lavado y desinfección profesional de colchones"
+        serviceType="Lavado de colchones"
+        alternateName={['Limpieza de colchones', 'Desinfección de colchones']}
+        description="Lavado y desinfección de colchones a domicilio en Bogotá y Medellín. Proceso de aspirado, inyección-extracción, tratamiento antiácaros y secado controlado, con acta de inspección y garantía."
+        url="https://cleancompany.com.co/servicios/colchones"
+        variants={[
+          { name: 'Colchón sencillo', description: 'Lavado y desinfección de colchón de 1 plaza' },
+          { name: 'Colchón doble / queen', description: 'Lavado y desinfección de colchón doble o queen' },
+          { name: 'Colchón king / pillow top', description: 'Lavado especial para colchones pillow top y king' },
+        ]}
+      />
+      <BreadcrumbsJsonLd
+        id="colchones-breadcrumbs-jsonld"
+        items={[
+          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+          { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
+          { name: 'Lavado de colchones', url: 'https://cleancompany.com.co/servicios/colchones' },
+        ]}
+      />
+      <Suspense>
+        <ColchonesClient />
+      </Suspense>
+    </>
   );
 }

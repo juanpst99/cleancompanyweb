@@ -33,31 +33,6 @@ export default function MueblesClient() {
     console.log(`Ciudad para mostrar en MueblesClient: ${ciudad}`);
   }, [ciudad]);
 
-  // Contador de urgencia
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 23,
-    minutes: 47,
-    seconds: 52
-  })
-
-  // Efecto para el contador
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 }
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
-        }
-        return prev
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [])
-
   // Función auxiliar para formatear la ciudad en el mensaje
   const formatCiudad = (val: string) => {
     if (val === 'bogota') return 'Bogotá'
@@ -198,21 +173,16 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
               {/* Badge de confianza */}
               <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-4">
                 <Star className="w-5 h-5 text-yellow-400 mr-2" />
-                <span className="text-sm font-medium">+5000 clientes satisfechos</span>
+                <span className="text-sm font-medium">Lavado profesional desde 2015</span>
               </div>
-              
+
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 Lavado de Muebles a Domicilio en {ciudad}
               </h1>
-              
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <span className="text-sm opacity-90">4.9/5 (523 reseñas)</span>
-              </div>
+
+              <p className="text-sm opacity-90 mb-6">
+                Servicio profesional con acta de inspección, garantía escrita y atención por WhatsApp.
+              </p>
               
               {/* Beneficios principales */}
               <div className="space-y-3 mb-8">
@@ -236,8 +206,8 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
               
               {/* Urgencia */}
               <div className="bg-yellow-400 text-blue-900 px-4 py-3 rounded-lg inline-block mb-6">
-                <p className="font-bold text-lg">🔥 Oferta por tiempo limitado</p>
-                <p>{descuento}% descuento + Protector de telas GRATIS</p>
+                <p className="font-bold text-lg">Promoción vigente</p>
+                <p>{descuento}% descuento + protector de telas incluido</p>
               </div>
               
               {/* Trust badges móvil */}
@@ -387,15 +357,13 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
         </div>
       </section>
 
-      {/* Barra de Urgencia */}
-      <section className="bg-red-600 text-white py-3">
+      {/* Barra promocional */}
+      <section className="bg-[#3AAA35] text-white py-3">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center space-x-2 sm:space-x-4 text-sm sm:text-base">
-            <span className="animate-pulse">🔥</span>
+          <div className="flex items-center justify-center text-sm sm:text-base">
             <p className="text-center">
-              <strong>Solo hoy:</strong> {descuento}% OFF + Protector de telas GRATIS
+              <strong>Promoción vigente:</strong> {descuento}% OFF + protector de telas incluido en tu primer servicio.
             </p>
-            <span className="hidden sm:inline font-bold">¡Últimos 5 cupos!</span>
           </div>
         </div>
       </section>
@@ -760,27 +728,11 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
             Dale Nueva Vida a tus Muebles
           </h2>
           
-          {/* Contador */}
-          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto mb-8">
-            <p className="text-lg font-semibold mb-2">⏰ Oferta especial termina en:</p>
-            <div className="flex justify-center space-x-4 text-3xl font-bold">
-              <div>
-                <span>{timeLeft.hours.toString().padStart(2, '0')}</span>
-                <p className="text-sm font-normal">Horas</p>
-              </div>
-              <span>:</span>
-              <div>
-                <span>{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                <p className="text-sm font-normal">Min</p>
-              </div>
-              <span>:</span>
-              <div>
-                <span>{timeLeft.seconds.toString().padStart(2, '0')}</span>
-                <p className="text-sm font-normal">Seg</p>
-              </div>
-            </div>
-          </div>
-          
+          <p className="text-lg opacity-90 max-w-2xl mx-auto mb-8">
+            Renueva tus sofás, sillas y tapicería con un servicio profesional, garantía escrita
+            y agenda priorizada por orden de cotización.
+          </p>
+
           <div className="space-y-4 mb-8">
             <p className="text-xl flex items-center justify-center">
               <Check className="w-6 h-6 mr-2" />

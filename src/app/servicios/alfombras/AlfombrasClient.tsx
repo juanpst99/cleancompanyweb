@@ -47,20 +47,6 @@ export default function AlfombrasClient() {
     console.log(`Ciudad para mostrar en AlfombrasClient: ${ciudad}`)
   }, [ciudad])
 
-  const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 47, seconds: 52 })
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 }
-        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
-        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
-        return prev
-      })
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
-
   // ⬇️⬇️⬇️ BOTÓN 1: Formulario Principal
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -164,19 +150,14 @@ export default function AlfombrasClient() {
             <div className="text-white">
               <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-4">
                 <Star className="w-5 h-5 text-yellow-400 mr-2" />
-                <span className="text-sm font-medium">+5000 clientes satisfechos</span>
+                <span className="text-sm font-medium">Lavado profesional desde 2015</span>
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold mb-4">Lavado de Alfombras en {ciudad}</h1>
 
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <span className="text-sm opacity-90">4.9/5 (487 reseñas)</span>
-              </div>
+              <p className="text-sm opacity-90 mb-6">
+                Servicio profesional con acta de inspección, garantía y atención por WhatsApp.
+              </p>
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-center">
@@ -198,8 +179,8 @@ export default function AlfombrasClient() {
               </div>
 
               <div className="bg-yellow-400 text-blue-900 px-4 py-3 rounded-lg inline-block mb-6">
-                <p className="font-bold text-lg">🔥 Oferta por tiempo limitado</p>
-                <p>{descuento}% descuento + Desinfección GRATIS</p>
+                <p className="font-bold text-lg">Promoción vigente</p>
+                <p>{descuento}% descuento + desinfección incluida en tu primer servicio</p>
               </div>
 
               <div className="flex items-center space-x-6 text-sm opacity-90 lg:hidden">
@@ -279,13 +260,6 @@ export default function AlfombrasClient() {
                 </button>
               </form>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold text-green-600">127 personas</span> cotizaron este
-                  servicio hoy
-                </p>
-              </div>
-
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <div className="flex items-center justify-center space-x-4 text-xs text-gray-600">
                   <div className="flex items-center">
@@ -323,15 +297,13 @@ export default function AlfombrasClient() {
         </div>
       </section>
 
-      {/* Barra de Urgencia */}
-      <section className="bg-red-600 text-white py-3">
+      {/* Barra promocional */}
+      <section className="bg-[#3AAA35] text-white py-3">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center space-x-2 sm:space-x-4 text-sm sm:text-base">
-            <span className="animate-pulse">🔥</span>
+          <div className="flex items-center justify-center text-sm sm:text-base">
             <p className="text-center">
-              <strong>Oferta válida solo hoy:</strong> {descuento}% de descuento + Desinfección gratis
+              <strong>Promoción vigente:</strong> {descuento}% de descuento + desinfección incluida en tu primer servicio.
             </p>
-            <span className="hidden sm:inline font-bold">Quedan 3 cupos para mañana</span>
           </div>
         </div>
       </section>
@@ -695,25 +667,10 @@ export default function AlfombrasClient() {
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-4xl font-bold mb-4">¿Listo para tener tu alfombra como nueva?</h2>
 
-          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto mb-8">
-            <p className="text-lg font-semibold mb-2">⏰ Oferta especial termina en:</p>
-            <div className="flex justify-center space-x-4 text-3xl font-bold">
-              <div>
-                <span>{timeLeft.hours.toString().padStart(2, '0')}</span>
-                <p className="text-sm font-normal">Horas</p>
-              </div>
-              <span>:</span>
-              <div>
-                <span>{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                <p className="text-sm font-normal">Min</p>
-              </div>
-              <span>:</span>
-              <div>
-                <span>{timeLeft.seconds.toString().padStart(2, '0')}</span>
-                <p className="text-sm font-normal">Seg</p>
-              </div>
-            </div>
-          </div>
+          <p className="text-lg opacity-90 max-w-2xl mx-auto mb-8">
+            Te cotizamos en minutos por WhatsApp. Servicio con inspección, garantía y atención
+            profesional.
+          </p>
 
           <div className="space-y-4 mb-8">
             <p className="text-xl flex items-center justify-center">

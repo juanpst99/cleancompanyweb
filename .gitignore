@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Documentos internos de auditoría SEO/GEO — nunca se despliegan al sitio público
+AUDITORIA_SEO_GEO_CLEAN_COMPANY.md
+SEO_GEO_IMPLEMENTATION_PLAN.md
+SCHEMA_JSONLD_EXAMPLES.md
+ROBOTS_AND_CRAWLERS_RECOMMENDATIONS.md
+CONTENT_BRIEF_CLEAN_COMPANY.md
+AI_SEARCH_MONITORING_TEMPLATE.md
+SPRINT_2_SEO_GEO_VALIDATION.md
+

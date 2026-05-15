@@ -4,6 +4,8 @@
 import { Metadata } from 'next';
 import AlfombrasClient from './AlfombrasClient';
 import { Suspense } from 'react';
+import ServiceJsonLd from '@/components/SEO/ServiceJsonLd';
+import BreadcrumbsJsonLd from '@/components/SEO/BreadcrumbsJsonLd';
 
 // Tipado moderno para Next.js 15+ (params y searchParams son Promesas)
 type Props = {
@@ -52,9 +54,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       `lavado ecológico alfombras ${ciudad.toLowerCase()}`,
       `limpieza profunda tapetes ${ciudad.toLowerCase()}`,
     ],
+    alternates: {
+      canonical: 'https://cleancompany.com.co/servicios/alfombras',
+    },
     openGraph: {
       title,
       description,
+      url: 'https://cleancompany.com.co/servicios/alfombras',
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
@@ -70,9 +76,31 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 // Render del cliente
 export default function AlfombrasPage() {
   return (
-    // Siempre es buena práctica poner un div vacío de fallback en el Suspense
-    <Suspense fallback={<div className="min-h-screen bg-gray-50"></div>}>
-      <AlfombrasClient />
-    </Suspense>
+    <>
+      <ServiceJsonLd
+        slug="alfombras"
+        name="Lavado profesional de alfombras y tapetes"
+        serviceType="Lavado de alfombras"
+        alternateName={['Limpieza de alfombras', 'Lavado de tapetes']}
+        description="Lavado profesional por inyección-extracción de alfombras y tapetes, con tratamiento de manchas, desinfección y secado controlado. Servicio a domicilio y en planta para Bogotá y Medellín."
+        url="https://cleancompany.com.co/servicios/alfombras"
+        variants={[
+          { name: 'Alfombras persas y orientales', description: 'Cuidado especial para fibras naturales y tintes vegetales' },
+          { name: 'Tapetes sintéticos modernos', description: 'Inyección-extracción a alta potencia' },
+          { name: 'Alfombras de área grandes', description: 'Lavado en planta con secado controlado' },
+        ]}
+      />
+      <BreadcrumbsJsonLd
+        id="alfombras-breadcrumbs-jsonld"
+        items={[
+          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+          { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
+          { name: 'Lavado de alfombras y tapetes', url: 'https://cleancompany.com.co/servicios/alfombras' },
+        ]}
+      />
+      <Suspense fallback={<div className="min-h-screen bg-gray-50"></div>}>
+        <AlfombrasClient />
+      </Suspense>
+    </>
   );
 }

@@ -21,9 +21,9 @@ const ServiceDetails = () => {
         'Secado rápido con equipos especializados'
       ],
       benefits: [
-        'Eliminación del 99.9% de bacterias y ácaros',
-        'Recuperación del color original',
-        'Prolongación de la vida útil de tu alfombra',
+        'Reducción significativa de ácaros y bacterias',
+        'Recuperación visual del color y la textura',
+        'Prolongación de la vida útil de la alfombra',
         'Ambiente más saludable para tu familia',
         'Eliminación de olores persistentes'
       ],

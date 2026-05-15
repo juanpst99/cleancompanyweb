@@ -4,6 +4,8 @@
 import { Metadata } from 'next';
 import MueblesClient from './MueblesClient';
 import { Suspense } from 'react';
+import ServiceJsonLd from '@/components/SEO/ServiceJsonLd';
+import BreadcrumbsJsonLd from '@/components/SEO/BreadcrumbsJsonLd';
 
 // (Opcional) Tipado si luego lo necesitas
 interface MueblesPageProps {
@@ -51,31 +53,53 @@ export async function generateMetadata(
       `quitar manchas muebles ${ciudad.toLowerCase()}`,
       `renovar tapicería ${ciudad.toLowerCase()}`,
     ],
+    alternates: {
+      canonical: 'https://cleancompany.com.co/servicios/muebles',
+    },
     openGraph: {
       title,
       description,
+      url: 'https://cleancompany.com.co/servicios/muebles',
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
-      // images: ['https://www.tu-dominio.com/images/servicio-muebles.jpg'],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      // images: ['https://www.tu-dominio.com/images/servicio-muebles-twitter.jpg'],
     },
-    // alternates: {
-    //   canonical: `https://cleancompany.com.co/servicios/muebles${searchParams.ciudad ? `?ciudad=${Array.isArray(searchParams.ciudad) ? searchParams.ciudad[0] : searchParams.ciudad}` : ''}${searchParams.desc ? `${searchParams.ciudad ? '&' : '?'}desc=${Array.isArray(searchParams.desc) ? searchParams.desc[0] : searchParams.desc}` : ''}`,
-    // },
   };
 }
 
 // Render del cliente
 export default function MueblesPage() {
   return (
-    <Suspense>
-      <MueblesClient />
-    </Suspense>
+    <>
+      <ServiceJsonLd
+        slug="muebles"
+        name="Lavado profesional de muebles, sofás y tapicería"
+        serviceType="Lavado de muebles"
+        alternateName={['Limpieza de sofás', 'Lavado de tapicería', 'Limpieza de muebles']}
+        description="Lavado profesional de muebles, sofás, sillas y tapicería a domicilio en Bogotá y Medellín. Inyección-extracción, productos pH neutro, secado controlado y garantía de satisfacción."
+        url="https://cleancompany.com.co/servicios/muebles"
+        variants={[
+          { name: 'Sofás de tela', description: 'Limpieza profunda con inyección-extracción' },
+          { name: 'Sofás de cuero', description: 'Limpieza con productos específicos para cuero' },
+          { name: 'Sillas y sillones', description: 'Lavado individual de sillas, sillones y poltronas' },
+        ]}
+      />
+      <BreadcrumbsJsonLd
+        id="muebles-breadcrumbs-jsonld"
+        items={[
+          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+          { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
+          { name: 'Lavado de muebles y sofás', url: 'https://cleancompany.com.co/servicios/muebles' },
+        ]}
+      />
+      <Suspense>
+        <MueblesClient />
+      </Suspense>
+    </>
   );
 }

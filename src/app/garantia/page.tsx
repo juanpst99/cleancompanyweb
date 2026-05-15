@@ -9,12 +9,22 @@ import { FileText, ArrowLeft, Shield, Phone } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Garantía, Responsabilidad y Reclamaciones | Clean Company',
   description:
-    'Política de garantía y procedimiento de reclamaciones de Clean Company para servicios de limpieza profesional.',
+    'Política pública de garantía y procedimiento de reclamaciones de Clean Company conforme a la Ley 1480/2011 (Estatuto del Consumidor de Colombia).',
   keywords: [
     'garantía servicio limpieza',
     'reclamaciones clean company',
     'responsabilidad legal limpieza',
   ],
+  alternates: { canonical: 'https://cleancompany.com.co/garantia' },
+  openGraph: {
+    title: 'Garantía y reclamaciones | Clean Company',
+    description:
+      'Tres meses de garantía escrita, inspección documentada y procedimiento conforme a la Ley 1480/2011.',
+    url: 'https://cleancompany.com.co/garantia',
+    siteName: 'Clean Company',
+    locale: 'es_CO',
+    type: 'website',
+  },
 }
 
 export default function GarantiaPage() {
