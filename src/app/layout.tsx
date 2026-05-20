@@ -213,52 +213,16 @@ export default function RootLayout({
           }}
         />
         
-        {/* Google Tag Manager - Carga diferida */}
+        {/* Google Tag Manager — Carga tras hidratación inicial.
+            GTM se inicializa siempre; los tags individuales respetan el
+            Consent Mode (default denied) definido arriba. Esto recupera
+            eventos web que antes se perdían cuando el usuario interactuaba
+            con WhatsApp en <5s sin haber hecho scroll/click previo. */}
         <Script
-          id="gtm-lazy-load"
-          strategy="lazyOnload"
+          id="gtm-script"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: `
-              // Cargar GTM después de 3 segundos o en la primera interacción
-              let gtmLoadTimer;
-              let hasInteracted = false;
-              
-              function handleInteraction() {
-                if (!hasInteracted && !window.gtmLoaded) {
-                  hasInteracted = true;
-                  clearTimeout(gtmLoadTimer);
-                  
-                  // Solo cargar si hay consentimiento o después de interacción
-                  if (localStorage.getItem('cookieConsent') === 'granted') {
-                    window.loadGTM();
-                  } else {
-                    // Si no hay consentimiento previo, mostrar banner (si existe)
-                    if (window.showConsentBanner) {
-                      window.showConsentBanner();
-                    }
-                  }
-                  
-                  // Remover listeners después de la primera interacción
-                  document.removeEventListener('scroll', handleInteraction);
-                  document.removeEventListener('click', handleInteraction);
-                  document.removeEventListener('touchstart', handleInteraction);
-                  document.removeEventListener('mousemove', handleInteraction);
-                }
-              }
-              
-              // Listeners para detectar interacción
-              document.addEventListener('scroll', handleInteraction, { once: true, passive: true });
-              document.addEventListener('click', handleInteraction, { once: true });
-              document.addEventListener('touchstart', handleInteraction, { once: true, passive: true });
-              document.addEventListener('mousemove', handleInteraction, { once: true, passive: true });
-              
-              // Timer de respaldo: cargar después de 5 segundos si hay consentimiento previo
-              gtmLoadTimer = setTimeout(() => {
-                if (localStorage.getItem('cookieConsent') === 'granted' && !window.gtmLoaded) {
-                  window.loadGTM();
-                }
-              }, 5000);
-            `,
+            __html: `if (window.loadGTM) { window.loadGTM(); }`,
           }}
         />
         
