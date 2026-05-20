@@ -160,7 +160,7 @@ export default function HogarSaludableLanding() {
               </div>
               <div className="space-y-2.5">
                 {[
-                  { label: 'Sofá 2 puestos', price: '$90.000' },
+                  { label: 'Sofá 2 puestos', price: '$95.000' },
                   { label: 'Sofá 3 puestos', price: '$105.000' },
                   { label: 'Sala en L (hasta 5 puestos)', price: '$160.000' },
                   { label: 'Sala en L grande (5+)', price: '$200.000' },

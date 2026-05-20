@@ -615,36 +615,36 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
                     <div className="flex justify-between items-center py-3 border-b">
                       <span>Colchón Sencillo</span>
                       <div>
-                        <span className="text-gray-400 line-through mr-2">$120.000</span>
-                        <span className="font-semibold text-green-600 text-lg">$100.000</span>
+                        <span className="text-gray-400 line-through mr-2">$170.000</span>
+                        <span className="font-semibold text-green-600 text-lg">$150.000</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center py-3 border-b">
                       <span>Colchón Semidoble</span>
                       <div>
-                        <span className="text-gray-400 line-through mr-2">$120.000</span>
-                        <span className="font-semibold text-green-600 text-lg">$100.000</span>
+                        <span className="text-gray-400 line-through mr-2">$170.000</span>
+                        <span className="font-semibold text-green-600 text-lg">$150.000</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center py-3 border-b bg-purple-50 px-3 rounded-md">
                       <span className="font-semibold">Colchón Doble <Star className="inline w-4 h-4 text-yellow-400 fill-current" /></span>
                       <div>
-                        <span className="text-gray-400 line-through mr-2">$120.000</span>
-                        <span className="font-semibold text-green-600 text-lg">$100.000</span>
+                        <span className="text-gray-400 line-through mr-2">$180.000</span>
+                        <span className="font-semibold text-green-600 text-lg">$150.000</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center py-3 border-b">
                       <span>Colchón Queen</span>
                       <div>
-                        <span className="text-gray-400 line-through mr-2">$130.000</span>
-                        <span className="font-semibold text-green-600 text-lg">$110.000</span>
+                        <span className="text-gray-400 line-through mr-2">$200.000</span>
+                        <span className="font-semibold text-green-600 text-lg">$160.000</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center py-3">
                       <span>Colchón King</span>
                       <div>
-                        <span className="text-gray-400 line-through mr-2">$150.000</span>
-                        <span className="font-semibold text-green-600 text-lg">$120.000</span>
+                        <span className="text-gray-400 line-through mr-2">$200.000</span>
+                        <span className="font-semibold text-green-600 text-lg">$185.000</span>
                       </div>
                     </div>
                   </div>

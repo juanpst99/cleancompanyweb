@@ -569,11 +569,11 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
               <div className="space-y-3">
                 <div className="flex justify-between items-center py-2 border-b">
                   <span>Sofá 2 puestos</span>
-                  <span className="font-semibold">Desde $80.000</span>
+                  <span className="font-semibold">Desde $90.000</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b">
                   <span>Sofá 3 puestos</span>
-                  <span className="font-semibold">Desde $90.000</span>
+                  <span className="font-semibold">Desde $95.000</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b">
                   <span>Sofá en L</span>
@@ -585,7 +585,7 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
                 </div>
                 <div className="flex justify-between items-center py-2">
                   <span>Juego de comedor (6 sillas)</span>
-                  <span className="font-semibold">Desde $85.000</span>
+                  <span className="font-semibold">Desde $95.000</span>
                 </div>
               </div>
             </div>
