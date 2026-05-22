@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
+import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 
 type NavItem =
   | { name: string; href: string }
@@ -28,12 +30,29 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Contacto', href: '/contacto' },
 ]
 
+const WA_MESSAGE = 'Hola, quiero cotizar un servicio con Clean Company'
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
   const dropdownRef = useRef<HTMLUListElement | null>(null)
+  const whatsappNumber = useWhatsAppNumber()
+
+  const handleWhatsAppClick = (e: React.MouseEvent<HTMLAnchorElement>, closeFn?: () => void) => {
+    e.preventDefault()
+    closeFn?.()
+    const { ref } = trackWhatsAppClick()
+    const fullMessage = `${WA_MESSAGE} (Ref: ${ref})`
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(fullMessage)}`
+    if (typeof window !== 'undefined') {
+      const w = window as unknown as { dataLayer?: any[] }
+      w.dataLayer = w.dataLayer || []
+      w.dataLayer.push({ event: 'whatsapp_click', source: 'header_cta', ref, link_url: url })
+    }
+    setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 250)
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -126,9 +145,10 @@ const Header = () => {
 
             <li>
               <a
-                href="https://wa.me/573128052720?text=Hola%2C%20quiero%20cotizar%20un%20servicio%20con%20Clean%20Company"
+                href={`https://wa.me/${whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => handleWhatsAppClick(e)}
                 className="inline-flex items-center gap-2 rounded-full bg-[#3AAA35] text-white px-4 py-2 text-sm font-semibold shadow-sm hover:opacity-95 transition"
               >
                 Cotizar por WhatsApp
@@ -202,10 +222,10 @@ const Header = () => {
             </ul>
 
             <a
-              href="https://wa.me/573128052720?text=Hola%2C%20quiero%20cotizar%20un%20servicio%20con%20Clean%20Company"
+              href={`https://wa.me/${whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={(e) => handleWhatsAppClick(e, () => setIsMenuOpen(false))}
               className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[#3AAA35] text-white px-4 py-3 text-sm font-semibold shadow-sm hover:opacity-95 transition"
             >
               Cotizar por WhatsApp
