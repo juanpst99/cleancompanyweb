@@ -4,6 +4,7 @@ import React, { useState, useRef, useCallback } from 'react'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 import { GTMEvents } from '@/lib/gtm'
+import TrustBar from '@/components/TrustBar'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -401,6 +402,7 @@ export default function VisualQuoter({ defaultCity = 'Bogotá', defaultCategory 
           <p className="text-blue-100 text-sm">
             Sube una foto y recibe un precio estimado al instante.
           </p>
+          <TrustBar variant="light" hideCities className="justify-center mt-4" />
         </div>
 
         {/* Card */}

@@ -16,12 +16,15 @@ interface MueblesPageProps {
 export async function generateMetadata(
   { params, searchParams }: { params: any; searchParams: any }
 ): Promise<Metadata> {
+  // En Next.js 15 searchParams es una Promise: hay que await antes de leerlo.
+  const resolvedSearchParams = await searchParams;
+
   // ciudad desde query (?ciudad=), con fallback
-  const ciudadParam = searchParams.ciudad;
+  const ciudadParam = resolvedSearchParams.ciudad;
   const ciudad = Array.isArray(ciudadParam) ? ciudadParam[0] : ciudadParam || 'Bogotá y Medellín';
 
   // descuento desde query (?desc=), con fallback
-  const descParam = searchParams.desc;
+  const descParam = resolvedSearchParams.desc;
   const descuento = Array.isArray(descParam) ? descParam[0] : descParam || '20';
 
   const nombreServicio = 'Muebles';

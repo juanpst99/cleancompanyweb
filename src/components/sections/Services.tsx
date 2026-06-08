@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Check, ArrowRight, Car, Building } from 'lucide-react'
 import Link from 'next/link'
 import WhatsAppLink from '@/components/WhatsAppLink'
+import TrustBar from '@/components/TrustBar'
+import { PRICING, formatCOP } from '@/config/site'
 
 const Services = () => {
   const services = [
@@ -60,9 +62,10 @@ const Services = () => {
     <section id="servicios" className="py-12 sm:py-20 bg-gray-100">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">Nuestros Servicios</h2>
-        <p className="text-center text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
+        <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
           Soluciones profesionales de limpieza para tu hogar y empresa
         </p>
+        <TrustBar variant="dark" className="justify-center mb-10 sm:mb-12" />
         
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {services.map((service, index) => (
@@ -86,7 +89,14 @@ const Services = () => {
               
               <div className="p-5 sm:p-6">
                 <p className="text-gray-600 mb-4 text-sm sm:text-base">{service.description}</p>
-                
+
+                {/* Ancla de precio: usa el mínimo real a domicilio (sync con backend) */}
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-sm text-gray-500">Desde</span>
+                  <span className="text-xl font-bold text-blue-700">{formatCOP(PRICING.minDomicilioCOP)}</span>
+                  <span className="text-sm text-gray-400">a domicilio</span>
+                </div>
+
                 <ul className="space-y-2 mb-6">
                   {service.features.map((feature, idx) => (
                     <li key={idx} className="flex items-center text-sm text-gray-600">

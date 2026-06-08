@@ -16,10 +16,13 @@ interface ColchonesPageProps {
 export async function generateMetadata(
   { params, searchParams }: { params: any; searchParams: any }
 ): Promise<Metadata> {
-  const ciudadParam = searchParams.ciudad;
+  // En Next.js 15 searchParams es una Promise: hay que await antes de leerlo.
+  const resolvedSearchParams = await searchParams;
+
+  const ciudadParam = resolvedSearchParams.ciudad;
   const ciudad = Array.isArray(ciudadParam) ? ciudadParam[0] : ciudadParam || 'Bogotá y Medellín';
 
-  const descParam = searchParams.desc;
+  const descParam = resolvedSearchParams.desc;
   const descuento = Array.isArray(descParam) ? descParam[0] : descParam || '20';
 
   const nombreServicio = 'Colchones';

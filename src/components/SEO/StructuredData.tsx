@@ -1,5 +1,19 @@
 import React from 'react'
 import Script from 'next/script'
+import { SITE, hasReviews } from '@/config/site'
+
+// AggregateRating GATED: solo se emite si hay reseñas reales configuradas en
+// src/config/site.ts. Nunca se publica una calificación inventada (riesgo de
+// acción manual de Google + pérdida de confianza ante motores de IA).
+const aggregateRating = hasReviews()
+  ? {
+      '@type': 'AggregateRating',
+      ratingValue: SITE.reviews.rating,
+      reviewCount: SITE.reviews.count,
+      bestRating: 5,
+      worstRating: 1,
+    }
+  : null
 
 // Centraliza los `@id` para mantener un grafo coherente entre páginas.
 export const ENTITY_IDS = {
@@ -85,6 +99,10 @@ const organization = {
       hoursAvailable: OPENING_HOURS_SUNDAY,
     },
   ],
+  // sameAs conecta la entidad con sus perfiles oficiales (clave para que la IA
+  // resuelva "Clean Company" como una sola marca y le dé confianza).
+  // TODO (alto impacto GEO): añadir aquí el perfil de Google Business Profile
+  // (Maps) de Bogotá y Medellín, y TikTok/YouTube/LinkedIn si existen — solo URLs reales.
   sameAs: [
     'https://www.facebook.com/profile.php?id=100092972695790',
     'https://www.instagram.com/cleancompany_colombia/',
@@ -102,6 +120,7 @@ const organization = {
     },
   ],
   knowsAbout: KNOWS_ABOUT,
+  ...(aggregateRating ? { aggregateRating } : {}),
 }
 
 const website = {
@@ -199,6 +218,7 @@ const buildLocalBusiness = (params: {
       },
     ],
   },
+  ...(aggregateRating ? { aggregateRating } : {}),
 })
 
 const localBogota = buildLocalBusiness({

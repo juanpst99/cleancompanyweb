@@ -33,12 +33,18 @@ export default function BeforeAfter() {
   const [activeSlide, setActiveSlide] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
+  const [hasInteracted, setHasInteracted] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Reiniciamos la barra al centro cada vez que cambian de servicio
   useEffect(() => {
     setSliderPosition(50)
   }, [activeSlide])
+
+  const startDragging = () => {
+    setIsDragging(true)
+    setHasInteracted(true)
+  }
 
   // Lógica matemática para calcular la posición exacta del dedo/mouse
   const handleMove = (clientX: number) => {
@@ -83,11 +89,11 @@ export default function BeforeAfter() {
           <div 
             ref={containerRef}
             className="relative w-full h-[350px] sm:h-[450px] md:h-[500px] rounded-2xl overflow-hidden cursor-ew-resize select-none touch-none bg-gray-200"
-            onMouseDown={() => setIsDragging(true)}
+            onMouseDown={startDragging}
             onMouseUp={stopDragging}
             onMouseLeave={stopDragging}
             onMouseMove={handleMouseMove}
-            onTouchStart={() => setIsDragging(true)}
+            onTouchStart={startDragging}
             onTouchEnd={stopDragging}
             onTouchMove={handleTouchMove}
           >
@@ -121,9 +127,15 @@ export default function BeforeAfter() {
               className="absolute top-0 bottom-0 w-1 bg-white drop-shadow-[0_0_5px_rgba(0,0,0,0.5)] z-10"
               style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
             >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex items-center justify-center pointer-events-none">
+              <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex items-center justify-center pointer-events-none ${!hasInteracted ? 'animate-pulse' : ''}`}>
                 <ChevronLeft className="w-6 h-6 text-blue-600" />
                 <ChevronRight className="w-6 h-6 text-blue-600 -ml-3" />
+                {/* Pista de affordance: desaparece al primer arrastre */}
+                {!hasInteracted && (
+                  <span className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
+                    ← Desliza →
+                  </span>
+                )}
               </div>
             </div>
             

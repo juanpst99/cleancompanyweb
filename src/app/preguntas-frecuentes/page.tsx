@@ -7,6 +7,7 @@ import { ChevronDown, MessageCircle } from 'lucide-react'
 import BreadcrumbsJsonLd from '@/components/SEO/BreadcrumbsJsonLd'
 import FAQPageJsonLd, { type FAQItem } from '@/components/SEO/FAQPageJsonLd'
 import Breadcrumbs from '@/components/Breadcrumbs'
+import FaqSearch from '@/components/FaqSearch'
 
 const PAGE_URL = 'https://cleancompany.com.co/preguntas-frecuentes'
 
@@ -254,15 +255,19 @@ export default function PreguntasFrecuentesPage() {
 
       {/* Grupos de FAQs */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4 max-w-3xl space-y-12">
+        <div className="container mx-auto px-4 max-w-3xl">
+          {/* Buscador en vivo (isla cliente — el contenido sigue en el HTML para SEO/IA) */}
+          <FaqSearch />
+
+          <div className="space-y-12">
           {GROUPS.map((group) => (
-            <article key={group.id} id={group.id} className="scroll-mt-32">
+            <article key={group.id} id={group.id} data-faq-group className="scroll-mt-32">
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-5">
                 {group.titulo}
               </h2>
               <div className="space-y-3">
                 {group.faqs.map((faq) => (
-                  <details key={faq.question} className="group bg-white rounded-xl shadow-sm p-5">
+                  <details key={faq.question} data-faq-item className="group bg-white rounded-xl shadow-sm p-5">
                     <summary className="font-semibold cursor-pointer flex justify-between items-center text-gray-900">
                       {faq.question}
                       <ChevronDown className="w-5 h-5 group-open:rotate-180 transition-transform" />
@@ -273,6 +278,7 @@ export default function PreguntasFrecuentesPage() {
               </div>
             </article>
           ))}
+          </div>
         </div>
       </section>
 

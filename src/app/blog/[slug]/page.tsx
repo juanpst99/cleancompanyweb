@@ -7,6 +7,10 @@ import { remark } from "remark";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
+import JsonLd from "@/components/SEO/JsonLd";
+import { ENTITY_IDS } from "@/components/SEO/StructuredData";
+
+const SITE_URL = "https://cleancompany.com.co";
 
 // Ajusta a tu frontmatter real
 type PostFrontmatter = {
@@ -191,5 +195,26 @@ export default async function Page({
   // ✅ Render del HTML del Markdown
   const content = <div dangerouslySetInnerHTML={{ __html: post.html }} />;
 
-  return <BlogPostLayout post={post}>{content}</BlogPostLayout>;
+  // BlogPosting JSON-LD — datos estructurados del artículo, enlazados a la
+  // entidad de marca (author/publisher = Organization) para reforzar E-E-A-T.
+  const articleLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${SITE_URL}/blog/${slug}#article`,
+    headline: post.title,
+    description: post.excerpt,
+    inLanguage: "es-CO",
+    author: { "@id": ENTITY_IDS.organization },
+    publisher: { "@id": ENTITY_IDS.organization },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${slug}` },
+    ...(post.coverImage ? { image: `${SITE_URL}${post.coverImage}` } : {}),
+    ...(post.date ? { datePublished: post.date, dateModified: post.date } : {}),
+  };
+
+  return (
+    <>
+      <JsonLd id="blogposting-jsonld" data={articleLd} />
+      <BlogPostLayout post={post}>{content}</BlogPostLayout>
+    </>
+  );
 }
