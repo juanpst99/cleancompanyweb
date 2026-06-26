@@ -34,7 +34,7 @@ export default function Breadcrumbs({
                 </span>
               ) : (
                 <Link
-                  href={item.url.replace('https://cleancompany.com.co', '')}
+                  href={item.url.replace('https://www.cleancompany.com.co', '')}
                   className={`hover:underline ${baseColor}`}
                 >
                   {item.name}

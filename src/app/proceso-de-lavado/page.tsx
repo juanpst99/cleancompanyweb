@@ -9,7 +9,7 @@ import FAQPageJsonLd, { type FAQItem } from '@/components/SEO/FAQPageJsonLd'
 import JsonLd from '@/components/SEO/JsonLd'
 import Breadcrumbs from '@/components/Breadcrumbs'
 
-const PAGE_URL = 'https://cleancompany.com.co/proceso-de-lavado'
+const PAGE_URL = 'https://www.cleancompany.com.co/proceso-de-lavado'
 
 export const metadata: Metadata = {
   title: 'Cómo lavamos tu tapete, mueble o colchón paso a paso | Clean Company',
@@ -142,7 +142,7 @@ export default function ProcesoPage() {
       <BreadcrumbsJsonLd
         id="proceso-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
           { name: 'Proceso de lavado', url: PAGE_URL },
         ]}
       />
@@ -159,7 +159,7 @@ export default function ProcesoPage() {
             tone="light"
             className="mb-5"
             items={[
-              { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+              { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
               { name: 'Proceso de lavado', url: PAGE_URL },
             ]}
           />

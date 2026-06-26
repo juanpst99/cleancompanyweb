@@ -9,7 +9,7 @@ import FAQPageJsonLd, { type FAQItem } from '@/components/SEO/FAQPageJsonLd'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import FaqSearch from '@/components/FaqSearch'
 
-const PAGE_URL = 'https://cleancompany.com.co/preguntas-frecuentes'
+const PAGE_URL = 'https://www.cleancompany.com.co/preguntas-frecuentes'
 
 export const metadata: Metadata = {
   title: 'Preguntas frecuentes | Clean Company — Lavado profesional Bogotá y Medellín',
@@ -201,7 +201,7 @@ export default function PreguntasFrecuentesPage() {
       <BreadcrumbsJsonLd
         id="faq-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
           { name: 'Preguntas frecuentes', url: PAGE_URL },
         ]}
       />
@@ -217,7 +217,7 @@ export default function PreguntasFrecuentesPage() {
             tone="light"
             className="mb-5"
             items={[
-              { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+              { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
               { name: 'Preguntas frecuentes', url: PAGE_URL },
             ]}
           />

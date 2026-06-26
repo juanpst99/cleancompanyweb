@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const BASE = 'https://cleancompany.com.co'
+const BASE = 'https://www.cleancompany.com.co'
 
 type Entry = MetadataRoute.Sitemap[number]
 

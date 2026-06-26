@@ -1,5 +1,4 @@
-import React from 'react'
-import Script from 'next/script'
+import { toJsonLdHtml } from './JsonLd'
 import { SITE, hasReviews } from '@/config/site'
 
 // AggregateRating GATED: solo se emite si hay reseñas reales configuradas en
@@ -17,16 +16,16 @@ const aggregateRating = hasReviews()
 
 // Centraliza los `@id` para mantener un grafo coherente entre páginas.
 export const ENTITY_IDS = {
-  organization: 'https://cleancompany.com.co/#organization',
-  website: 'https://cleancompany.com.co/#website',
-  logo: 'https://cleancompany.com.co/#logo',
-  localBogota: 'https://cleancompany.com.co/#bogota',
-  localMedellin: 'https://cleancompany.com.co/#medellin',
-  contactBogota: 'https://cleancompany.com.co/#contact-bogota',
-  contactMedellin: 'https://cleancompany.com.co/#contact-medellin',
+  organization: 'https://www.cleancompany.com.co/#organization',
+  website: 'https://www.cleancompany.com.co/#website',
+  logo: 'https://www.cleancompany.com.co/#logo',
+  localBogota: 'https://www.cleancompany.com.co/#bogota',
+  localMedellin: 'https://www.cleancompany.com.co/#medellin',
+  contactBogota: 'https://www.cleancompany.com.co/#contact-bogota',
+  contactMedellin: 'https://www.cleancompany.com.co/#contact-medellin',
 } as const
 
-const LOGO_URL = 'https://cleancompany.com.co/images/logo/clean-company-logo.png'
+const LOGO_URL = 'https://www.cleancompany.com.co/images/logo/clean-company-logo.png'
 
 const KNOWS_ABOUT = [
   'Lavado de alfombras',
@@ -64,7 +63,7 @@ const organization = {
   '@type': 'Organization',
   '@id': ENTITY_IDS.organization,
   name: 'Clean Company',
-  url: 'https://cleancompany.com.co',
+  url: 'https://www.cleancompany.com.co',
   logo: {
     '@type': 'ImageObject',
     '@id': ENTITY_IDS.logo,
@@ -127,7 +126,7 @@ const website = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': ENTITY_IDS.website,
-  url: 'https://cleancompany.com.co',
+  url: 'https://www.cleancompany.com.co',
   name: 'Clean Company',
   description:
     'Lavado profesional de alfombras, tapetes, muebles y colchones a domicilio en Bogotá y Medellín.',
@@ -153,7 +152,7 @@ const buildLocalBusiness = (params: {
   '@id': params.id,
   name: params.name,
   parentOrganization: { '@id': ENTITY_IDS.organization },
-  url: 'https://cleancompany.com.co',
+  url: 'https://www.cleancompany.com.co',
   image: { '@id': ENTITY_IDS.logo },
   telephone: '+57-312-805-2720',
   email: 'cleancompanymed@gmail.com',
@@ -252,25 +251,25 @@ const localMedellin = buildLocalBusiness({
 const StructuredData = () => {
   return (
     <>
-      <Script
+      <script
         id="structured-data-organization"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLdHtml(organization) }}
       />
-      <Script
+      <script
         id="structured-data-website"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLdHtml(website) }}
       />
-      <Script
+      <script
         id="structured-data-local-bogota"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBogota) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLdHtml(localBogota) }}
       />
-      <Script
+      <script
         id="structured-data-local-medellin"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localMedellin) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLdHtml(localMedellin) }}
       />
     </>
   )

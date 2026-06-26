@@ -10,7 +10,7 @@ import rehypeStringify from "rehype-stringify";
 import JsonLd from "@/components/SEO/JsonLd";
 import { ENTITY_IDS } from "@/components/SEO/StructuredData";
 
-const SITE_URL = "https://cleancompany.com.co";
+const SITE_URL = "https://www.cleancompany.com.co";
 
 // Ajusta a tu frontmatter real
 type PostFrontmatter = {

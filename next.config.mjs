@@ -1,3 +1,23 @@
+/**
+ * CSP en modo Report-Only: NO bloquea nada (solo reporta violaciones en la
+ * consola del navegador). Punto de partida seguro porque el sitio usa GTM,
+ * Google Analytics y Meta Pixel. Promover a `Content-Security-Policy` (enforce)
+ * SOLO tras validar que no hay violaciones legítimas.
+ */
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "img-src 'self' data: blob: https:",
+  "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://connect.facebook.net https://*.facebook.com https://www.google.com https://www.google.com.co https://*.g.doubleclick.net",
+  "frame-src 'self' https://www.googletagmanager.com https://td.doubleclick.net https://www.google.com",
+  "worker-src 'self' blob:",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+].join('; ')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -27,6 +47,23 @@ const nextConfig = {
   
   // Comprimir assets
   compress: true,
+
+  // Cabeceras de seguridad para todas las rutas.
+  // Las 4 primeras son seguras (no rompen nada); la CSP va en Report-Only.
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=()' },
+          { key: 'Content-Security-Policy-Report-Only', value: CSP_REPORT_ONLY },
+        ],
+      },
+    ]
+  },
   
   // Configuración de compilación moderna
   compiler: {

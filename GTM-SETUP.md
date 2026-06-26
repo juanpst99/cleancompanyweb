@@ -144,7 +144,7 @@ Trigger: All Pages
 ### Usar GTM Preview Mode
 
 1. En GTM Console, click "Preview"
-2. Ingresa URL: `https://cleancompany.com.co`
+2. Ingresa URL: `https://www.cleancompany.com.co`
 3. Verificar que se disparan:
    - `gtm_init` al cargar
    - `page_view` en cada página

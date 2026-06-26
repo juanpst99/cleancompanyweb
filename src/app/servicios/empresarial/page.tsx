@@ -10,7 +10,7 @@ import BreadcrumbsJsonLd from '@/components/SEO/BreadcrumbsJsonLd'
 import FAQPageJsonLd, { type FAQItem } from '@/components/SEO/FAQPageJsonLd'
 import Breadcrumbs from '@/components/Breadcrumbs'
 
-const PAGE_URL = 'https://cleancompany.com.co/servicios/empresarial'
+const PAGE_URL = 'https://www.cleancompany.com.co/servicios/empresarial'
 
 export const metadata: Metadata = {
   title:
@@ -104,8 +104,8 @@ export default function EmpresarialPage() {
       <BreadcrumbsJsonLd
         id="empresarial-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
-          { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
+          { name: 'Servicios', url: 'https://www.cleancompany.com.co/#servicios' },
           { name: 'Limpieza empresarial', url: PAGE_URL },
         ]}
       />
@@ -128,8 +128,8 @@ export default function EmpresarialPage() {
             tone="light"
             className="mb-6"
             items={[
-              { name: 'Inicio', url: 'https://cleancompany.com.co/' },
-              { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
+              { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
+              { name: 'Servicios', url: 'https://www.cleancompany.com.co/#servicios' },
               { name: 'Limpieza empresarial', url: PAGE_URL },
             ]}
           />

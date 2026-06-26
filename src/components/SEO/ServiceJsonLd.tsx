@@ -53,7 +53,7 @@ export default function ServiceJsonLd({
       { '@type': 'Audience', name: 'Hogares' },
       { '@type': 'BusinessAudience', name: 'Empresas y oficinas' },
     ],
-    termsOfService: 'https://cleancompany.com.co/garantia',
+    termsOfService: 'https://www.cleancompany.com.co/garantia',
   }
 
   if (alternateName?.length) {

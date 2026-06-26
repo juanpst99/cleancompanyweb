@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 
-const BASE = 'https://cleancompany.com.co'
+const BASE = 'https://www.cleancompany.com.co'
 
 const DISALLOW_QUERY_AND_PRIVATE = [
   '/api/',

@@ -20,7 +20,7 @@ import JsonLd from '@/components/SEO/JsonLd'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { ENTITY_IDS } from '@/components/SEO/StructuredData'
 
-const PAGE_URL = 'https://cleancompany.com.co/nosotros'
+const PAGE_URL = 'https://www.cleancompany.com.co/nosotros'
 
 export const metadata: Metadata = {
   title: 'Nosotros | Clean Company — Lavado profesional en Bogotá y Medellín',
@@ -90,7 +90,7 @@ export default function NosotrosPage() {
       <BreadcrumbsJsonLd
         id="nosotros-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
           { name: 'Nosotros', url: PAGE_URL },
         ]}
       />
@@ -107,7 +107,7 @@ export default function NosotrosPage() {
             tone="light"
             className="mb-5"
             items={[
-              { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+              { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
               { name: 'Nosotros', url: PAGE_URL },
             ]}
           />

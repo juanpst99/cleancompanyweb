@@ -19,7 +19,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://cleancompany.com.co'),
+  metadataBase: new URL('https://www.cleancompany.com.co'),
   title: {
     default:
       'Clean Company | Lavado de Alfombras, Muebles y Colchones en Bogotá y Medellín',
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
       'Clean Company | Lavado de Alfombras, Muebles y Colchones en Bogotá y Medellín',
     description:
       'Expertos en limpieza profesional. Lavado de alfombras, muebles y colchones a domicilio. Servicio garantizado en Bogotá y Medellín.',
-    url: 'https://cleancompany.com.co',
+    url: 'https://www.cleancompany.com.co',
     siteName: 'Clean Company',
     images: [
       {
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: { canonical: 'https://cleancompany.com.co' },
+  alternates: { canonical: 'https://www.cleancompany.com.co' },
   // verification: { google: 'REEMPLAZAR_CON_CODIGO_REAL' },
   // themeColor movido a `viewport`
 }

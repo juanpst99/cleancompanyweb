@@ -55,12 +55,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       `limpieza profunda tapetes ${ciudad.toLowerCase()}`,
     ],
     alternates: {
-      canonical: 'https://cleancompany.com.co/servicios/alfombras',
+      canonical: 'https://www.cleancompany.com.co/servicios/alfombras',
     },
     openGraph: {
       title,
       description,
-      url: 'https://cleancompany.com.co/servicios/alfombras',
+      url: 'https://www.cleancompany.com.co/servicios/alfombras',
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
@@ -83,7 +83,7 @@ export default function AlfombrasPage() {
         serviceType="Lavado de alfombras"
         alternateName={['Limpieza de alfombras', 'Lavado de tapetes']}
         description="Lavado profesional por inyección-extracción de alfombras y tapetes, con tratamiento de manchas, desinfección y secado controlado. Servicio a domicilio y en planta para Bogotá y Medellín."
-        url="https://cleancompany.com.co/servicios/alfombras"
+        url="https://www.cleancompany.com.co/servicios/alfombras"
         variants={[
           { name: 'Alfombras persas y orientales', description: 'Cuidado especial para fibras naturales y tintes vegetales' },
           { name: 'Tapetes sintéticos modernos', description: 'Inyección-extracción a alta potencia' },
@@ -93,9 +93,9 @@ export default function AlfombrasPage() {
       <BreadcrumbsJsonLd
         id="alfombras-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
-          { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
-          { name: 'Lavado de alfombras y tapetes', url: 'https://cleancompany.com.co/servicios/alfombras' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
+          { name: 'Servicios', url: 'https://www.cleancompany.com.co/#servicios' },
+          { name: 'Lavado de alfombras y tapetes', url: 'https://www.cleancompany.com.co/servicios/alfombras' },
         ]}
       />
       <Suspense fallback={<div className="min-h-screen bg-gray-50"></div>}>

@@ -31,9 +31,9 @@ const Hero = () => {
       <div className="container mx-auto px-4 relative z-10 py-20">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="text-white space-y-6 text-center md:text-left">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight animate-fadeInUp">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight animate-fadeInUp">
               Limpieza Profesional que <span className="text-yellow-400">Transforma</span>
-            </h2>
+            </h1>
             {/* Respuesta factual al frente ("front-loading"): los motores de IA
                 citan sobre todo el primer tercio de la página. Incluye qué, dónde,
                 método, precio ancla y CTA en una sola frase legible por máquina. */}

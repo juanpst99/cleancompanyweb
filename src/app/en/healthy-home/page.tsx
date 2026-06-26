@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: 'Deep Cleaning & Sanitization in Medellín — Clean Company',
     description:
       'Professional sofa, mattress and rug cleaning for expats in Medellín. No Spanish needed. Instant quotes. Satisfaction guaranteed.',
-    url: 'https://cleancompany.com.co/en/healthy-home',
+    url: 'https://www.cleancompany.com.co/en/healthy-home',
     siteName: 'Clean Company',
     locale: 'en_US',
     type: 'website',
@@ -53,9 +53,9 @@ export const metadata: Metadata = {
       'Trusted by expats and digital nomads in Medellín. English-friendly team. Book on WhatsApp.',
   },
   alternates: {
-    canonical: 'https://cleancompany.com.co/en/healthy-home',
+    canonical: 'https://www.cleancompany.com.co/en/healthy-home',
     languages: {
-      'es-CO': 'https://cleancompany.com.co/promo/hogar-saludable',
+      'es-CO': 'https://www.cleancompany.com.co/promo/hogar-saludable',
     },
   },
   robots: { index: true, follow: true },

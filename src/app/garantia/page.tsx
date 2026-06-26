@@ -15,12 +15,12 @@ export const metadata: Metadata = {
     'reclamaciones clean company',
     'responsabilidad legal limpieza',
   ],
-  alternates: { canonical: 'https://cleancompany.com.co/garantia' },
+  alternates: { canonical: 'https://www.cleancompany.com.co/garantia' },
   openGraph: {
     title: 'Garantía y reclamaciones | Clean Company',
     description:
       'Tres meses de garantía escrita, inspección documentada y procedimiento conforme a la Ley 1480/2011.',
-    url: 'https://cleancompany.com.co/garantia',
+    url: 'https://www.cleancompany.com.co/garantia',
     siteName: 'Clean Company',
     locale: 'es_CO',
     type: 'website',

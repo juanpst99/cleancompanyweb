@@ -9,7 +9,7 @@ import BreadcrumbsJsonLd from '@/components/SEO/BreadcrumbsJsonLd'
 import FAQPageJsonLd, { type FAQItem } from '@/components/SEO/FAQPageJsonLd'
 import Breadcrumbs from '@/components/Breadcrumbs'
 
-const PAGE_URL = 'https://cleancompany.com.co/servicios/vehiculos'
+const PAGE_URL = 'https://www.cleancompany.com.co/servicios/vehiculos'
 
 export const metadata: Metadata = {
   title: 'Limpieza Interior de Vehículos en Bogotá y Medellín | Clean Company',
@@ -91,8 +91,8 @@ export default function VehiculosPage() {
       <BreadcrumbsJsonLd
         id="vehiculos-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
-          { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
+          { name: 'Servicios', url: 'https://www.cleancompany.com.co/#servicios' },
           { name: 'Limpieza interior de vehículos', url: PAGE_URL },
         ]}
       />
@@ -112,8 +112,8 @@ export default function VehiculosPage() {
             tone="light"
             className="mb-6"
             items={[
-              { name: 'Inicio', url: 'https://cleancompany.com.co/' },
-              { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
+              { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
+              { name: 'Servicios', url: 'https://www.cleancompany.com.co/#servicios' },
               { name: 'Limpieza interior de vehículos', url: PAGE_URL },
             ]}
           />

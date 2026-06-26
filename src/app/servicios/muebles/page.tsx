@@ -57,12 +57,12 @@ export async function generateMetadata(
       `renovar tapicería ${ciudad.toLowerCase()}`,
     ],
     alternates: {
-      canonical: 'https://cleancompany.com.co/servicios/muebles',
+      canonical: 'https://www.cleancompany.com.co/servicios/muebles',
     },
     openGraph: {
       title,
       description,
-      url: 'https://cleancompany.com.co/servicios/muebles',
+      url: 'https://www.cleancompany.com.co/servicios/muebles',
       siteName: nombreEmpresa,
       locale: 'es_CO',
       type: 'website',
@@ -85,7 +85,7 @@ export default function MueblesPage() {
         serviceType="Lavado de muebles"
         alternateName={['Limpieza de sofás', 'Lavado de tapicería', 'Limpieza de muebles']}
         description="Lavado profesional de muebles, sofás, sillas y tapicería a domicilio en Bogotá y Medellín. Inyección-extracción, productos pH neutro, secado controlado y garantía de satisfacción."
-        url="https://cleancompany.com.co/servicios/muebles"
+        url="https://www.cleancompany.com.co/servicios/muebles"
         variants={[
           { name: 'Sofás de tela', description: 'Limpieza profunda con inyección-extracción' },
           { name: 'Sofás de cuero', description: 'Limpieza con productos específicos para cuero' },
@@ -95,9 +95,9 @@ export default function MueblesPage() {
       <BreadcrumbsJsonLd
         id="muebles-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
-          { name: 'Servicios', url: 'https://cleancompany.com.co/#servicios' },
-          { name: 'Lavado de muebles y sofás', url: 'https://cleancompany.com.co/servicios/muebles' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
+          { name: 'Servicios', url: 'https://www.cleancompany.com.co/#servicios' },
+          { name: 'Lavado de muebles y sofás', url: 'https://www.cleancompany.com.co/servicios/muebles' },
         ]}
       />
       <Suspense>

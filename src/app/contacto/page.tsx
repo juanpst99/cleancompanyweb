@@ -10,7 +10,7 @@ import JsonLd from '@/components/SEO/JsonLd'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { ENTITY_IDS } from '@/components/SEO/StructuredData'
 
-const PAGE_URL = 'https://cleancompany.com.co/contacto'
+const PAGE_URL = 'https://www.cleancompany.com.co/contacto'
 
 export const metadata: Metadata = {
   title: 'Contacto Clean Company | WhatsApp, sedes y horarios en Bogotá y Medellín',
@@ -82,7 +82,7 @@ export default function ContactoPage() {
       <BreadcrumbsJsonLd
         id="contacto-breadcrumbs-jsonld"
         items={[
-          { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+          { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
           { name: 'Contacto', url: PAGE_URL },
         ]}
       />
@@ -99,7 +99,7 @@ export default function ContactoPage() {
             tone="light"
             className="mb-5"
             items={[
-              { name: 'Inicio', url: 'https://cleancompany.com.co/' },
+              { name: 'Inicio', url: 'https://www.cleancompany.com.co/' },
               { name: 'Contacto', url: PAGE_URL },
             ]}
           />
