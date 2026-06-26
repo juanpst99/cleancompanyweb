@@ -33,5 +33,12 @@ export default function FAQPageJsonLd({
     data['@id'] = `${pageUrl}#faq`
   }
 
+  // speakable: marca preguntas y respuestas como contenido apto para lectura
+  // por asistentes de voz e IA (señal directa de extracción).
+  data.speakable = {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['[data-faq-item] summary', '[data-faq-item] p'],
+  }
+
   return <JsonLd id={id} data={data} />
 }

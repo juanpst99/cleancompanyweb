@@ -256,6 +256,22 @@ export default function PreguntasFrecuentesPage() {
       {/* Grupos de FAQs */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4 max-w-3xl">
+          {/* Resumen front-loaded y citable: respuesta auto-contenida y densa en
+              cifras reales (lo que los motores de IA citan textualmente). */}
+          <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-900 mb-3">En resumen: precios y tiempos</h2>
+            <p className="text-gray-700 leading-relaxed">
+              Clean Company lava alfombras, muebles y colchones a domicilio en Bogotá y Medellín
+              por inyección-extracción. El servicio a domicilio parte de <strong>$79.900</strong>:
+              el tapete removible cuesta entre <strong>$37.500 y $48.500 por m²</strong> y la
+              alfombra fija entre <strong>$15.000 y $30.000 por m²</strong>; un sofá de 2 puestos
+              va de <strong>$90.000 a $120.000</strong> y una sala en L de{' '}
+              <strong>$160.000 a $240.000</strong>. El secado de un tapete en planta toma{' '}
+              <strong>5 a 7 días</strong> y un sofá queda seco al día siguiente. Todo con{' '}
+              <strong>garantía escrita de 3 meses</strong> (Ley 1480/2011) y pago después del servicio.
+            </p>
+          </div>
+
           {/* Buscador en vivo (isla cliente — el contenido sigue en el HTML para SEO/IA) */}
           <FaqSearch />
 

@@ -48,6 +48,18 @@ const nextConfig = {
   // Comprimir assets
   compress: true,
 
+  // Redirecciones de URLs legacy del antiguo sitio WordPress (WP -> Next) para
+  // evitar 404 en URLs antiguas que pudieran seguir indexadas y consolidar la
+  // señal en la entidad canónica. No hay rutas Next con estos prefijos.
+  async redirects() {
+    return [
+      { source: '/cleaning_services', destination: '/', permanent: true },
+      { source: '/cleaning_services/:slug*', destination: '/', permanent: true },
+      { source: '/producto', destination: '/', permanent: true },
+      { source: '/producto/:slug*', destination: '/', permanent: true },
+    ]
+  },
+
   // Cabeceras de seguridad para todas las rutas.
   // Las 4 primeras son seguras (no rompen nada); la CSP va en Report-Only.
   async headers() {
