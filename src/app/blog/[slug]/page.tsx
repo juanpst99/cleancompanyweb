@@ -96,9 +96,11 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical: `${SITE_URL}/blog/${slug}` },
     openGraph: {
       title: post.title,
       description: post.excerpt,
+      url: `${SITE_URL}/blog/${slug}`,
       images: post.coverImage ? [post.coverImage] : [],
     },
   };

@@ -4,6 +4,23 @@ import path from "node:path";
 import matter from "gray-matter";
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blog | Clean Company — Consejos de lavado de alfombras, muebles y colchones",
+  description:
+    "Guías y consejos para el cuidado profesional de alfombras, tapetes, muebles y colchones a domicilio en Bogotá y Medellín.",
+  alternates: { canonical: "https://www.cleancompany.com.co/blog" },
+  openGraph: {
+    title: "Blog | Clean Company",
+    description:
+      "Guías y consejos para el cuidado profesional del hogar en Bogotá y Medellín.",
+    url: "https://www.cleancompany.com.co/blog",
+    siteName: "Clean Company",
+    locale: "es_CO",
+    type: "website",
+  },
+};
 
 type PostFrontmatter = {
   title?: string;
