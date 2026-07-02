@@ -567,6 +567,21 @@ export default function AlfombrasClient() {
           <h2 className="text-3xl font-bold text-center mb-12">Preguntas Frecuentes</h2>
 
           <div className="max-w-3xl mx-auto space-y-4">
+            {/* Q&A de precio answer-first: cifras reales sincronizadas con /api/quote (TARIFAS) */}
+            <details className="bg-gray-50 rounded-lg shadow-md p-6 group">
+              <summary className="font-semibold cursor-pointer flex justify-between items-center">
+                ¿Cuánto cuesta lavar un tapete o alfombra a domicilio?
+                <ChevronDown className="w-5 h-5 group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="mt-4 text-gray-600">
+                En 2026, el lavado de tapete removible cuesta entre $37.500 y $48.500 por m² según la
+                ciudad (Medellín–Bogotá), con un mínimo de 2 m² por orden. La alfombra fija instalada
+                va de $15.000 a $30.000 por m². El mínimo de facturación por visita a domicilio es
+                $79.900. Puedes obtener un precio estimado al instante subiendo una foto al cotizador
+                de esta página, y el técnico confirma las medidas exactas al llegar.
+              </p>
+            </details>
+
             <details className="bg-gray-50 rounded-lg shadow-md p-6 group">
               <summary className="font-semibold cursor-pointer flex justify-between items-center">
                 ¿Qué pasa si la mancha no sale completamente?

@@ -19,6 +19,13 @@ export default function FaqSearch() {
   const [query, setQuery] = useState('')
   const [noResults, setNoResults] = useState(false)
 
+  // Soporta /preguntas-frecuentes?q=término (target del SearchAction del schema
+  // WebSite). Se lee en el cliente al montar para no afectar el SSR/estática.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get('q')
+    if (q) setQuery(q)
+  }, [])
+
   useEffect(() => {
     const term = query.trim().toLowerCase()
 

@@ -8,14 +8,32 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import JsonLd from "@/components/SEO/JsonLd";
+import BreadcrumbsJsonLd from "@/components/SEO/BreadcrumbsJsonLd";
 import { ENTITY_IDS } from "@/components/SEO/StructuredData";
 
 const SITE_URL = "https://www.cleancompany.com.co";
+
+// Autor de los artículos (E-E-A-T). Nodo Person enlazado a la Organization.
+// TODO (dueño): añadir sameAs (LinkedIn) y jobTitle cuando estén disponibles.
+const AUTHOR = {
+  "@type": "Person",
+  "@id": `${SITE_URL}/#author-juan-pablo-sanchez`,
+  name: "Juan Pablo Sánchez",
+  url: `${SITE_URL}/nosotros`,
+  worksFor: { "@id": "https://www.cleancompany.com.co/#organization" },
+  knowsAbout: [
+    "Lavado de alfombras y tapetes",
+    "Lavado de muebles y tapicería",
+    "Lavado y desinfección de colchones",
+    "Limpieza textil por inyección-extracción",
+  ],
+} as const;
 
 // Ajusta a tu frontmatter real
 type PostFrontmatter = {
   title: string;
   date: string;
+  updated?: string; // fecha de última actualización (YYYY-MM-DD)
   excerpt: string;
   coverImage?: string;
   readingTime?: string;
@@ -62,6 +80,7 @@ async function getPostBySlug(slug: string): Promise<Post> {
     slug,
     title: fm.title ?? slug,
     date: fm.date ?? "",
+    updated: fm.updated,
     excerpt: fm.excerpt ?? "",
     coverImage: fm.coverImage,
     category: fm.category,
@@ -96,6 +115,7 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt,
+    authors: [{ name: "Juan Pablo Sánchez", url: `${SITE_URL}/nosotros` }],
     alternates: { canonical: `${SITE_URL}/blog/${slug}` },
     openGraph: {
       title: post.title,
@@ -117,16 +137,24 @@ function BlogPostLayout({ post, children }: { post: Post; children: ReactNode })
             Clean Company • Blog
           </p>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">
+          <h1 id="post-title" className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">
             {post.title}
           </h1>
 
-          <p className="mt-3 text-base leading-7 text-zinc-600">
+          <p id="post-summary" className="mt-3 text-base leading-7 text-zinc-600">
             {post.excerpt}
           </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500">
+            <span className="font-medium text-zinc-700">Por Juan Pablo Sánchez · Clean Company</span>
+            <span className="text-zinc-300">•</span>
             <span>{post.date}</span>
+            {post.updated && post.updated !== post.date && (
+              <>
+                <span className="text-zinc-300">•</span>
+                <span>Actualizado: {post.updated}</span>
+              </>
+            )}
             <span className="text-zinc-300">•</span>
             <span>{post.readingTime ?? "6–8 min lectura"}</span>
             <span className="text-zinc-300">•</span>
@@ -197,8 +225,8 @@ export default async function Page({
   // ✅ Render del HTML del Markdown
   const content = <div dangerouslySetInnerHTML={{ __html: post.html }} />;
 
-  // BlogPosting JSON-LD — datos estructurados del artículo, enlazados a la
-  // entidad de marca (author/publisher = Organization) para reforzar E-E-A-T.
+  // BlogPosting JSON-LD — autoría humana (Person) + publisher Organization
+  // para E-E-A-T, con speakable (título + resumen) y fecha de actualización.
   const articleLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -206,16 +234,30 @@ export default async function Page({
     headline: post.title,
     description: post.excerpt,
     inLanguage: "es-CO",
-    author: { "@id": ENTITY_IDS.organization },
+    author: AUTHOR,
     publisher: { "@id": ENTITY_IDS.organization },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${slug}` },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["#post-title", "#post-summary"],
+    },
     ...(post.coverImage ? { image: `${SITE_URL}${post.coverImage}` } : {}),
-    ...(post.date ? { datePublished: post.date, dateModified: post.date } : {}),
+    ...(post.date
+      ? { datePublished: post.date, dateModified: post.updated ?? post.date }
+      : {}),
   };
 
   return (
     <>
       <JsonLd id="blogposting-jsonld" data={articleLd} />
+      <BreadcrumbsJsonLd
+        id="blogpost-breadcrumbs-jsonld"
+        items={[
+          { name: "Inicio", url: `${SITE_URL}/` },
+          { name: "Blog", url: `${SITE_URL}/blog` },
+          { name: post.title, url: `${SITE_URL}/blog/${slug}` },
+        ]}
+      />
       <BlogPostLayout post={post}>{content}</BlogPostLayout>
     </>
   );

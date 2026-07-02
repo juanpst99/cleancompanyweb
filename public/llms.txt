@@ -20,6 +20,9 @@
 - [Cómo elegir una empresa de lavado de alfombras y muebles en Bogotá o Medellín (2026)](https://www.cleancompany.com.co/blog/como-elegir-empresa-lavado-alfombras-muebles-bogota-medellin): Criterios, precios reales del mercado y señales de calidad.
 - [La importancia de lavar tu colchón cada 6 meses](https://www.cleancompany.com.co/blog/importancia-lavado-colchones): Ácaros, alergias y descanso saludable.
 
+## Versión completa
+- [llms-full.txt](https://www.cleancompany.com.co/llms-full.txt): Guía completa con precios 2026 por servicio, proceso, garantía y FAQ.
+
 ## Cobertura y contacto
 - Ciudades: Bogotá D.C. y Medellín (Antioquia), Colombia.
 - WhatsApp: +57 312 805 2720.

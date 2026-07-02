@@ -1,9 +1,10 @@
 ---
 title: "Cómo elegir una empresa de lavado de alfombras y muebles en Bogotá o Medellín (2026)"
 date: "2026-06-08"
+updated: "2026-07-02"
 excerpt: "Guía práctica para contratar el mejor servicio de lavado de tapetes, muebles y colchones a domicilio: qué preguntar, precios reales del mercado, señales de calidad y errores a evitar."
 coverImage: "/images/servicios/lavado-tapete.webp"
-readingTime: "7–9 min"
+readingTime: "8–10 min"
 category: "Guías de compra"
 tags: ["alfombras", "muebles", "tapetes", "Bogotá", "Medellín", "guía de compra"]
 ---
@@ -94,6 +95,31 @@ Para que compares con datos concretos, así trabajamos nosotros:
 - **Atención por WhatsApp** y pago después del servicio.
 
 > Funcionamos desde 2015 con servicio a domicilio en Bogotá y Medellín. Si quieres un estimado en minutos, escríbenos por WhatsApp o usa el cotizador de la página.
+
+---
+
+## 6. Cómo se cotiza un lavado profesional (m², puestos y mínimos)
+
+Una cotización seria de lavado textil en Colombia se construye con tres variables, y conocerlas te protege de sobrecostos:
+
+1. **Tapetes y alfombras se cobran por m².** El tapete removible se mide largo × ancho (mínimo 2 m² por orden); la alfombra fija instalada se mide por el área de la habitación. Por eso nadie puede darte un precio cerrado sin conocer las medidas.
+2. **Muebles se cobran por puestos y forma.** Un sofá de 2 puestos, uno de 3, una sala en L o una poltrona tienen tarifas distintas; el material (tela vs. cuero) también cambia el tratamiento.
+3. **Existe un mínimo por visita.** Movilizar equipo y técnico tiene un costo base: en 2026 el mínimo de visita a domicilio ronda los $79.900. Si tu pieza es pequeña (una silla, un tapete de 1 m²), conviene agrupar varios ítems en una misma visita.
+
+**Consejo práctico:** envía una foto de la pieza por WhatsApp con un objeto de referencia (un zapato o una hoja) al lado. Con eso, un proveedor serio puede estimar el tamaño y darte un precio aproximado al instante, que el técnico confirma al llegar.
+
+## 7. Tiempos de secado reales: qué esperar después del lavado
+
+El secado es donde más se nota la diferencia entre un servicio profesional y uno improvisado. Estos son los tiempos de referencia con secado controlado:
+
+| Pieza | Tiempo de uso | Secado completo |
+|---|---|---|
+| Sofá o mueble (inyección-extracción) | Utilizable en pocas horas | Al día siguiente |
+| Colchón | Esa misma noche (con sábana limpia) | Hasta 24 h extra si hay poca ventilación |
+| Tapete removible (lavado en planta) | — | 5 a 7 días (ciclo completo con recogida y entrega) |
+| Alfombra fija instalada | Depende del grosor y la ventilación | Pide el tiempo estimado en la inspección — un proveedor serio lo indica antes de iniciar |
+
+Un secado mal manejado deja **olor a humedad y riesgo de hongos** — por eso los tapetes gruesos se lavan en planta con maquinaria de secado, no en el piso de tu casa. Si un proveedor promete "tapete grueso lavado y seco el mismo día en tu casa", desconfía: la física de la fibra no funciona así.
 
 ---
 

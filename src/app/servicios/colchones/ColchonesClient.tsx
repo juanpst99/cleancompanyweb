@@ -679,6 +679,22 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
           </h2>
           
           <div className="max-w-3xl mx-auto space-y-4">
+            {/* Q&A answer-first con datos reales (tiempos publicados en /preguntas-frecuentes) */}
+            <details className="bg-gray-50 rounded-lg shadow-md p-6 group">
+              <summary className="font-semibold cursor-pointer flex justify-between items-center">
+                ¿Cuándo puedo volver a usar el colchón después del lavado?
+                <ChevronDown className="w-5 h-5 group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="mt-4 text-gray-600">
+                Esa misma noche: con secado controlado el colchón queda utilizable en unas horas
+                (cúbrelo con una sábana limpia). Si la habitación tiene poca ventilación, el secado
+                completo puede tardar hasta 24 horas adicionales. El servicio incluye aspirado,
+                lavado por inyección-extracción y tratamiento antiácaros; la cotización se hace por
+                WhatsApp según el tamaño (sencillo, doble, queen o king) y el mínimo por visita a
+                domicilio es $79.900.
+              </p>
+            </details>
+
             <details className="bg-gray-50 rounded-lg shadow-md p-6 group">
               <summary className="font-semibold cursor-pointer flex justify-between items-center">
                 ¿Cada cuánto debo lavar mi colchón?

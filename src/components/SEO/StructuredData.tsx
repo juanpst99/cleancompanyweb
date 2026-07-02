@@ -132,6 +132,17 @@ const website = {
     'Lavado profesional de alfombras, tapetes, muebles y colchones a domicilio en Bogotá y Medellín.',
   inLanguage: 'es-CO',
   publisher: { '@id': ENTITY_IDS.organization },
+  // Búsqueda real del sitio: el buscador de /preguntas-frecuentes acepta ?q=
+  // (FaqSearch lo lee al montar). Señal de sitelinks/asistentes.
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate:
+        'https://www.cleancompany.com.co/preguntas-frecuentes?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
 }
 
 const buildLocalBusiness = (params: {

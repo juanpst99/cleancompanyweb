@@ -615,6 +615,21 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
           </h2>
           
           <div className="max-w-3xl mx-auto space-y-4">
+            {/* Q&A de precio answer-first: cifras reales sincronizadas con /api/quote (TARIFAS) */}
+            <details className="bg-gray-50 rounded-lg shadow-md p-6 group">
+              <summary className="font-semibold cursor-pointer flex justify-between items-center">
+                ¿Cuánto cuesta lavar un sofá o una sala a domicilio?
+                <ChevronDown className="w-5 h-5 group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="mt-4 text-gray-600">
+                En 2026, el lavado de un sofá de 2 puestos cuesta entre $90.000 y $120.000; el de
+                3 puestos entre $105.000 y $135.000; una sala en L entre $160.000 y $240.000, y una
+                poltrona entre $45.000 y $60.000, según la ciudad (Medellín–Bogotá). El mínimo por
+                visita a domicilio es $79.900. Sube una foto al cotizador de esta página para un
+                estimado al instante; el técnico confirma el valor final en la visita.
+              </p>
+            </details>
+
             <details className="bg-gray-50 rounded-lg shadow-md p-6 group">
               <summary className="font-semibold cursor-pointer flex justify-between items-center">
                 ¿Qué tipos de tela pueden lavar?

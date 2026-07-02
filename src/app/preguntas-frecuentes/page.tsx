@@ -45,6 +45,11 @@ const GROUPS: Group[] = [
     titulo: 'Alfombras y tapetes',
     faqs: [
       {
+        question: '¿Cuánto cuesta lavar un tapete o alfombra?',
+        answer:
+          'El tapete removible cuesta entre $37.500 y $48.500 por m² según la ciudad (Medellín–Bogotá), con mínimo de 2 m² por orden. La alfombra fija instalada va de $15.000 a $30.000 por m². El mínimo de facturación por visita a domicilio es $79.900. El precio exacto se confirma con una foto por WhatsApp o en la inspección.',
+      },
+      {
         question: '¿Cada cuánto debo lavar una alfombra?',
         answer:
           'Para uso normal en hogar se recomienda lavado profesional cada 12 a 18 meses. Si tienes mascotas, alergias, niños pequeños o tráfico alto, considera lavado cada 6 a 12 meses para mantener la pieza en buen estado y reducir ácaros.',
@@ -70,6 +75,11 @@ const GROUPS: Group[] = [
     id: 'muebles',
     titulo: 'Muebles y sofás',
     faqs: [
+      {
+        question: '¿Cuánto cuesta lavar un sofá o una sala?',
+        answer:
+          'En 2026, un sofá de 2 puestos cuesta entre $90.000 y $120.000; uno de 3 puestos entre $105.000 y $135.000; una sala en L entre $160.000 y $240.000, y una poltrona entre $45.000 y $60.000, según la ciudad (Medellín–Bogotá). El mínimo por visita a domicilio es $79.900.',
+      },
       {
         question: '¿Cuánto tarda en secar un sofá después del lavado?',
         answer:
