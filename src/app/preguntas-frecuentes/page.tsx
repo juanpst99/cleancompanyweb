@@ -187,7 +187,7 @@ const GROUPS: Group[] = [
       {
         question: '¿En qué ciudades operan?',
         answer:
-          'Bogotá D.C. y Medellín (Antioquia). Confirmamos cobertura exacta de tu barrio o municipio al recibir tu dirección por WhatsApp, antes de cerrar la agenda.',
+          'Bogotá D.C. y Medellín con toda su área metropolitana (Valle de Aburrá): Envigado, Itagüí, Sabaneta, La Estrella, Caldas, Bello, Copacabana, Girardota y Barbosa. Confirmamos cobertura exacta de tu barrio o municipio al recibir tu dirección por WhatsApp, antes de cerrar la agenda.',
       },
       {
         question: '¿Hacen factura electrónica?',
@@ -271,7 +271,10 @@ export default function PreguntasFrecuentesPage() {
           <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-3">En resumen: precios y tiempos</h2>
             <p className="text-gray-700 leading-relaxed">
-              Clean Company lava alfombras, muebles y colchones a domicilio en Bogotá y Medellín
+              Clean Company lava alfombras, muebles y colchones a domicilio en Bogotá y en{' '}
+              <Link href="/medellin" className="text-blue-700 underline underline-offset-2 hover:no-underline">
+                Medellín y toda su área metropolitana
+              </Link>{' '}
               por inyección-extracción. El servicio a domicilio parte de <strong>$79.900</strong>:
               el tapete removible cuesta entre <strong>$37.500 y $48.500 por m²</strong> y la
               alfombra fija entre <strong>$15.000 y $30.000 por m²</strong>; un sofá de 2 puestos

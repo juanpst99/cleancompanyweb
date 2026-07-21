@@ -117,6 +117,11 @@ const organization = {
       name: 'Medellín',
       containedInPlace: { '@type': 'Country', name: 'Colombia' },
     },
+    {
+      '@type': 'AdministrativeArea',
+      name: 'Área Metropolitana del Valle de Aburrá',
+      containedInPlace: { '@type': 'Country', name: 'Colombia' },
+    },
   ],
   knowsAbout: KNOWS_ABOUT,
   ...(aggregateRating ? { aggregateRating } : {}),
@@ -157,6 +162,8 @@ const buildLocalBusiness = (params: {
   city: string
   region: string
   radiusMeters: number
+  /** Municipios/áreas adicionales cubiertas (se nombran como entidades). */
+  extraAreas?: string[]
 }) => ({
   '@context': 'https://schema.org',
   '@type': ['LocalBusiness', 'CleaningService'],
@@ -187,6 +194,7 @@ const buildLocalBusiness = (params: {
   areaServed: [
     { '@type': 'City', name: params.city },
     { '@type': 'AdministrativeArea', name: params.region },
+    ...(params.extraAreas ?? []).map((name) => ({ '@type': 'City', name })),
   ],
   serviceArea: {
     '@type': 'GeoCircle',
@@ -256,7 +264,21 @@ const localMedellin = buildLocalBusiness({
   longitude: -75.56359,
   city: 'Medellín',
   region: 'Antioquia',
-  radiusMeters: 20000,
+  // Radio ampliado para cubrir el Valle de Aburrá (norte hasta Barbosa).
+  radiusMeters: 30000,
+  // Área Metropolitana del Valle de Aburrá — municipios nombrados como
+  // entidades (los LLMs resuelven cobertura por nombre, no por geocírculo).
+  extraAreas: [
+    'Envigado',
+    'Itagüí',
+    'Sabaneta',
+    'La Estrella',
+    'Caldas',
+    'Bello',
+    'Copacabana',
+    'Girardota',
+    'Barbosa',
+  ],
 })
 
 const StructuredData = () => {

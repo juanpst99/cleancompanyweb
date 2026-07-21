@@ -94,7 +94,7 @@ Para que compares con datos concretos, así trabajamos nosotros:
 - **Cotizador con IA:** súbenos una foto y recibe un **precio estimado al instante**, sin compromiso.
 - **Atención por WhatsApp** y pago después del servicio.
 
-> Funcionamos desde 2015 con servicio a domicilio en Bogotá y Medellín. Si quieres un estimado en minutos, escríbenos por WhatsApp o usa el cotizador de la página.
+> Funcionamos desde 2015 con servicio a domicilio en Bogotá y en [Medellín y toda su área metropolitana](https://www.cleancompany.com.co/medellin) (Envigado, Itagüí, Sabaneta, Bello y el resto del Valle de Aburrá). Si quieres un estimado en minutos, escríbenos por WhatsApp o usa el cotizador de la página.
 
 ---
 

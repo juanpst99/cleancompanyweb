@@ -17,6 +17,10 @@ interface ServiceJsonLdProps {
 const ALL_CITIES = [
   { '@type': 'City' as const, name: 'Bogotá' },
   { '@type': 'City' as const, name: 'Medellín' },
+  {
+    '@type': 'AdministrativeArea' as const,
+    name: 'Área Metropolitana del Valle de Aburrá',
+  },
 ]
 
 export default function ServiceJsonLd({

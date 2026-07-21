@@ -36,6 +36,7 @@ const STATIC: Entry[] = [
   { url: `${BASE}/servicios/colchones`,      priority: 0.9, changeFrequency: 'monthly' },
   { url: `${BASE}/servicios/vehiculos`,      priority: 0.7, changeFrequency: 'monthly' },
   { url: `${BASE}/servicios/empresarial`,    priority: 0.7, changeFrequency: 'monthly' },
+  { url: `${BASE}/medellin`,                 priority: 0.8, changeFrequency: 'monthly' },
   { url: `${BASE}/proceso-de-lavado`,        priority: 0.7, changeFrequency: 'monthly' },
   { url: `${BASE}/preguntas-frecuentes`,     priority: 0.7, changeFrequency: 'monthly' },
   { url: `${BASE}/nosotros`,                 priority: 0.6, changeFrequency: 'monthly' },

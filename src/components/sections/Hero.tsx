@@ -39,7 +39,7 @@ const Hero = () => {
                 método, precio ancla y CTA en una sola frase legible por máquina. */}
             <p className="text-lg sm:text-xl opacity-95 animate-fadeInUp animation-delay-200 max-w-xl mx-auto md:mx-0">
               Lavamos <strong className="font-semibold text-white">alfombras, muebles y colchones a domicilio</strong> en
-              Bogotá y Medellín. Recogemos, lavamos por inyección-extracción y entregamos con garantía —
+              Bogotá y en Medellín y toda su área metropolitana. Recogemos, lavamos por inyección-extracción y entregamos con garantía —
               <strong className="font-semibold text-yellow-300"> desde {formatCOP(PRICING.minDomicilioCOP)}</strong> y
               cotización por WhatsApp en minutos.
             </p>
