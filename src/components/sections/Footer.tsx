@@ -68,6 +68,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/servicios/cortinas" className="hover:text-white transition">
+                  Lavado de cortinas
+                </Link>
+              </li>
+              <li>
                 <Link href="/servicios/vehiculos" className="hover:text-white transition">
                   Limpieza interior de vehículos
                 </Link>

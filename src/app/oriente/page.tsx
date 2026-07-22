@@ -285,7 +285,14 @@ export default function OrientePage() {
             >
               tapetes y alfombras
             </Link>
-            .
+            {'. También lavamos '}
+            <Link
+              href="/servicios/cortinas?ciudad=Rionegro"
+              className="text-blue-600 hover:underline"
+            >
+              cortinas
+            </Link>
+            {' (las descolgamos y las volvemos a colgar).'}
           </p>
         </div>
       </section>

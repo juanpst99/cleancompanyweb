@@ -19,6 +19,7 @@ const NAV_ITEMS: NavItem[] = [
       { name: 'Lavado de alfombras y tapetes', href: '/servicios/alfombras', description: 'Persas, sintéticas y de área' },
       { name: 'Lavado de muebles y sofás', href: '/servicios/muebles', description: 'Tela, cuero y tapicería' },
       { name: 'Lavado de colchones', href: '/servicios/colchones', description: 'Antiácaros y desinfección' },
+      { name: 'Lavado de cortinas', href: '/servicios/cortinas', description: 'Blackout, velos y romanas — las descolgamos' },
       { name: 'Limpieza interior de vehículos', href: '/servicios/vehiculos', description: 'Tapicería, alfombras y techo' },
       { name: 'Servicio empresarial', href: '/servicios/empresarial', description: 'Oficinas, hoteles y PH' },
     ],
