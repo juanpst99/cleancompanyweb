@@ -110,6 +110,7 @@ const TIPOS = [
   'Lino y algodón',
   'Cortinas romanas',
   'Estores de tela',
+  'Persianas',
   'Telas decorativas',
   'Cenefas',
 ]
@@ -173,7 +174,7 @@ export default function CortinasClient() {
                 </div>
                 <div className="flex items-center">
                   <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-400" />
-                  <span>Lavamos todos los tipos: blackout, velos, lino, romanas</span>
+                  <span>Blackout, velos, lino, romanas y también persianas</span>
                 </div>
                 <div className="flex items-center">
                   <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-400" />

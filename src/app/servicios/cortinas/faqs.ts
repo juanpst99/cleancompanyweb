@@ -25,9 +25,9 @@ export const FAQS_CORTINAS: FAQItem[] = [
       'La entrega es en 5 días. Recogemos tus cortinas el día que acordemos, las lavamos según el tipo de tela con secado controlado y te las devolvemos colgadas y listas.',
   },
   {
-    question: '¿Qué tipos de cortina lavan?',
+    question: '¿Qué tipos de cortina lavan? ¿También persianas?',
     answer:
-      'Lavamos todos los tipos: blackout y opacas, velos y telas sheer, lino y algodón, cortinas romanas y estores de tela, telas decorativas y cenefas. Cada tela lleva un proceso distinto, y eso se define cuando vemos la foto.',
+      'Lavamos todos los tipos: blackout y opacas, velos y telas sheer, lino y algodón, cortinas romanas y estores de tela, telas decorativas, cenefas y también persianas. Cada material lleva un proceso distinto, y eso se define cuando vemos la foto.',
   },
   {
     question: '¿Atienden en Rionegro y el Oriente antioqueño?',
