@@ -99,6 +99,16 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/medellin" className="hover:text-white transition">
+                  Cobertura Medellín y área metropolitana
+                </Link>
+              </li>
+              <li>
+                <Link href="/oriente" className="hover:text-white transition">
+                  Cobertura Oriente antioqueño
+                </Link>
+              </li>
+              <li>
                 <Link href="/nosotros" className="hover:text-white transition">
                   Nosotros
                 </Link>

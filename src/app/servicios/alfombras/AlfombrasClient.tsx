@@ -28,6 +28,7 @@ import {
   MessageCircle,
 } from 'lucide-react'
 import Link from 'next/link'
+import CoberturaCiudad from '@/components/CoberturaCiudad'
 
 export default function AlfombrasClient() {
   const whatsappNumber = useWhatsAppNumber()
@@ -154,6 +155,8 @@ export default function AlfombrasClient() {
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold mb-4">Lavado de Alfombras en {ciudad}</h1>
+
+              <CoberturaCiudad ciudad={searchParams.get('ciudad')} />
 
               <p className="text-sm opacity-90 mb-6">
                 Servicio profesional con acta de inspección, garantía y atención por WhatsApp.

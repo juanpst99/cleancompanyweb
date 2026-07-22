@@ -208,6 +208,13 @@ export default function MedellinPage() {
                 Para el norte del valle coordinamos horario y disponibilidad por WhatsApp según
                 la zona.
               </p>
+              <p className="text-sm text-gray-500 mt-3">
+                ¿Estás en el Oriente antioqueño?{' '}
+                <Link href="/oriente" className="text-blue-600 hover:underline">
+                  Ver cobertura en Rionegro, La Ceja y Marinilla
+                </Link>
+                .
+              </p>
             </div>
           </div>
         </div>

@@ -62,6 +62,27 @@ const TARIFAS: Record<string, TarifaCiudad> = {
     minimoDomicilio:       79_900, // Mínimo de facturación por visita a domicilio
   },
 
+  // ── Oriente antioqueño ── (Rionegro, La Ceja, Marinilla, Llanogrande, El Retiro,
+  // Guarne, La Unión y San Antonio de Pereira). Operación con aliado local desde jul-2026.
+  // Mismos precios de Medellín (decisión del dueño 22-jul-2026); lo único distinto es el
+  // mínimo de facturación: el flete del aliado es por trayecto (ida y vuelta), así que un
+  // mínimo de $79.900 dejaría margen negativo en pedidos pequeños.
+  'Oriente': {
+    muebles: {
+      sala_l:        160_000,
+      sala_l_grande: 200_000,
+      sala_3:        105_000,
+      sofa_2:         90_000,
+      poltrona:       45_000,
+      silla:          12_000,
+    },
+    tapeteRemoviblePorM2: 37_500,
+    alfombraFijaPorM2:    15_000,
+    tapeteMinM2:          2,
+    minimoFijo:           350_000,
+    minimoDomicilio:       99_900, // ← mayor que Medellín por el flete del aliado
+  },
+
   // ── Bogotá ── (fuente: precios clean company bogota.html — Sin membresía)
   'Bogotá': {
     muebles: {

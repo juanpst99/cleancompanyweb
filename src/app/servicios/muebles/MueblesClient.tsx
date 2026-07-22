@@ -12,6 +12,7 @@ import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 import VisualQuoter from '@/components/VisualQuoter'
 import WhatsAppLink from '@/components/WhatsAppLink'
+import CoberturaCiudad from '@/components/CoberturaCiudad'
 
 export default function MueblesClient() {
   const whatsappNumber = useWhatsAppNumber()
@@ -179,6 +180,8 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 Lavado de Muebles a Domicilio en {ciudad}
               </h1>
+
+              <CoberturaCiudad ciudad={searchParams.get('ciudad')} />
 
               <p className="text-sm opacity-90 mb-6">
                 Servicio profesional con acta de inspección, garantía escrita y atención por WhatsApp.

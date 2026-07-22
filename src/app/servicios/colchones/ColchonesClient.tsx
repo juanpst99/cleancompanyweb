@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { trackWhatsAppClick } from '@/lib/whatsappTracker'
 import { useWhatsAppNumber } from '@/hooks/useWhatsAppNumber'
 import WhatsAppLink from '@/components/WhatsAppLink'
+import CoberturaCiudad from '@/components/CoberturaCiudad'
 
 export default function ColchonesClient() {
   const whatsappNumber = useWhatsAppNumber()
@@ -175,6 +176,8 @@ Para cuándo: ${mapCuando[formData.cuando] || formData.cuando}`
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 Lavado de Colchones a Domicilio en {ciudad}
               </h1>
+
+              <CoberturaCiudad ciudad={searchParams.get('ciudad')} />
 
               <p className="text-sm opacity-90 mb-6">
                 Servicio profesional con inspección, lavado a vapor, tratamiento antiácaros y
